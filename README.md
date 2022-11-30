@@ -1,0 +1,14 @@
+# rust-web-framework
+> 一款基于rust快速开发的web应用脚手架
+# 技术选型
+## Server
+- [rust](https://github.com/rust-lang/rust)
+- [axum](https://github.com/tokio-rs/axum)
+- [async-graphql](https://github.com/async-graphql/async-graphql)
+- [redis](https://github.com/redis/redis)
+- [mysql](https://github.com/mysql/mysql-server)
+- [sea-orm](https://github.com/SeaQL/sea-orm)
+- [yaml-rust]()
+## Web
+- [vue](https://github.com/vuejs/vue)
+# 快速开始
