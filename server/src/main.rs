@@ -1,71 +1,59 @@
 mod config;
-mod common;
 mod router;
 mod initialize;
 mod util;
 
 use axum::{
-    routing::{get, post},
     http::StatusCode,
     response::IntoResponse,
     Json, Router,
 };
 use serde::{Deserialize, Serialize};
 use std::net::SocketAddr;
-extern crate yaml_rust;
+use tokio::signal;
 
 #[tokio::main]
 async fn main() {
+    //load config
+    let config = config::load_config();
     // initialize tracing
     tracing_subscriber::fmt::init();
-
     // build our application with a route
-    let app = Router::new()
-        // `GET /` goes to `root`
-        .route("/", get(root))
-        // `POST /users` goes to `create_user`
-        .route("/users", post(create_user));
-
+    let app = router::initialize();
     // run our app with hyper
     // `axum::Server` is a re-export of `hyper::Server`
-    let address = SocketAddr::from(([127, 0, 0, 1], 3000));
+    let address = SocketAddr::from(([127, 0, 0, 1], 8088));
     tracing::debug!("listening on {}", address);
     axum::Server::bind(&address)
         .serve(app.into_make_service())
+        .with_graceful_shutdown(shutdown_signal())
         .await
         .unwrap();
 }
 
-// basic handler that responds with a static string
-async fn root() -> &'static str {
-    "Hello, World!"
-}
 
-async fn create_user(
-    // this argument tells axum to parse the request body
-    // as JSON into a `CreateUser` type
-    Json(payload): Json<CreateUser>,
-) -> impl IntoResponse {
-    // insert your application logic here
-    let user = User {
-        id: 1337,
-        username: payload.username,
+async fn shutdown_signal() {
+    let ctrl_c = async {
+        signal::ctrl_c()
+            .await
+            .expect("failed to install Ctrl+C handler");
     };
 
-    // this will be converted into a JSON response
-    // with a status code of `201 Created`
-    (StatusCode::CREATED, Json(user))
-}
+    #[cfg(unix)]
+        let terminate = async {
+        signal::unix::signal(signal::unix::SignalKind::terminate())
+            .expect("failed to install signal handler")
+            .recv()
+            .await;
+    };
 
-// the input to our `create_user` handler
-#[derive(Deserialize)]
-struct CreateUser {
-    username: String,
-}
+    #[cfg(not(unix))]
+        let terminate = std::future::pending::<()>();
 
-// the output to our `create_user` handler
-#[derive(Serialize)]
-struct User {
-    id: u64,
-    username: String,
+    tokio::select! {
+        _ = ctrl_c => {},
+        _ = terminate => {},
+    }
+
+    println!("signal received, starting graceful shutdown");
 }

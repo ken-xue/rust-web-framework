@@ -4,7 +4,6 @@
 ## Server
 - [rust](https://github.com/rust-lang/rust)
 - [axum](https://github.com/tokio-rs/axum)
-- [async-graphql](https://github.com/async-graphql/async-graphql)
 - [redis](https://github.com/redis/redis)
 - [mysql](https://github.com/mysql/mysql-server)
 - [sea-orm](https://github.com/SeaQL/sea-orm)

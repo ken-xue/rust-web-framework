@@ -1,5 +1,5 @@
 [package]
-name = "rust-web-framework"
+name = "server"
 version = "0.1.0"
 edition = "2021"
 
@@ -7,9 +7,13 @@ edition = "2021"
 
 [dependencies]
 serde = "1.0.147"
+serde_yaml = "0.9.21"
 tracing = "0.1.37"
 tracing-subscriber = "0.3.16"
 tokio = { version = "1.22.0", features = ["full"] }
 axum = "0.5.17"
-yaml-rust = "0.4"
 async-graphql = "5.0.1"
+lazy_static = "1.4.0"
+mysql = "18.1.0"
+diesel = { version = "2.1.0", features = ["mysql"] }
+dotenvy = "0.15.7"
