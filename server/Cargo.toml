@@ -14,6 +14,10 @@ tokio = { version = "1.22.0", features = ["full"] }
 axum = "0.5.17"
 async-graphql = "5.0.1"
 lazy_static = "1.4.0"
-mysql = "18.1.0"
+r2d2 = "0.8.9"
+mysql = "20.0.2"
 diesel = { version = "2.1.0", features = ["mysql"] }
 dotenvy = "0.15.7"
+
+[development]
+database_url = "mysql://root:123456@localhost/rust-web-framework"

@@ -1,10 +1,10 @@
-use server::models::*;
 use diesel::prelude::*;
 use server::establish_connection;
 use server::models::Post;
 
 fn main() {
     use server::schema::posts::dsl::*;
+
     let connection = &mut establish_connection();
     let results = posts
         .filter(published.eq(true))

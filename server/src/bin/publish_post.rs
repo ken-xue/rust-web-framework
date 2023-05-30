@@ -1,7 +1,7 @@
-use server::models::Post;
 use diesel::prelude::*;
 use std::env::args;
 use server::establish_connection;
+use server::models::Post;
 
 fn main() {
     use server::schema::posts::dsl::{posts, published};

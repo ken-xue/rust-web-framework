@@ -2,8 +2,7 @@
 
 diesel::table! {
     posts (id) {
-        id -> Bigint,
-        #[max_length = 256]
+        id -> Integer,
         title -> Varchar,
         body -> Text,
         published -> Bool,

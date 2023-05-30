@@ -3,7 +3,7 @@ use std::env::args;
 use server::establish_connection;
 
 fn main() {
-    use self::schema::posts::dsl::*;
+    use server::schema::posts::dsl::*;
 
     let target = args().nth(1).expect("Expected a target to match against");
     let pattern = format!("%{target}%");
