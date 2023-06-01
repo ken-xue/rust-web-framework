@@ -21,3 +21,11 @@ dotenvy = "0.15.7"
 
 [development]
 database_url = "mysql://root:123456@localhost/rust-web-framework"
+
+
+[database]
+host = "127.0.0.1"
+port = 3306
+database = "rust-web-framework"
+username = "root"
+password = "123456"
