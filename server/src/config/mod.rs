@@ -4,7 +4,7 @@ use tokio::io::AsyncReadExt;
 
 pub mod config;
 
-pub async fn load_config() -> Config {
+pub async fn initialize() -> Config {
     // Check if the CONFIG_FILE_PATH environment variable is set
     let path = std::env::var("CONFIG_FILE_PATH").unwrap_or("config.yaml".into());
     println!("path = {}", path);
@@ -32,3 +32,4 @@ pub async fn load_config() -> Config {
 pub struct Config {
     pub port: u16,
 }
+

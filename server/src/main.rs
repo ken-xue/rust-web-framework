@@ -16,15 +16,8 @@ use tokio::signal;
 
 #[tokio::main]
 async fn main() {
-    // 创建MySQL连接池
-    // let opts = OptsBuilder::new()
-    //     .ip_or_hostname(Some("localhost"))
-    //     .user(Some// 设置MySQL用户名)
-    //               .pass(Some("password")) // 设置MySQL密码
-    //               .db_name(Some("mydatabase"))); // 设置MySQL数据库名称
-    // let pool = MySqlPool::new(opts)?;
     //load config
-    let config = config::load_config();
+    let config = config::initialize();
     // initialize tracing
     tracing_subscriber::fmt::init();
     // build our application with a route
