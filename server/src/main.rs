@@ -1,23 +1,23 @@
 mod config;
-mod router;
+mod database;
 mod initialize;
+mod router;
 mod util;
 
-use axum::{
-    http::StatusCode,
-    response::IntoResponse,
-    Json, Router,
-};
+use axum::{http::StatusCode, response::IntoResponse, Json, Router};
 
+use axum::body::HttpBody;
+use mysql::OptsBuilder;
 use serde::{Deserialize, Serialize};
 use std::net::SocketAddr;
-use mysql::OptsBuilder;
 use tokio::signal;
 
 #[tokio::main]
 async fn main() {
     //load config
-    let config = config::initialize();
+    let cfg = config::initialize();
+    // init database
+    database::initialize(cfg);
     // initialize tracing
     tracing_subscriber::fmt::init();
     // build our application with a route
@@ -34,7 +34,6 @@ async fn main() {
         .unwrap();
 }
 
-
 async fn shutdown_signal() {
     let ctrl_c = async {
         signal::ctrl_c()
@@ -43,7 +42,7 @@ async fn shutdown_signal() {
     };
 
     #[cfg(unix)]
-        let terminate = async {
+    let terminate = async {
         signal::unix::signal(signal::unix::SignalKind::terminate())
             .expect("failed to install signal handler")
             .recv()
@@ -51,7 +50,7 @@ async fn shutdown_signal() {
     };
 
     #[cfg(not(unix))]
-        let terminate = std::future::pending::<()>();
+    let terminate = std::future::pending::<()>();
 
     tokio::select! {
         _ = ctrl_c => {},

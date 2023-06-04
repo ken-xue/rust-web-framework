@@ -1,5 +1,5 @@
 use diesel::prelude::*;
-use server::establish_connection;
+use server::database::establish_connection;
 use server::models::Post;
 
 fn main() {

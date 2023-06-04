@@ -1,5 +1,11 @@
+use diesel::{
+    Connection, ExpressionMethods, MysqlConnection, QueryDsl, RunQueryDsl, SelectableHelper,
+};
+use server::create_post;
+use server::database::establish_connection;
+use server::models::{NewPost, Post};
+use server::schema::posts;
 use std::io::{stdin, Read};
-use server::{create_post, establish_connection};
 
 fn main() {
     let connection = &mut establish_connection();
@@ -23,3 +29,23 @@ const EOF: &str = "CTRL+D";
 
 #[cfg(windows)]
 const EOF: &str = "CTRL+Z";
+
+use self::models::{NewPost, Post};
+
+pub fn create_post(conn: &mut MysqlConnection, title: &str, body: &str) -> Post {
+    use crate::schema::posts;
+
+    let new_post = NewPost { title, body };
+
+    conn.transaction(|conn| {
+        diesel::insert_into(posts::table)
+            .values(&new_post)
+            .execute(conn)?;
+
+        posts::table
+            .order(posts::id.desc())
+            .select(Post::as_select())
+            .first(conn)
+    })
+    .expect("Error while saving post")
+}

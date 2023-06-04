@@ -1,6 +1,6 @@
 use diesel::prelude::*;
 use std::env::args;
-use server::establish_connection;
+use server::database::establish_connection;
 
 fn main() {
     use server::schema::posts::dsl::*;
