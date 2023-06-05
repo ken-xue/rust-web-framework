@@ -1543,6 +1543,7 @@ dependencies = [
  "dotenvy",
  "lazy_static",
  "mysql",
+ "once_cell",
  "r2d2",
  "r2d2-diesel",
  "serde",
