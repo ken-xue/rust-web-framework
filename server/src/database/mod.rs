@@ -3,8 +3,8 @@ pub mod database;
 use crate::config;
 use diesel::prelude::*;
 use dotenvy::dotenv;
-// use r2d2_diesel::ConnectionManager;
 use std::env;
+use std::ops::Deref;
 
 pub fn establish_connection() -> MysqlConnection {
     dotenv().ok();
@@ -35,12 +35,11 @@ pub fn establish_connection() -> MysqlConnection {
 
 
 use diesel::mysql::MysqlConnection;
-// use diesel::r2d2::{ConnectionManager, Pool};
+use diesel::r2d2::{ConnectionManager, Pool};
 use std::sync::Mutex;
 use once_cell::sync::Lazy;
-use r2d2::Pool;
-use r2d2_diesel::ConnectionManager;
 
+//
 pub type DbPool = Pool<ConnectionManager<MysqlConnection>>;
 
 // 全局连接池
@@ -59,10 +58,20 @@ pub fn initialize(cfg: config::Config) {
 }
 
 // 获取连接
-pub fn get_connection() -> MysqlConnection {
+// pub fn get_connection() -> MysqlConnection {
+//     let connection_pool = CONNECTION_POOL.lock().unwrap();
+//     let pool = connection_pool
+//         .as_ref()
+//         .expect("Connection pool has not been initialized.");
+//     pool.get_conn().expect("Failed to get connection from pool")
+// }
+
+pub fn get_connection() -> &'static MysqlConnection {
     let connection_pool = CONNECTION_POOL.lock().unwrap();
-    let pool = connection_pool
+    let pooled_connection = connection_pool
         .as_ref()
-        .expect("Connection pool has not been initialized.");
-    pool.get().expect("Failed to get a connection from the pool.").connection()
+        .expect("Connection pool has not been initialized.")
+        .get()
+        .expect("Failed to get connection from pool");
+    pooled_connection.deref()
 }
