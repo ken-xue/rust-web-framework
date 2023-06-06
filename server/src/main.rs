@@ -1,6 +1,5 @@
 mod config;
 mod database;
-mod initialize;
 mod router;
 mod util;
 
