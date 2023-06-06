@@ -4,11 +4,6 @@ mod initialize;
 mod router;
 mod util;
 
-use axum::{http::StatusCode, response::IntoResponse, Json, Router};
-
-use axum::body::HttpBody;
-// use mysql::OptsBuilder;
-use serde::{Deserialize, Serialize};
 use std::net::SocketAddr;
 use tokio::signal;
 
