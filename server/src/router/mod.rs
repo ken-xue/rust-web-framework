@@ -11,3 +11,5 @@ pub fn initialize() -> Router {
         //...
         .nest("/system", user_router());
 }
+
+mod auth;

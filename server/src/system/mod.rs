@@ -4,43 +4,14 @@ use axum::{Json, Router};
 use axum::response::IntoResponse;
 use axum::routing::{get, post, put};
 use diesel::delete;
-use serde::{Deserialize, Serialize};
 
-pub mod sys_handler;
+mod user_handler;
+mod user_domain;
 
 pub fn user_router() -> Router {
     return  Router::new()
-        .route("/user",  get(get_user))
-        .route("/user",  post(create_user))
-        .route("/user",  put(update_user))
-        .route("/user",  delete(delete_user))
-}
-
-async fn create_user(
-    // this argument tells axum to parse the request body
-    // as JSON into a `CreateUser` type
-    Json(payload): Json<CreateUser>,
-) -> impl IntoResponse {
-    // insert your application logic here
-    let user = User {
-        id: 1337,
-        username: payload.username,
-    };
-
-    // this will be converted into a JSON response
-    // with a status code of `201 Created`
-    (StatusCode::CREATED, Json(user))
-}
-
-// the input to our `create_user` handler
-#[derive(Deserialize)]
-struct CreateUser {
-    username: String,
-}
-
-// the output to our `create_user` handler
-#[derive(Serialize)]
-struct User {
-    id: u64,
-    username: String,
+        .route("/user",  get(user_handler::get_user))
+        .route("/user",  post(user_handler::create_user))
+        .route("/user",  put(user_handler::update_user))
+        .route("/user",  delete(user_handler::delete_user))
 }

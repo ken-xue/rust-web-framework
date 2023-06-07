@@ -1,4 +1,7 @@
+use std::fmt::Display;
+use axum::Json;
 
+// 授权认证
 async fn authorize(Json(payload): Json<AuthPayload>) -> Result<Json<AuthBody>, AuthError> {
     // Check if the user sent the credentials
     if payload.client_id.is_empty() || payload.client_secret.is_empty() {
