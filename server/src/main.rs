@@ -10,14 +10,12 @@ use tokio::signal;
 async fn main() {
     //load config
     let cfg = config::initialize();
-    // init database
-    database::initialize(cfg);
     // initialize tracing
     tracing_subscriber::fmt::init();
+    // init database
+    database::initialize(cfg);
     // build our application with a route
     let app = router::initialize();
-    // let app = app.with_state(pool);
-    // run our app with hyper
     // `axum::Server` is a re-export of `hyper::Server`
     let address = SocketAddr::from(([127, 0, 0, 1], 8088));
     tracing::debug!("listening on {}", address);

@@ -1,36 +1,46 @@
 use axum::body::Body;
-use axum::http::{Method, Request, Response};
-use axum::Router;
+use axum::http::{Method, Request, Response, StatusCode};
+use axum::{Json, Router};
+use axum::response::IntoResponse;
+use axum::routing::{get, post, put};
+use diesel::delete;
+use serde::{Deserialize, Serialize};
 
 pub mod sys_handler;
 
-pub fn get_user_router() -> Router {
+pub fn user_router() -> Router {
     return  Router::new()
-        .route("/",  get_users_handler)
-        .route("/",  create_user_handler)
-        .route("/:id", Method::GET, get_user_handler)
-        .route("/:id", Method::PUT, update_user_handler)
-        .route("/:id", Method::DELETE, delete_user_handler);
+        .route("/user",  get(get_user))
+        .route("/user",  post(create_user))
+        .route("/user",  put(update_user))
+        .route("/user",  delete(delete_user))
 }
 
+async fn create_user(
+    // this argument tells axum to parse the request body
+    // as JSON into a `CreateUser` type
+    Json(payload): Json<CreateUser>,
+) -> impl IntoResponse {
+    // insert your application logic here
+    let user = User {
+        id: 1337,
+        username: payload.username,
+    };
 
-
-async fn get_users_handler(req: Request<Body>) -> Result<Response<Body>, hyper::Error> {
-    // 处理 GET /users 请求
+    // this will be converted into a JSON response
+    // with a status code of `201 Created`
+    (StatusCode::CREATED, Json(user))
 }
 
-async fn create_user_handler(req: Request<Body>) -> Result<Response<Body>, hyper::Error> {
-    // 处理 POST /users 请求
+// the input to our `create_user` handler
+#[derive(Deserialize)]
+struct CreateUser {
+    username: String,
 }
 
-async fn get_user_handler(req: Request<Body>) -> Result<Response<Body>, hyper::Error> {
-    // 处理 GET /users/:id 请求
-}
-
-async fn update_user_handler(req: Request<Body>) -> Result<Response<Body>, hyper::Error> {
-    // 处理 PUT /users/:id 请求
-}
-
-async fn delete_user_handler(req: Request<Body>) -> Result<Response<Body>, hyper::Error> {
-    // 处理 DELETE /users/:id 请求
+// the output to our `create_user` handler
+#[derive(Serialize)]
+struct User {
+    id: u64,
+    username: String,
 }
