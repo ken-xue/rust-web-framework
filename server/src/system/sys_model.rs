@@ -1,6 +1,8 @@
+use crate::schema::*;
 use diesel::prelude::*;
+use chrono::NaiveDateTime;
 
-#[derive(Debug, Queryable, Identifiable, AsChangeset)]
+#[derive(Debug, Queryable, Identifiable)]
 #[table_name = "sys_captcha"]
 pub struct SysCaptcha {
     pub id: i64,
@@ -9,7 +11,7 @@ pub struct SysCaptcha {
     pub expire_time: Option<NaiveDateTime>,
 }
 
-#[derive(Debug, Queryable, Identifiable, AsChangeset)]
+#[derive(Debug, Queryable, Identifiable)]
 #[table_name = "sys_dictionary"]
 pub struct SysDictionary {
     pub id: i64,
@@ -18,7 +20,7 @@ pub struct SysDictionary {
     pub fixed: Option<bool>,
 }
 
-#[derive(Debug, Queryable, Identifiable, AsChangeset)]
+#[derive(Debug, Queryable, Identifiable)]
 #[table_name = "sys_log"]
 pub struct SysLog {
     pub id: i64,
@@ -31,7 +33,7 @@ pub struct SysLog {
     pub occur_time: Option<NaiveDateTime>,
 }
 
-#[derive(Debug, Queryable, Identifiable, AsChangeset)]
+#[derive(Debug, Queryable, Identifiable)]
 #[table_name = "sys_menu"]
 pub struct SysMenu {
     pub id: u64,
@@ -51,7 +53,7 @@ pub struct SysMenu {
     pub deleted: Option<String>,
 }
 
-#[derive(Debug, Queryable, Identifiable, AsChangeset)]
+#[derive(Debug, Queryable, Identifiable)]
 #[table_name = "sys_role"]
 pub struct SysRole {
     pub id: u64,
@@ -65,7 +67,7 @@ pub struct SysRole {
     pub deleted: Option<String>,
 }
 
-#[derive(Debug, Queryable, Identifiable, AsChangeset)]
+#[derive(Debug, Queryable, Identifiable)]
 #[table_name = "sys_role_of_menu"]
 pub struct SysRoleOfMenu {
     pub id: u64,
@@ -79,7 +81,7 @@ pub struct SysRoleOfMenu {
     pub deleted: Option<String>,
 }
 
-#[derive(Debug,Queryable, Identifiable, AsChangeset)]
+#[derive(Debug,Queryable, Identifiable,Selectable)]
 #[table_name = "sys_user"]
 pub struct SysUser {
     pub id: u64,
@@ -97,7 +99,7 @@ pub struct SysUser {
     pub avatar: Option<String>,
 }
 
-#[derive(Debug, Queryable, Identifiable, AsChangeset)]
+#[derive(Debug, Queryable, Identifiable)]
 #[table_name = "sys_user_of_role"]
 pub struct SysUserOfRole {
     pub id: u64,

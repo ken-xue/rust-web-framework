@@ -2,6 +2,8 @@ use axum::http::StatusCode;
 use axum::Json;
 use axum::response::IntoResponse;
 use serde::{Deserialize, Serialize};
+use crate::database;
+use crate::system::user_domain;
 
 // 添加用户
 pub async fn create_user(
@@ -22,18 +24,24 @@ pub async fn create_user(
 
 // the input to our `create_user` handler
 #[derive(Deserialize)]
-struct CreateUser {
+pub struct CreateUser {
     username: String,
 }
 
 // the output to our `create_user` handler
 #[derive(Serialize)]
-struct User {
+pub struct User {
     id: u64,
     username: String,
 }
 
 
-pub async fn get_user(){}
+pub async fn get_user() -> impl IntoResponse {
+    let pc = database::connection();
+    let mut domain = user_domain::User::new(pc);
+    domain.get_user_by_id(1);
+    (StatusCode::OK, Json(""))
+}
+
 pub async fn update_user(){}
 pub async fn delete_user(){}
