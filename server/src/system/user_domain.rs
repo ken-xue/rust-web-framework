@@ -11,33 +11,26 @@ use crate::schema::sys_user::{id, name};
 use crate::system::sys_model::SysUser;
 
 pub struct User {
-    conn: database::PC,
-    // pub type PC = PooledConnection<ConnectionManager<MysqlConnection>>;
+    conn: database::PoolConnection
 }
 
 impl User {
 
-    pub fn new(conn: database::PC) -> Self {
+    pub fn new(conn: database::PoolConnection) -> Self {
         User { conn }
     }
 
-    pub fn get_user_by_id(&mut self, i: i32) {//-> Result<SysUser, Error> {
-        use crate::schema::posts::dsl::*;
+    pub fn get_user_by_id(&mut self, i: i32) -> Result<SysUser, Error> {
+        use crate::schema::sys_user::dsl::*;
         let connection = self.conn.deref_mut();
-        let results = posts
-            .filter(published.eq(true))
-            .limit(5)
-            .select(Post::as_select())
+        let user : SysUser = sys_user
+            .filter(id.eq(i))
+            .limit(1)
+            .select(SysUser::as_select())
             .load(connection)
-            .expect("Error loading posts");
-
-        println!("Displaying {} posts", results.len());
-        for post in results {
-            println!("{}", post.title);
-            println!("-----------\n");
-            println!("{}", post.body);
-        }
-        // Ok(result)
+            .expect("Error loading user");
+        // println!("Displaying {} posts", results.len());
+        Ok(user)
     }
 
 

@@ -83,6 +83,7 @@ pub struct SysRoleOfMenu {
 
 #[derive(Debug,Queryable, Identifiable,Selectable)]
 #[table_name = "sys_user"]
+#[diesel(check_for_backend(diesel::mysql::Mysql))]
 pub struct SysUser {
     pub id: u64,
     pub uuid: Option<String>,
@@ -93,9 +94,9 @@ pub struct SysUser {
     pub status: Option<i32>,
     pub creator: Option<String>,
     pub modifier: Option<String>,
-    pub gmt_create: NaiveDateTime,
-    pub gmt_modified: NaiveDateTime,
-    pub deleted: Option<String>,
+    // pub gmt_create: NaiveDateTime,
+    // pub gmt_modified: NaiveDateTime,
+    // pub deleted: Option<String>,
     pub avatar: Option<String>,
 }
 

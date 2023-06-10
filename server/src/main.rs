@@ -9,18 +9,18 @@ use tokio::signal;
 #[tokio::main]
 async fn main() {
     //load config
-    let cfg = config::initialize();
+    let config = config::initialize();
     // initialize tracing
     tracing_subscriber::fmt::init();
     // init database
-    database::initialize(cfg);
+    database::initialize(config);
     // build our application with a route
-    let app = router::initialize();
+    let router = router::initialize();
     // `axum::Server` is a re-export of `hyper::Server`
     let address = SocketAddr::from(([127, 0, 0, 1], 8088));
     tracing::debug!("listening on {}", address);
     axum::Server::bind(&address)
-        .serve(app.into_make_service())
+        .serve(router.into_make_service())
         .with_graceful_shutdown(shutdown_signal())
         .await
         .unwrap();

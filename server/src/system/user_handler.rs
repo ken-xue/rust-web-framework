@@ -37,9 +37,10 @@ pub struct User {
 
 
 pub async fn get_user() -> impl IntoResponse {
-    let pc = database::connection();
+    let pc = database::pool();
     let mut domain = user_domain::User::new(pc);
-    domain.get_user_by_id(1);
+    let response = domain.get_user_by_id(1);
+    // (StatusCode::OK, Json(response.unwrap()))
     (StatusCode::OK, Json(""))
 }
 

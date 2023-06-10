@@ -8,15 +8,13 @@ use dotenvy::dotenv;
 use once_cell::sync::Lazy;
 use r2d2::PooledConnection;
 use std::env;
-use std::sync::{Arc, Mutex, RwLock};
+use std::sync::{Arc, RwLock};
 
-//
-pub type DbPool = Pool<ConnectionManager<MysqlConnection>>;
-pub type PC = PooledConnection<ConnectionManager<MysqlConnection>>;
+pub type PoolConnection = PooledConnection<ConnectionManager<MysqlConnection>>;
 
 // 全局连接池
 // static CONNECTION_POOL: Lazy<Mutex<Option<DbPool>>> = Lazy::new(|| Mutex::new(None));
-static CONNECTION_POOL: Lazy<Arc<RwLock<Option<DbPool>>>> = Lazy::new(|| Arc::new(RwLock::new(None)));
+static CONNECTION_POOL: Lazy<Arc<RwLock<Option<Pool<ConnectionManager<MysqlConnection>>>>>> = Lazy::new(|| Arc::new(RwLock::new(None)));
 
 // 初始化连接池
 pub fn initialize(cfg: config::Config) {
@@ -27,14 +25,19 @@ pub fn initialize(cfg: config::Config) {
         .expect("Failed to create connection pool.");
     let mut connection_pool = CONNECTION_POOL.write().unwrap();
     *connection_pool = Some(pool);
+    println!("Connection pool initialized.");
 }
 
-// 获取连接
-pub fn connection() -> PC {
+// 获取连接池
+pub fn pool() -> PoolConnection {
+    initialize(config::initialize());//fix me,could not use global CONNECTION_POOL
     let connection_pool = CONNECTION_POOL.read().unwrap();
-    let dp = connection_pool.as_ref().unwrap();
-    let connection = dp.get().unwrap();
-    return connection;
+    let done = connection_pool.is_none();
+    format!("is done {}",done);
+    match connection_pool.as_ref() {
+        Some(dp) => dp.get().unwrap(),
+        None => panic!("Database connection pool is not initialized."),
+    }
 }
 
 // 动态建立连接
