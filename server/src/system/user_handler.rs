@@ -43,5 +43,11 @@ pub async fn get_user() -> impl IntoResponse {
     (StatusCode::OK, Json(response.unwrap()))
 }
 
-pub async fn update_user(){}
-pub async fn delete_user(){}
+pub async fn update_user() -> impl IntoResponse {
+    let pc = database::pool();
+    let mut domain = user_domain::User::new(pc);
+    domain.update_user();
+    (StatusCode::OK, Json(""))
+}
+
+pub async fn delete_user() {}

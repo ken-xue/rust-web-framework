@@ -8,6 +8,7 @@ use dotenvy::dotenv;
 use once_cell::sync::Lazy;
 use r2d2::PooledConnection;
 use std::env;
+use std::ops::{Deref, DerefMut};
 use std::sync::{Arc, RwLock};
 
 pub type PoolConnection = PooledConnection<ConnectionManager<MysqlConnection>>;
@@ -45,4 +46,12 @@ pub fn establish_connection() -> MysqlConnection {
     dotenv().ok();
     let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
     MysqlConnection::establish(&database_url).unwrap_or_else(|_| panic!("Error connecting to {}", database_url))
+}
+
+// 创建一个全局的连接池
+lazy_static::lazy_static! {
+    pub static ref POOL: Pool<ConnectionManager<MysqlConnection>> = {
+        let manager = ConnectionManager::<MysqlConnection>::new("mysql://root:123456@localhost/rust-web-framework?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=UTC");
+        Pool::builder().max_size(10).build(manager).unwrap()
+    };
 }
