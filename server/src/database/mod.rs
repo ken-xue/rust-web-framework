@@ -14,7 +14,7 @@ pub type PoolConnection = PooledConnection<ConnectionManager<MysqlConnection>>;
 
 // 全局连接池
 // static CONNECTION_POOL: Lazy<Mutex<Option<DbPool>>> = Lazy::new(|| Mutex::new(None));
-static CONNECTION_POOL: Lazy<Arc<RwLock<Option<Pool<ConnectionManager<MysqlConnection>>>>>> = Lazy::new(|| Arc::new(RwLock::new(None)));
+pub static CONNECTION_POOL: Lazy<Arc<RwLock<Option<Pool<ConnectionManager<MysqlConnection>>>>>> = Lazy::new(|| Arc::new(RwLock::new(None)));
 
 // 初始化连接池
 pub fn initialize(cfg: config::Config) {

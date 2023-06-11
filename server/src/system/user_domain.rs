@@ -21,15 +21,27 @@ impl User {
     }
 
     pub fn get_user_by_id(&mut self, i: i32) -> Result<SysUser, Error> {
-        use crate::schema::sys_user::dsl::*;
+        use crate::schema::posts::dsl::*;
         let connection = self.conn.deref_mut();
-        let user : SysUser = sys_user
+        let results = posts
             .filter(id.eq(i))
             .limit(1)
-            .select(SysUser::as_select())
+            .select(Post::as_select())
             .load(connection)
             .expect("Error loading user");
-        // println!("Displaying {} posts", results.len());
+        println!("Displaying {} posts", results.len());
+        let user = SysUser{
+            id: 0,
+            uuid: None,
+            account: None,
+            password: None,
+            name: None,
+            email: None,
+            status: None,
+            creator: None,
+            modifier: None,
+            avatar: None,
+        };
         Ok(user)
     }
 

@@ -1,6 +1,7 @@
 use crate::schema::*;
 use diesel::prelude::*;
 use chrono::NaiveDateTime;
+use serde::{Serialize};
 
 #[derive(Debug, Queryable, Identifiable)]
 #[table_name = "sys_captcha"]
@@ -81,7 +82,7 @@ pub struct SysRoleOfMenu {
     pub deleted: Option<String>,
 }
 
-#[derive(Debug,Queryable, Identifiable,Selectable)]
+#[derive(Debug,Serialize,Queryable, Identifiable,Selectable)]
 #[table_name = "sys_user"]
 #[diesel(check_for_backend(diesel::mysql::Mysql))]
 pub struct SysUser {
