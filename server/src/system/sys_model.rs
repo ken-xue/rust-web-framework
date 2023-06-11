@@ -82,7 +82,7 @@ pub struct SysRoleOfMenu {
     pub deleted: Option<String>,
 }
 
-#[derive(Debug,Serialize,Queryable, Identifiable,Selectable)]
+#[derive(Debug,Serialize,Queryable, Identifiable,Selectable,Insertable)]
 #[table_name = "sys_user"]
 #[diesel(check_for_backend(diesel::mysql::Mysql))]
 pub struct SysUser {

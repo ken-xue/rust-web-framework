@@ -1,16 +1,19 @@
 use std::fmt::{Error};
 use std::ops::{Deref, DerefMut};
-use diesel::{ExpressionMethods, QueryDsl, RunQueryDsl, SelectableHelper};
+use diesel::{Connection, ExpressionMethods, QueryDsl, RunQueryDsl, SelectableHelper};
+use diesel::associations::HasTable;
 
 use crate::database;
 use crate::system::sys_model::SysUser;
 use crate::schema::sys_user::dsl::*;
+use crate::system::user_handler::CreateUser;
 
 pub struct User {
     conn: database::PoolConnection
 }
 
 impl User {
+
     pub fn new(conn: database::PoolConnection) -> Self {
         User { conn }
     }
@@ -46,36 +49,39 @@ impl User {
     }
 
 
-    pub fn create_user(&mut self) {//-> Result<T, E> {
-        // use crate::schema::sys_user;
-        // let new_user = SysUser{
-        //     id: 0,
-        //     uuid: None,
-        //     account: None,
-        //     password: None,
-        //     name: Option::from(format!("afdsfa")),
-        //     email: None,
-        //     status: None,
-        //     creator: None,
-        //     modifier: None,
-        //     gmt_create: (),
-        //     gmt_modified: (),
-        //     deleted: None,
-        //     avatar: None,
-        // };
-        // self.conn.transaction(|conn| {
-        //     diesel::insert_into(sys_user::table)
-        //         .values(&new_user)
-        //         .execute(conn)?;
-        //
-        //     sys_user::table
-        //         // .order(SysUser::id.desc())
-        //         .select(SysUser::as_select())
-        //         .first(conn)
-        // })
-        //     .expect("Error while saving post")
+    pub fn create_user(&mut self, user: CreateUser) -> Result<CreateUser, Error> {
+        let user:SysUser = user.into();
+        self.conn.transaction(|conn| {
+            diesel::insert_into(sys_user::table)
+                .values(&user)
+                .execute(conn)?;
+
+            sys_user::table
+                // .order(SysUser::id.desc())
+                .select(SysUser::as_select())
+                .first(conn)
+        });
+            // .expect("Error while saving post")
         // diesel::insert_into(sys_user::table)
         //     .values(&new_user)
         //     .execute(self.conn.deref())
+        Ok(user)
+    }
+}
+
+impl From<CreateUser> for SysUser {
+    fn from(user: CreateUser) -> SysUser {
+        SysUser {
+            id: 0,
+            uuid: None,
+            account: None,
+            password: None,
+            name: Some(user.name),
+            email: None,
+            status: None,
+            creator: None,
+            modifier: None,
+            avatar: None,
+        }
     }
 }
