@@ -1,11 +1,15 @@
 mod config;
 
-// use crate::config::config::Config;
 use serde_yaml;
 use std::fs::File;
 use std::io::Read;
+use lazy_static::lazy_static;
 
-pub fn initialize() -> Config {
+lazy_static! {
+    static ref CONFIG: Config = load();
+}
+
+pub fn load() -> Config {
     // Check if the CONFIG_FILE_PATH environment variable is set
     let path = std::env::var("CONFIG_FILE_PATH").unwrap_or("config.yaml".into());
     println!("path = {}", path);
@@ -26,6 +30,10 @@ pub fn initialize() -> Config {
         Ok(config) => config,
         Err(err) => panic!("Unable to deserialize config file {}: {}", path, err),
     }
+}
+
+pub fn get() -> &'static Config {
+    &CONFIG
 }
 
 use serde::{Deserialize, Serialize};

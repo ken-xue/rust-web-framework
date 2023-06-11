@@ -8,12 +8,8 @@ use tokio::signal;
 
 #[tokio::main]
 async fn main() {
-    //load config
-    let config = config::initialize();
     // initialize tracing
     tracing_subscriber::fmt::init();
-    // init database
-    database::initialize(config);
     // build our application with a route
     let router = router::initialize();
     // `axum::Server` is a re-export of `hyper::Server`

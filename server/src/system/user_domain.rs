@@ -7,7 +7,7 @@ use crate::system::sys_model::SysUser;
 use crate::schema::sys_user::dsl::*;
 
 pub struct User {
-    conn: database::PoolConnection,
+    conn: database::PoolConnection
 }
 
 impl User {
@@ -27,7 +27,7 @@ impl User {
         use diesel::prelude::*;
         use crate::models::Post;
         use crate::schema::posts::dsl::*;
-        let mut connection = database::POOL.get().unwrap(); // Get a connection from the pool
+        let mut connection = database::pool(); // Get a connection from the pool
         let conn = connection.deref_mut(); // Convert the connection to a mutable reference
 
         let results = posts
