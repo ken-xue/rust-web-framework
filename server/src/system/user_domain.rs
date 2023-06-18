@@ -1,28 +1,23 @@
 use std::fmt::{Error};
 use std::ops::{DerefMut};
-use diesel::{ExpressionMethods, QueryDsl, RunQueryDsl, SelectableHelper};
 
-use crate::util;
 use crate::database;
 use crate::system::sys_model::SysUser;
-use crate::schema::sys_user::dsl::*;
 use crate::system::user_handler::CreateUser;
+use crate::system::user_repo::UserRepo;
 
 pub struct UserDomain {
-    conn: database::PoolConnection,
+    repo: UserRepo,
 }
 
 impl UserDomain {
-    pub fn new(conn: database::PoolConnection) -> Self {
-        UserDomain { conn }
+    
+    pub fn new(repo: UserRepo) -> Self {
+        UserDomain { repo }
     }
 
     pub fn get_user_by_id(&mut self, i: u64) -> Result<SysUser, Error> {
-        Ok(sys_user
-            .filter(id.eq(i))
-            .select(SysUser::as_select())
-            .first(self.conn.deref_mut())
-            .expect("Error loading user"))
+        self.repo.get_user_by_id(i)
     }
 
     pub fn update_user(&mut self) {
@@ -48,30 +43,6 @@ impl UserDomain {
     }
 
     pub fn create_user(&mut self, u: CreateUser) -> Result<SysUser, Error> {
-        let user: SysUser = u.into();
-        use crate::schema::sys_user;
-        diesel::insert_into(sys_user::table)
-            .values(&user)
-            .execute(self.conn.deref_mut()).expect("Error while saving user");
-        Ok(user)
+        self.repo.create_user(u)
     }
 }
-
-// impl From<CreateUser> for SysUser {
-//     fn from(user: CreateUser) -> SysUser {
-//         SysUser {
-//             id: 0,
-//             uuid: Some(util::uuid()),
-//             account: Option::from(user.account),
-//             password: Option::from(user.password),
-//             name: Some(user.name),
-//             email: Option::from(user.email),
-//             status: None,
-//             creator: None,
-//             modifier: None,
-//             gmt_create: Default::default(),
-//             gmt_modified: Default::default(),
-//             avatar: None,
-//         }
-//     }
-// }
