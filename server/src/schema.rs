@@ -3,6 +3,7 @@
 diesel::table! {
     posts (id) {
         id -> Integer,
+        #[max_length = 256]
         title -> Varchar,
         body -> Text,
         published -> Bool,
@@ -74,8 +75,7 @@ diesel::table! {
         modifier -> Nullable<Varchar>,
         gmt_create -> Datetime,
         gmt_modified -> Datetime,
-        #[max_length = 1]
-        deleted -> Char,
+        deleted -> Bool,
     }
 }
 
@@ -94,8 +94,7 @@ diesel::table! {
         modifier -> Nullable<Varchar>,
         gmt_create -> Datetime,
         gmt_modified -> Datetime,
-        #[max_length = 1]
-        deleted -> Char,
+        deleted -> Bool,
     }
 }
 
@@ -114,8 +113,7 @@ diesel::table! {
         modifier -> Nullable<Varchar>,
         gmt_create -> Datetime,
         gmt_modified -> Datetime,
-        #[max_length = 1]
-        deleted -> Char,
+        deleted -> Bool,
     }
 }
 
@@ -139,8 +137,7 @@ diesel::table! {
         modifier -> Nullable<Varchar>,
         gmt_create -> Datetime,
         gmt_modified -> Datetime,
-        #[max_length = 1]
-        deleted -> Char,
+        deleted -> Bool,
         #[max_length = 100]
         avatar -> Nullable<Varchar>,
     }
@@ -161,8 +158,7 @@ diesel::table! {
         modifier -> Nullable<Varchar>,
         gmt_create -> Datetime,
         gmt_modified -> Datetime,
-        #[max_length = 1]
-        deleted -> Char,
+        deleted -> Bool,
     }
 }
 

@@ -8,13 +8,14 @@ use crate::system::sys_model::SysUser;
 use crate::schema::sys_user::dsl::*;
 use crate::system::user_handler::CreateUser;
 
-pub struct UserDomain {
+pub struct UserRepo {
     conn: database::PoolConnection,
 }
 
-impl UserDomain {
+impl UserRepo {
+
     pub fn new(conn: database::PoolConnection) -> Self {
-        UserDomain { conn }
+        UserRepo { conn }
     }
 
     pub fn get_user_by_id(&mut self, i: u64) -> Result<SysUser, Error> {
@@ -57,21 +58,22 @@ impl UserDomain {
     }
 }
 
-// impl From<CreateUser> for SysUser {
-//     fn from(user: CreateUser) -> SysUser {
-//         SysUser {
-//             id: 0,
-//             uuid: Some(util::uuid()),
-//             account: Option::from(user.account),
-//             password: Option::from(user.password),
-//             name: Some(user.name),
-//             email: Option::from(user.email),
-//             status: None,
-//             creator: None,
-//             modifier: None,
-//             gmt_create: Default::default(),
-//             gmt_modified: Default::default(),
-//             avatar: None,
-//         }
-//     }
-// }
+impl From<CreateUser> for SysUser {
+    fn from(user: CreateUser) -> SysUser {
+        SysUser {
+            id: 0,
+            uuid: Some(util::uuid()),
+            account: Option::from(user.account),
+            password: Option::from(user.password),
+            name: Some(user.name),
+            email: Option::from(user.email),
+            status: None,
+            creator: None,
+            modifier: None,
+            gmt_create: Default::default(),
+            gmt_modified: Default::default(),
+            avatar: None,
+            deleted: false,
+        }
+    }
+}
