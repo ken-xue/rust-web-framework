@@ -3,7 +3,7 @@ use axum::Json;
 use axum::response::IntoResponse;
 use serde::{Deserialize, Serialize};
 use crate::database;
-use crate::system::user_domain;
+use crate::system::{user_domain, user_repo};
 
 // the input to our `create_user` handler
 #[derive(Deserialize)]
@@ -14,13 +14,14 @@ pub struct CreateUser {
     pub password: String,
 }
 // 添加用户
-pub async fn create_user(Json(payload): Json<CreateUser>) -> impl IntoResponse {
-    let mut domain = user_domain::UserDomain::new(database::pool());
-    let response = domain.create_user(payload);
+pub async fn create(Json(payload): Json<CreateUser>) -> impl IntoResponse {
+    let repo = user_repo::UserRepo::new(database::pool());
+    let mut domain = user_domain::UserDomain::new(repo);
+    let response = domain.create(payload);
     // if response.is_err() {
     //     return Json(response.err())
     // }
-    // (StatusCode::CREATED, Json(response.unwrap()))
+    (StatusCode::CREATED, Json(response.unwrap()))
 }
 
 
@@ -32,21 +33,24 @@ pub struct User {
 }
 
 
-pub async fn get_user() -> impl IntoResponse {
-    let mut domain = user_domain::UserDomain::new(database::pool());
+pub async fn get() -> impl IntoResponse {
+    let repo = user_repo::UserRepo::new(database::pool());
+    let mut domain = user_domain::UserDomain::new(repo);
     let response = domain.get_by_id(1);
     (StatusCode::OK, Json(response.unwrap()))
 }
 
-pub async fn update(Json(payload): Json<CreateUser>) -> impl IntoResponse {
-    let pc = database::pool();
-    let mut domain = user_domain::UserDomain::new(pc);
+pub async fn update() -> impl IntoResponse {
+    let repo = user_repo::UserRepo::new(database::pool());
+    let mut domain = user_domain::UserDomain::new(repo);
     domain.update();
     (StatusCode::OK, Json(""))
 }
 
 #[derive(Deserialize)]
 pub struct DeleteCmd {
-    pub ids: []int,
+    pub ids: Vec<i32>,
 }
-pub async fn delete(Json(payload): Json<CreateUser>) {}
+pub async fn delete(Json(cmd): Json<DeleteCmd>) {
+
+}

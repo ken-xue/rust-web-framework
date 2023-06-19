@@ -9,7 +9,7 @@ use crate::schema::sys_user::dsl::*;
 use crate::system::user_handler::CreateUser;
 
 pub struct UserRepo {
-    conn: database::PoolConnection,
+    conn: database::PoolConnection
 }
 
 impl UserRepo {
@@ -19,8 +19,7 @@ impl UserRepo {
     }
 
     pub fn get_user_by_id(&mut self, i: u64) -> Result<SysUser, Error> {
-        Ok(sys_user
-            .filter(id.eq(i))
+        Ok(sys_user.filter(id.eq(i))
             .select(SysUser::as_select())
             .first(self.conn.deref_mut())
             .expect("Error loading user"))
@@ -51,8 +50,7 @@ impl UserRepo {
     pub fn create_user(&mut self, u: CreateUser) -> Result<SysUser, Error> {
         let user: SysUser = u.into();
         use crate::schema::sys_user;
-        diesel::insert_into(sys_user::table)
-            .values(&user)
+        diesel::insert_into(sys_user::table).values(&user)
             .execute(self.conn.deref_mut()).expect("Error while saving user");
         Ok(user)
     }

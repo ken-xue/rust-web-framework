@@ -8,10 +8,10 @@ pub mod user_repo;
 
 pub fn user_router() -> Router {
     return  Router::new()
-        .route("/user",  post(user_handler::create_user))
-        .route("/user",  delete(user_handler::delete_user))
-        .route("/user",  put(user_handler::update_user))
-        .route("/user",  get(user_handler::get_user))
+        .route("/user",  post(user_handler::create))
+        .route("/user",  delete(user_handler::delete))
+        .route("/user",  put(user_handler::update))
+        .route("/user",  get(user_handler::get))
 }
 
 //...role
