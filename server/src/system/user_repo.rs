@@ -1,10 +1,11 @@
-use std::fmt::{Error};
+// use std::fmt::{Error};
 use std::ops::{DerefMut};
-use diesel::{ExpressionMethods, QueryDsl, RunQueryDsl, SelectableHelper};
+use diesel::{ExpressionMethods, OptionalExtension, QueryDsl, RunQueryDsl, SelectableHelper};
+use diesel::result::Error;
 
 use crate::util;
 use crate::database;
-use crate::system::sys_model::SysUser;
+use crate::system::models::SysUser;
 use crate::database::schema::sys_user::dsl::*;
 use crate::system::user_handler::{CreateUser, UpdateUser};
 use crate::database::schema::sys_user;
@@ -19,11 +20,11 @@ impl UserRepo {
         UserRepo { conn }
     }
 
-    pub fn get_by_id(&mut self, i: u64) -> Result<SysUser, Error> {
+    pub fn get_by_id(&mut self, i: u64) -> Result<Option<SysUser>, Error> {
         Ok(sys_user.filter(id.eq(i))
             .select(SysUser::as_select())
             .first(self.conn.deref_mut())
-            .expect("Error loading user"))
+            .optional()?)
     }
 
     pub fn update(&mut self,u: UpdateUser) -> Result<SysUser, Error> {

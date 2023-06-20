@@ -7,6 +7,21 @@ use uuid::Uuid;
 use crate::database;
 use crate::system::{user_domain, user_repo};
 
+
+// the output to our `create_user` handler
+#[derive(Serialize)]
+pub struct User {
+    id: u64,
+    username: String,
+}
+
+pub async fn get(Path(id): Path<u64>) -> impl IntoResponse {
+    let repo = user_repo::UserRepo::new(database::pool());
+    let mut domain = user_domain::UserDomain::new(repo);
+    let response = domain.get_by_id(id);
+    (StatusCode::OK, Json(response.unwrap()))
+}
+
 // the input to our `create_user` handler
 #[derive(Deserialize)]
 pub struct CreateUser {
@@ -21,21 +36,6 @@ pub async fn create(Json(payload): Json<CreateUser>) -> impl IntoResponse {
     let mut domain = user_domain::UserDomain::new(repo);
     let response = domain.create(payload);
     (StatusCode::CREATED, Json(response.unwrap()))
-}
-
-
-// the output to our `create_user` handler
-#[derive(Serialize)]
-pub struct User {
-    id: u64,
-    username: String,
-}
-
-pub async fn get(Path(user_id): Path<u64>) -> impl IntoResponse {
-    let repo = user_repo::UserRepo::new(database::pool());
-    let mut domain = user_domain::UserDomain::new(repo);
-    let response = domain.get_by_id(user_id);
-    (StatusCode::OK, Json(response.unwrap()))
 }
 
 #[derive(Deserialize)]

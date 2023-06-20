@@ -1,6 +1,7 @@
-use std::fmt::{Error};
+// use std::fmt::{Error};
 
-use crate::system::sys_model::SysUser;
+use diesel::result::Error;
+use crate::system::models::SysUser;
 use crate::system::user_handler::{CreateUser, Delete, UpdateUser};
 use crate::system::user_repo::UserRepo;
 
@@ -14,7 +15,7 @@ impl UserDomain {
         UserDomain { repo }
     }
 
-    pub fn get_by_id(&mut self, i: u64) -> Result<SysUser, Error> {
+    pub fn get_by_id(&mut self, i: u64) -> Result<Option<SysUser>, Error> {
         self.repo.get_by_id(i)
     }
 

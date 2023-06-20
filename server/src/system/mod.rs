@@ -1,7 +1,7 @@
 use axum::Router;
 use axum::routing::{get, post, put,delete};
 
-pub mod sys_model;
+pub mod models;
 pub mod user_handler;
 pub mod user_domain;
 pub mod user_repo;
