@@ -28,9 +28,12 @@ impl UserRepo {
 
     pub fn update(&mut self,u: UpdateUser) -> Result<SysUser, Error> {
         let user: SysUser = u.into();
-        let updated_row = diesel::update(sys_user.filter(id.eq(user.id)))
+        diesel::update(sys_user.filter(id.eq(user.id)))
             .set((name.eq("James"), account.eq("Bond")))
-            .get_result(self.conn.deref_mut()).expect("Error while update user");
+            .execute(self.conn.deref_mut())
+            .map_err(|e| {
+                println!("Error updating user: {}", e);
+            }).ok();
         Ok(user)
     }
 
@@ -42,7 +45,13 @@ impl UserRepo {
     }
 
     pub fn delete_by_ids(&mut self, ids: Vec<u64>,) {
-        diesel::delete(sys_user.filter(id.eq(1))).execute(self.conn.deref_mut())?;
+        // let _ = diesel::delete(sys_user.filter(id.eq(1))).execute(self.conn.deref_mut());
+        diesel::delete(sys_user.filter(id.eq_any(ids)))
+            .execute(self.conn.deref_mut())
+            .map_err(|e| {
+                println!("Error batch deleting users: {}", e);
+            })
+            .ok();
     }
 }
 
@@ -69,7 +78,7 @@ impl From<CreateUser> for SysUser {
 impl From<UpdateUser> for SysUser {
     fn from(user: UpdateUser) -> SysUser {
         SysUser {
-            id: 0,
+            id: user.id,
             uuid: Some(util::uuid()),
             account: Option::from(user.account),
             password: Option::from(user.password),
@@ -84,4 +93,13 @@ impl From<UpdateUser> for SysUser {
             deleted: false,
         }
     }
+}
+
+
+#[derive(Debug)]
+enum UserRepoError {
+    #[allow(dead_code)]
+    NotFound,
+    #[allow(dead_code)]
+    InvalidUsername,
 }

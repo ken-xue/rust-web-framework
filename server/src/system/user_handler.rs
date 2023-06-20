@@ -1,7 +1,9 @@
+use axum::extract::Path;
 use axum::http::StatusCode;
 use axum::Json;
 use axum::response::IntoResponse;
 use serde::{Deserialize, Serialize};
+use uuid::Uuid;
 use crate::database;
 use crate::system::{user_domain, user_repo};
 
@@ -29,16 +31,16 @@ pub struct User {
     username: String,
 }
 
-
-pub async fn get() -> impl IntoResponse {
+pub async fn get(Path(user_id): Path<u64>) -> impl IntoResponse {
     let repo = user_repo::UserRepo::new(database::pool());
     let mut domain = user_domain::UserDomain::new(repo);
-    let response = domain.get_by_id(1);
+    let response = domain.get_by_id(user_id);
     (StatusCode::OK, Json(response.unwrap()))
 }
 
 #[derive(Deserialize)]
 pub struct UpdateUser {
+    pub id: u64,
     pub name: String,
     pub email: String,
     pub account: String,
@@ -56,6 +58,7 @@ pub async fn update(Json(cmd): Json<UpdateUser>) -> impl IntoResponse {
 pub struct Delete {
     pub ids: Vec<u64>,
 }
+
 pub async fn delete(Json(cmd): Json<Delete>)  -> impl IntoResponse  {
     let repo = user_repo::UserRepo::new(database::pool());
     let mut domain = user_domain::UserDomain::new(repo);
