@@ -27,8 +27,6 @@ impl UserDomain {
     }
 
     pub fn delete(&mut self, d: Delete) {
-        for id in d.ids {
-            self.repo.delete_by_id(id)
-        }
+        self.repo.delete_by_ids(d.ids)
     }
 }

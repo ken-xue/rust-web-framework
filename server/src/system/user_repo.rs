@@ -5,9 +5,9 @@ use diesel::{ExpressionMethods, QueryDsl, RunQueryDsl, SelectableHelper};
 use crate::util;
 use crate::database;
 use crate::system::sys_model::SysUser;
-use crate::schema::sys_user::dsl::*;
+use crate::database::schema::sys_user::dsl::*;
 use crate::system::user_handler::{CreateUser, UpdateUser};
-use crate::schema::sys_user;
+use crate::database::schema::sys_user;
 
 pub struct UserRepo {
     conn: database::PoolConnection
@@ -41,7 +41,7 @@ impl UserRepo {
         Ok(user)
     }
 
-    pub fn delete_by_id(&mut self, i: u64) -> Error {
+    pub fn delete_by_ids(&mut self, ids: Vec<u64>,) {
         diesel::delete(sys_user.filter(id.eq(1))).execute(self.conn.deref_mut())?;
     }
 }

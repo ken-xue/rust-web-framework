@@ -18,9 +18,6 @@ pub async fn create(Json(payload): Json<CreateUser>) -> impl IntoResponse {
     let repo = user_repo::UserRepo::new(database::pool());
     let mut domain = user_domain::UserDomain::new(repo);
     let response = domain.create(payload);
-    // if response.is_err() {
-    //     return Json(response.err())
-    // }
     (StatusCode::CREATED, Json(response.unwrap()))
 }
 
@@ -51,7 +48,7 @@ pub struct UpdateUser {
 pub async fn update(Json(cmd): Json<UpdateUser>) -> impl IntoResponse {
     let repo = user_repo::UserRepo::new(database::pool());
     let mut domain = user_domain::UserDomain::new(repo);
-    domain.update(cmd);
+    let _ = domain.update(cmd);
     (StatusCode::OK, Json(""))
 }
 

@@ -1,4 +1,5 @@
 pub mod database;
+pub mod schema;
 
 use diesel::mysql::MysqlConnection;
 use diesel::prelude::*;
