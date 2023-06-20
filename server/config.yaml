@@ -11,6 +11,6 @@ application:
 
 ############################# database #############################
 database:
-  url : mysql://root:123456@localhost/rust-web-framework?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=UTC
+  url : mysql://root:123456@localhost/rwf?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=UTC
   username: root
   password: 123456
