@@ -3,8 +3,7 @@ use axum::http::StatusCode;
 use axum::Json;
 use axum::response::IntoResponse;
 use serde::{Deserialize, Serialize};
-use uuid::Uuid;
-use crate::database;
+use crate::{database, util};
 use crate::system::{user_domain, user_repo};
 
 
@@ -19,7 +18,8 @@ pub async fn get(Path(id): Path<u64>) -> impl IntoResponse {
     let repo = user_repo::UserRepo::new(database::pool());
     let mut domain = user_domain::UserDomain::new(repo);
     let response = domain.get_by_id(id);
-    (StatusCode::OK, Json(response.unwrap()))
+    let x = (StatusCode::CREATED, Json(response.unwrap()));
+    x
 }
 
 // the input to our `create_user` handler

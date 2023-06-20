@@ -20,11 +20,10 @@ impl UserRepo {
         UserRepo { conn }
     }
 
-    pub fn get_by_id(&mut self, i: u64) -> Result<Option<SysUser>, Error> {
-        Ok(sys_user.filter(id.eq(i))
+    pub fn get_by_id(&mut self, i: u64) -> Result<SysUser, Error> {
+        sys_user.filter(id.eq(i))
             .select(SysUser::as_select())
             .first(self.conn.deref_mut())
-            .optional()?)
     }
 
     pub fn update(&mut self,u: UpdateUser) -> Result<SysUser, Error> {
