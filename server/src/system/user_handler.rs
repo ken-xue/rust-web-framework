@@ -40,17 +40,28 @@ pub async fn get() -> impl IntoResponse {
     (StatusCode::OK, Json(response.unwrap()))
 }
 
-pub async fn update() -> impl IntoResponse {
+#[derive(Deserialize)]
+pub struct UpdateUser {
+    pub name: String,
+    pub email: String,
+    pub account: String,
+    pub password: String,
+}
+
+pub async fn update(Json(cmd): Json<UpdateUser>) -> impl IntoResponse {
     let repo = user_repo::UserRepo::new(database::pool());
     let mut domain = user_domain::UserDomain::new(repo);
-    domain.update();
+    domain.update(cmd);
     (StatusCode::OK, Json(""))
 }
 
 #[derive(Deserialize)]
-pub struct DeleteCmd {
-    pub ids: Vec<i32>,
+pub struct Delete {
+    pub ids: Vec<u64>,
 }
-pub async fn delete(Json(cmd): Json<DeleteCmd>) {
-
+pub async fn delete(Json(cmd): Json<Delete>)  -> impl IntoResponse  {
+    let repo = user_repo::UserRepo::new(database::pool());
+    let mut domain = user_domain::UserDomain::new(repo);
+    domain.delete(cmd);
+    (StatusCode::OK, Json(""))
 }
