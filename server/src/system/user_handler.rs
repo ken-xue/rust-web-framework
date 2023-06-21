@@ -34,8 +34,7 @@ pub async fn create(Json(payload): Json<CreateUser>) -> impl IntoResponse {
     let repo = user_repo::UserRepo::new(database::pool());
     let mut domain = user_domain::UserDomain::new(repo);
     let response = domain.create(payload);
-    (StatusCode::CREATED, Json(response.unwrap()))
-    // (StatusCode::CREATED, Json(util::response(response)))
+    (StatusCode::CREATED, Json(util::response(response)))
 }
 
 #[derive(Deserialize)]
@@ -50,9 +49,8 @@ pub struct UpdateUser {
 pub async fn update(Json(cmd): Json<UpdateUser>) -> impl IntoResponse {
     let repo = user_repo::UserRepo::new(database::pool());
     let mut domain = user_domain::UserDomain::new(repo);
-    let _ = domain.update(cmd);
-    (StatusCode::OK, Json(""))
-    // (StatusCode::CREATED, Json(util::response(response)))
+    let response = domain.update(cmd);
+    (StatusCode::CREATED, Json(util::response(response)))
 }
 
 #[derive(Deserialize)]
@@ -63,7 +61,6 @@ pub struct Delete {
 pub async fn delete(Json(cmd): Json<Delete>)  -> impl IntoResponse  {
     let repo = user_repo::UserRepo::new(database::pool());
     let mut domain = user_domain::UserDomain::new(repo);
-    domain.delete(cmd);
-    (StatusCode::OK, Json(""))
-    // (StatusCode::CREATED, Json(util::response(response)))
+    let response = domain.delete(cmd);
+    (StatusCode::CREATED, Json(util::response(response)))
 }

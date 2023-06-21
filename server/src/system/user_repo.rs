@@ -26,10 +26,9 @@ impl UserRepo {
             .first(self.conn.deref_mut())
     }
 
-    pub fn update(&mut self,u: UpdateUser) -> Result<SysUser, Error> {
-        let user: SysUser = u.into();
+    pub fn update(&mut self,user: SysUser) -> Result<SysUser, Error> {
         diesel::update(sys_user.filter(id.eq(user.id)))
-            .set((name.eq("James"), account.eq("Bond")))
+            .set(&user)
             .execute(self.conn.deref_mut())
             .map_err(|e| {
                 println!("Error updating user: {}", e);
@@ -37,69 +36,15 @@ impl UserRepo {
         Ok(user)
     }
 
-    pub fn create(&mut self, u: CreateUser) -> Result<SysUser, Error> {
-        let user: SysUser = u.into();
-        diesel::insert_into(sys_user::table).values(&user)
-            .execute(self.conn.deref_mut()).expect("Error while saving user");
-        Ok(user)
+    pub fn create(&mut self, user: SysUser) -> Result<SysUser, Error> {
+        match diesel::insert_into(sys_user::table).values(&user).execute(self.conn.deref_mut()) {
+            Ok(_) => Ok(user),
+            Err(e) => Err(e)
+        }
     }
 
-    pub fn delete_by_ids(&mut self, ids: Vec<u64>,) {
-        // let _ = diesel::delete(sys_user.filter(id.eq(1))).execute(self.conn.deref_mut());
+    pub fn delete_by_ids(&mut self, ids: Vec<u64>,) -> Result<Option<usize>, Error> {
         diesel::delete(sys_user.filter(id.eq_any(ids)))
-            .execute(self.conn.deref_mut())
-            .map_err(|e| {
-                println!("Error batch deleting users: {}", e);
-            })
-            .ok();
+            .execute(self.conn.deref_mut()).optional()
     }
-}
-
-impl From<CreateUser> for SysUser {
-    fn from(user: CreateUser) -> SysUser {
-        SysUser {
-            id: 0,
-            uuid: Some(util::uuid()),
-            account: Option::from(user.account),
-            password: Option::from(user.password),
-            name: Some(user.name),
-            email: Option::from(user.email),
-            status: None,
-            creator: None,
-            modifier: None,
-            gmt_create: Default::default(),
-            gmt_modified: Default::default(),
-            avatar: None,
-            deleted: false,
-        }
-    }
-}
-
-impl From<UpdateUser> for SysUser {
-    fn from(user: UpdateUser) -> SysUser {
-        SysUser {
-            id: user.id,
-            uuid: Some(util::uuid()),
-            account: Option::from(user.account),
-            password: Option::from(user.password),
-            name: Some(user.name),
-            email: Option::from(user.email),
-            status: None,
-            creator: None,
-            modifier: None,
-            gmt_create: Default::default(),
-            gmt_modified: Default::default(),
-            avatar: None,
-            deleted: false,
-        }
-    }
-}
-
-
-#[derive(Debug)]
-enum UserRepoError {
-    #[allow(dead_code)]
-    NotFound,
-    #[allow(dead_code)]
-    InvalidUsername,
 }

@@ -13,9 +13,9 @@ pub fn uuid() -> String {
 #[derive(Serialize)]
 pub struct Response<T> {
     pub code: i16,
-    pub data: Option<T>,
-    pub error: String,
     pub message: String,
+    pub data: Option<T>,
+    // pub error: String,
 }
 
 pub fn response<T: 'static + Serialize>(data: Result<T, Box<dyn Error>>) -> Response<T> {
@@ -24,12 +24,12 @@ pub fn response<T: 'static + Serialize>(data: Result<T, Box<dyn Error>>) -> Resp
             code : 200,
             message: "success".parse().unwrap(),
             data : Some(d),
-            error: "".to_string(),
+            // error: "".to_string(),
         },
         Err(e) => Response {
             code: 500,
-            message: "Internal Server Error".parse().unwrap(),
-            error: e.to_string(),
+            message: e.to_string(),
+            // error:
             data: None,
         },
     };
