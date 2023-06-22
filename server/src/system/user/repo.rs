@@ -3,7 +3,7 @@ use diesel::{ExpressionMethods, OptionalExtension, QueryDsl, RunQueryDsl, Select
 use diesel::result::Error;
 
 use crate::database;
-use crate::system::models::SysUser;
+use crate::system::user::model::SysUser;
 use crate::database::schema::sys_user::dsl::*;
 
 use crate::database::schema::sys_user;

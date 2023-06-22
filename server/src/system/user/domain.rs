@@ -1,9 +1,8 @@
 use std::error::Error;
-use std::ops::DerefMut;
 use crate::common::{request, response};
-use crate::system::models::SysUser;
-use crate::system::user_handler::{CreateUser, UpdateUser};
-use crate::system::user_repo::UserRepo;
+use crate::system::user::model::SysUser;
+use crate::system::user::handler::{CreateUser, UpdateUser};
+use crate::system::user::repo::UserRepo;
 use crate::util;
 
 pub struct UserDomain {

@@ -5,7 +5,7 @@ use axum::response::IntoResponse;
 use serde::{Deserialize, Serialize};
 use crate::{database};
 use crate::common::{request, response};
-use crate::system::{user_domain, user_repo};
+use crate::system::user::{domain, repo};
 
 #[derive(Serialize)]
 pub struct User {
@@ -14,15 +14,15 @@ pub struct User {
 }
 // info
 pub async fn info(Path(id): Path<u64>) -> impl IntoResponse {
-    let repo = user_repo::UserRepo::new(database::pool());
-    let mut domain = user_domain::UserDomain::new(repo);
+    let repo = repo::UserRepo::new(database::pool());
+    let mut domain = domain::UserDomain::new(repo);
     let response = domain.get_by_id(id);
     (StatusCode::CREATED, Json(response::response(response)))
 }
 // page
 pub async fn page(Json(r): Json<request::Page>) -> impl IntoResponse {
-    let repo = user_repo::UserRepo::new(database::pool());
-    let mut domain = user_domain::UserDomain::new(repo);
+    let repo = repo::UserRepo::new(database::pool());
+    let mut domain = domain::UserDomain::new(repo);
     (StatusCode::CREATED, Json(response::response(domain.page(r))))
 }
 // the input to our `page` handler
@@ -35,8 +35,8 @@ pub struct CreateUser {
 }
 // add
 pub async fn create(Json(payload): Json<CreateUser>) -> impl IntoResponse {
-    let repo = user_repo::UserRepo::new(database::pool());
-    let mut domain = user_domain::UserDomain::new(repo);
+    let repo = repo::UserRepo::new(database::pool());
+    let mut domain = domain::UserDomain::new(repo);
     let response = domain.create(payload);
     (StatusCode::CREATED, Json(response::response(response)))
 }
@@ -52,16 +52,16 @@ pub struct UpdateUser {
 
 // update
 pub async fn update(Json(cmd): Json<UpdateUser>) -> impl IntoResponse {
-    let repo = user_repo::UserRepo::new(database::pool());
-    let mut domain = user_domain::UserDomain::new(repo);
+    let repo = repo::UserRepo::new(database::pool());
+    let mut domain = domain::UserDomain::new(repo);
     let response = domain.update(cmd);
     (StatusCode::CREATED, Json(response::response(response)))
 }
 
 // delete
 pub async fn delete(Json(cmd): Json<request::Delete>)  -> impl IntoResponse  {
-    let repo = user_repo::UserRepo::new(database::pool());
-    let mut domain = user_domain::UserDomain::new(repo);
+    let repo = repo::UserRepo::new(database::pool());
+    let mut domain = domain::UserDomain::new(repo);
     let response = domain.delete(cmd);
     (StatusCode::CREATED, Json(response::response(response)))
 }
