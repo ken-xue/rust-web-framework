@@ -21,14 +21,6 @@ impl UserDomain {
         }
     }
 
-    pub fn update(&mut self, u: UpdateUser) -> Result<SysUser,Box<dyn Error>> {
-        let user: SysUser = u.into();
-        match self.repo.update(user) {
-            Ok(user) => Ok(user),
-            Err(e) => Err(format!("Error update user: {}", e).into()),
-        }
-    }
-
     pub fn create(&mut self, u: CreateUser) -> Result<SysUser,Box<dyn Error>> {
         let user: SysUser = u.into();
         match self.repo.create(user) {
@@ -37,9 +29,19 @@ impl UserDomain {
         }
     }
 
+    pub fn update(&mut self, u: UpdateUser) -> Result<(),Box<dyn Error>> {
+        let user: SysUser = u.into();
+        match self.repo.update(user) {
+            Ok(Some(update)) if update > 0 => Ok(()),
+            Ok(_) => Err(format!("No user was update").into()),
+            Err(e) => Err(format!("Error update user: {}", e).into()),
+        }
+    }
+
     pub fn delete(&mut self, d: Delete) -> Result<(),Box<dyn Error>> {
         match self.repo.delete_by_ids(d.ids) {
-            Ok(_) => Ok(()),
+            Ok(Some(deleted)) if deleted > 0 => Ok(()),
+            Ok(_) => Err(format!("No user was deleted").into()),
             Err(e) => Err(format!("Error delete user by ids: {}", e).into()),
         }
     }

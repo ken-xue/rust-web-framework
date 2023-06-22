@@ -3,11 +3,13 @@ mod database;
 mod router;
 mod util;
 
+use std::env;
 use std::net::SocketAddr;
 use tokio::signal;
 
 #[tokio::main]
 async fn main() {
+    env::set_var("RUST_LOG", "trace");
     // initialize tracing
     tracing_subscriber::fmt::init();
     // build our application with a route

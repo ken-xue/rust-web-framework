@@ -1,13 +1,11 @@
-// use std::fmt::{Error};
 use std::ops::{DerefMut};
 use diesel::{ExpressionMethods, OptionalExtension, QueryDsl, RunQueryDsl, SelectableHelper};
 use diesel::result::Error;
 
-use crate::util;
 use crate::database;
 use crate::system::models::SysUser;
 use crate::database::schema::sys_user::dsl::*;
-use crate::system::user_handler::{CreateUser, UpdateUser};
+
 use crate::database::schema::sys_user;
 
 pub struct UserRepo {
@@ -26,14 +24,10 @@ impl UserRepo {
             .first(self.conn.deref_mut())
     }
 
-    pub fn update(&mut self,user: SysUser) -> Result<SysUser, Error> {
+    pub fn update(&mut self,user: SysUser) -> Result<Option<usize>, Error> {
         diesel::update(sys_user.filter(id.eq(user.id)))
             .set(&user)
-            .execute(self.conn.deref_mut())
-            .map_err(|e| {
-                println!("Error updating user: {}", e);
-            }).ok();
-        Ok(user)
+            .execute(self.conn.deref_mut()).optional()
     }
 
     pub fn create(&mut self, user: SysUser) -> Result<SysUser, Error> {
@@ -45,6 +39,6 @@ impl UserRepo {
 
     pub fn delete_by_ids(&mut self, ids: Vec<u64>,) -> Result<Option<usize>, Error> {
         diesel::delete(sys_user.filter(id.eq_any(ids)))
-            .execute(self.conn.deref_mut()).optional()
+            .execute(self.conn.deref_mut()).optional().map_err(Error::from)
     }
 }
