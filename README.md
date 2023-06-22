@@ -22,3 +22,23 @@ diesel print-schema > src/schema.rs
 ```bash
 diesel  
 ```
+
+## 代码编译
+```bash
+cargo build
+```
+
+### 代码编译(正式环境)
+```bash
+cargo build --release
+```
+
+### 单元测试
+```bash
+cargo test
+```
+
+### 性能基准测试
+```bash
+cargo bench
+```

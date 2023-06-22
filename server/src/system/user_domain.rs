@@ -1,6 +1,8 @@
 use std::error::Error;
+use std::ops::DerefMut;
+use crate::common::{request, response};
 use crate::system::models::SysUser;
-use crate::system::user_handler::{CreateUser, Delete, UpdateUser};
+use crate::system::user_handler::{CreateUser, UpdateUser};
 use crate::system::user_repo::UserRepo;
 use crate::util;
 
@@ -17,6 +19,16 @@ impl UserDomain {
     pub fn get_by_id(&mut self, i: u64) -> Result<SysUser, Box<dyn Error>> {
         match self.repo.get_by_id(i) {
             Ok(user) => Ok(user),
+            Err(e) => Err(format!("Error retrieving user: {}", e).into()),
+        }
+    }
+
+    pub fn page(&mut self, r: request::Page) -> Result<response::PageResponse<SysUser>, Box<dyn Error>> {
+        match self.repo.page(r.page, r.size) {
+            Ok((records, total)) => {
+                let response = response::PageResponse::new(records, r.page, r.size, total);
+                Ok(response)
+            },
             Err(e) => Err(format!("Error retrieving user: {}", e).into()),
         }
     }
@@ -38,7 +50,7 @@ impl UserDomain {
         }
     }
 
-    pub fn delete(&mut self, d: Delete) -> Result<(),Box<dyn Error>> {
+    pub fn delete(&mut self, d: request::Delete) -> Result<(),Box<dyn Error>> {
         match self.repo.delete_by_ids(d.ids) {
             Ok(Some(deleted)) if deleted > 0 => Ok(()),
             Ok(_) => Err(format!("No user was deleted").into()),

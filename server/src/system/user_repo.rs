@@ -41,4 +41,12 @@ impl UserRepo {
         diesel::delete(sys_user.filter(id.eq_any(ids)))
             .execute(self.conn.deref_mut()).optional().map_err(Error::from)
     }
+
+    pub fn page(&mut self, page: i64, size: i64) -> Result<(Vec<SysUser>, i64), Error> {
+        let offset = size * (page - 1);
+        let query_result = sys_user.select(SysUser::as_select()).limit(size).offset(offset).load::<SysUser>(self.conn.deref_mut())?;
+        let total_count = sys_user.count().first::<i64>(self.conn.deref_mut())?;
+        let records: Vec<SysUser> = query_result.into_iter().map(|u| u.into()).collect();
+        Ok((records, total_count))
+    }
 }
