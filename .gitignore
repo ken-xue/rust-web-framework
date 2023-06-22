@@ -2,4 +2,5 @@
 .idea
 # Project exclude paths
 /server/target/
-web/node_modules
+/web/node_modules
+*/*target/*
