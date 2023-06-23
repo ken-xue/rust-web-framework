@@ -1,19 +1,32 @@
 use clap::Parser;
-/// Simple program to greet a person
+
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
 struct Args {
-    /// Name of the person to greet
+    /// Database connection string
     #[arg(short, long)]
-    name: String,
-    /// Number of times to greet
-    #[arg(short, long, default_value_t = 1)]
-    count: u8,
+    url: String,
+
+    /// Name of the table to generate
+    #[arg(short, long)]
+    table: String,
+
+    /// Name of the module for the generated code
+    #[arg(short, long)]
+    module: Option<String>,
+
+    /// Path to the output file for the generated code
+    #[arg(short, long)]
+    path: Option<String>,
 }
 
 fn main() {
     let args = Args::parse();
-    for _ in 0..args.count {
-        println!("Hello {}!", args.name)
-    }
+    let db_conn = args.url;
+    let table_name = args.table;
+    let module_name = args.module.unwrap_or_else(|| "MyModule".to_string());
+    let output_path = args.path.unwrap_or_else(|| "output.rs".to_string());
+
+    // TODO: Use the arguments to generate the code for the specified table
+    println!("Generating code for table {} in database {} with module name {} and output path {}", table_name, db_conn, module_name, output_path);
 }

@@ -101,9 +101,9 @@ impl From<UpdateUser> for SysUser {
 
 
 #[derive(Debug)]
-enum UserRepoError {
+enum UserStatus {
     #[allow(dead_code)]
-    NotFound,
+    Normal,
     #[allow(dead_code)]
-    InvalidUsername,
+    Blocked,
 }

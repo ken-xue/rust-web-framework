@@ -20,3 +20,4 @@ dotenvy = "0.15.7"
 once_cell = "1.8.0"
 chrono = { version = "0.4", features = ["serde"] }
 uuid = { version = "1.3.4", features = ["v4", "fast-rng", "macro-diagnostics"] }
+validator = { version = "0.16.1", features = ["derive"] }

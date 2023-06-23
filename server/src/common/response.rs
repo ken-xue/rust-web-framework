@@ -1,4 +1,7 @@
 use std::error::Error;
+use axum::http::StatusCode;
+use axum::Json;
+use axum::response::IntoResponse;
 use serde::Serialize;
 
 #[derive(Serialize)]
@@ -8,7 +11,7 @@ pub struct Response<T> {
     pub data: Option<T>,
 }
 
-pub fn response<T: 'static + Serialize>(data: Result<T, Box<dyn Error>>) -> Response<T> {
+pub fn response<T: 'static + Serialize>(data: Result<T, Box<dyn Error>>) -> impl IntoResponse {
     let result = match data {
         Ok(d) => Response {
             code : 200,
@@ -21,7 +24,28 @@ pub fn response<T: 'static + Serialize>(data: Result<T, Box<dyn Error>>) -> Resp
             data: None,
         },
     };
-    return result
+    (StatusCode::CREATED, Json(result))
+}
+
+pub fn success<T: 'static + Serialize>(data: T) -> impl IntoResponse {
+    (StatusCode::OK, Json(Response {
+        code : 200,
+        message: "success".parse().unwrap(),
+        data : Some(data),
+    }))
+}
+
+pub fn error<T>(e: Box<dyn Error>) -> impl IntoResponse
+    where
+        T: serde::Serialize,
+        StatusCode: IntoResponse,
+        Json<Response<T>>: IntoResponse,
+{
+    (StatusCode::OK, Json(Response {
+        code: 500,
+        message: e.to_string(),
+        data: None,
+    }))
 }
 
 #[derive(Debug,Serialize)]

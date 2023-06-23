@@ -6,8 +6,9 @@ use serde::{Deserialize, Serialize};
 use crate::{database};
 use crate::common::{request, response};
 use crate::system::user::{domain, repo};
+use validator::{Validate, ValidationError};//see:https://github.com/Keats/validator
 
-#[derive(Serialize)]
+#[derive(Debug,Serialize)]
 pub struct User {
     id: u64,
     username: String,
@@ -17,28 +18,35 @@ pub async fn info(Path(id): Path<u64>) -> impl IntoResponse {
     let repo = repo::UserRepo::new(database::pool());
     let mut domain = domain::UserDomain::new(repo);
     let response = domain.get_by_id(id);
-    (StatusCode::CREATED, Json(response::response(response)))
+    response::response(response)
 }
 // page
 pub async fn page(Json(r): Json<request::Page>) -> impl IntoResponse {
     let repo = repo::UserRepo::new(database::pool());
     let mut domain = domain::UserDomain::new(repo);
-    (StatusCode::CREATED, Json(response::response(domain.page(r))))
+    let response = domain.page(r);
+    response::response(response)
 }
 // the input to our `page` handler
-#[derive(Deserialize)]
+#[derive(Debug, Validate,Deserialize)]
 pub struct CreateUser {
     pub name: String,
+    #[validate(email)]
     pub email: String,
     pub account: String,
     pub password: String,
 }
 // add
 pub async fn create(Json(payload): Json<CreateUser>) -> impl IntoResponse {
+    //验证
+    // if let Err(errors) = payload.validate() {
+    //     return (StatusCode::BAD_REQUEST, Json(format!("Invalid input: {:?}", errors)));
+    // }
+    //存储
     let repo = repo::UserRepo::new(database::pool());
     let mut domain = domain::UserDomain::new(repo);
     let response = domain.create(payload);
-    (StatusCode::CREATED, Json(response::response(response)))
+    response::response(response)
 }
 
 #[derive(Deserialize)]
@@ -55,7 +63,7 @@ pub async fn update(Json(cmd): Json<UpdateUser>) -> impl IntoResponse {
     let repo = repo::UserRepo::new(database::pool());
     let mut domain = domain::UserDomain::new(repo);
     let response = domain.update(cmd);
-    (StatusCode::CREATED, Json(response::response(response)))
+    response::response(response)
 }
 
 // delete
@@ -63,5 +71,5 @@ pub async fn delete(Json(cmd): Json<request::Delete>)  -> impl IntoResponse  {
     let repo = repo::UserRepo::new(database::pool());
     let mut domain = domain::UserDomain::new(repo);
     let response = domain.delete(cmd);
-    (StatusCode::CREATED, Json(response::response(response)))
+    response::response(response)
 }
