@@ -27,6 +27,15 @@ pub fn response<T: 'static + Serialize>(data: Result<T, Box<dyn Error>>) -> impl
     (StatusCode::CREATED, Json(result))
 }
 
+pub fn error(e: Box<dyn Error>) -> impl IntoResponse {
+    let response = Response {
+        code: 500,
+        message: e.to_string(),
+        data: Some(e.to_string()),
+    };
+    (StatusCode::OK, Json(response))
+}
+
 pub fn success<T: 'static + Serialize>(data: T) -> impl IntoResponse {
     (StatusCode::OK, Json(Response {
         code : 200,
@@ -35,18 +44,6 @@ pub fn success<T: 'static + Serialize>(data: T) -> impl IntoResponse {
     }))
 }
 
-pub fn error<T>(e: Box<dyn Error>) -> impl IntoResponse
-    where
-        T: serde::Serialize,
-        StatusCode: IntoResponse,
-        Json<Response<T>>: IntoResponse,
-{
-    (StatusCode::OK, Json(Response {
-        code: 500,
-        message: e.to_string(),
-        data: None,
-    }))
-}
 
 #[derive(Debug,Serialize)]
 pub struct PageResponse<T> {

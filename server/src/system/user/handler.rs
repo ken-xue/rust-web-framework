@@ -1,5 +1,5 @@
 use axum::extract::Path;
-use axum::http::StatusCode;
+
 use axum::Json;
 use axum::response::IntoResponse;
 use serde::{Deserialize, Serialize};
@@ -7,6 +7,7 @@ use crate::{database};
 use crate::common::{request, response};
 use crate::system::user::{domain, repo};
 use validator::{Validate, ValidationError};//see:https://github.com/Keats/validator
+
 
 #[derive(Debug,Serialize)]
 pub struct User {
@@ -36,12 +37,13 @@ pub struct CreateUser {
     pub account: String,
     pub password: String,
 }
-// add
+
+// 新增
 pub async fn create(Json(payload): Json<CreateUser>) -> impl IntoResponse {
     //验证
-    // if let Err(errors) = payload.validate() {
-    //     return (StatusCode::BAD_REQUEST, Json(format!("Invalid input: {:?}", errors)));
-    // }
+    if let Err(err) = payload.validate() {
+        // return response::error(Box::try_from(err).unwrap());
+    }
     //存储
     let repo = repo::UserRepo::new(database::pool());
     let mut domain = domain::UserDomain::new(repo);
