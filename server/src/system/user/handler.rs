@@ -1,12 +1,17 @@
-use axum::extract::Path;
+use axum::body::HttpBody;
+use axum::extract::{FromRequest, Path};
 
-use axum::Json;
+use axum::{BoxError, Json};
+use axum::http::Request;
 use axum::response::IntoResponse;
+use axum_extra::extract::{Form, FormRejection};
 use serde::{Deserialize, Serialize};
+use serde::de::DeserializeOwned;
 use crate::{database};
 use crate::common::{request, response};
 use crate::system::user::{domain, repo};
-use validator::{Validate, ValidationError};//see:https://github.com/Keats/validator
+use validator::{Validate, ValidationError};
+use crate::common::validator::ValidatedForm;//see:https://github.com/Keats/validator
 
 
 #[derive(Debug,Serialize)]
@@ -28,9 +33,13 @@ pub async fn page(Json(r): Json<request::Page>) -> impl IntoResponse {
     let response = domain.page(r);
     response::response(response)
 }
+
+
+
 // the input to our `page` handler
-#[derive(Debug, Validate,Deserialize)]
+#[derive(Debug, Validate, Deserialize)]
 pub struct CreateUser {
+    #[validate(length(min = 1, message = "Can not be empty"))]
     pub name: String,
     #[validate(email)]
     pub email: String,
@@ -39,12 +48,7 @@ pub struct CreateUser {
 }
 
 // 新增
-pub async fn create(Json(payload): Json<CreateUser>) -> impl IntoResponse {
-    //验证
-    if let Err(err) = payload.validate() {
-        // return response::error(Box::try_from(err).unwrap());
-    }
-    //存储
+pub async fn create(ValidatedForm(payload): ValidatedForm<CreateUser>) -> impl IntoResponse {
     let repo = repo::UserRepo::new(database::pool());
     let mut domain = domain::UserDomain::new(repo);
     let response = domain.create(payload);

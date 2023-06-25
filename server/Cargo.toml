@@ -25,4 +25,16 @@ hyper = "0.14"
 tower = {version = "0.4",features = ["full"]}
 tower-http = { version = "0.4.0", features = ["map-request-body", "util"] }
 axum-extra = { version = "0.7.4", features = ["form"] }
-async-trait = "0.1"
+#async-trait = "0.1"
+
+
+
+async-trait = "0.1.67"
+#axum = { version="0.6.1" }
+http-body = "0.4.3"
+#serde = { version = "1.0", features = ["derive"] }
+thiserror = "1.0.29"
+#tokio = { version = "1.0", features = ["full"] }
+#tracing = "0.1"
+#tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+#validator = { version = "0.14.0", features = ["derive"] }

@@ -7,7 +7,7 @@ pub mod domain;
 pub mod repo;
 
 pub fn user_router() -> Router {
-    return  Router::new()
+    Router::new()
         .route("/user/:id",  get(handler::info))
         .route("/users",  post(handler::page))
         .route("/user",  put(handler::update))
