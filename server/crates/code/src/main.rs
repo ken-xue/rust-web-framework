@@ -7,9 +7,9 @@ struct Args {
     #[arg(short, long)]
     url: String,
 
-    /// Name of the table to generate
+    /// Name of the tables to generate
     #[arg(short, long)]
-    table: String,
+    tables: Vec<String>,
 
     /// Name of the module for the generated code
     #[arg(short, long)]
@@ -22,11 +22,12 @@ struct Args {
 
 fn main() {
     let args = Args::parse();
-    let db_conn = args.url;
-    let table_name = args.table;
-    let module_name = args.module.unwrap_or_else(|| "MyModule".to_string());
-    let output_path = args.path.unwrap_or_else(|| "output.rs".to_string());
-
-    // TODO: Use the arguments to generate the code for the specified table
-    println!("Generating code for table {} in database {} with module name {} and output path {}", table_name, db_conn, module_name, output_path);
+    let url = args.url;
+    let tables = args.tables;
+    let module = args.module.unwrap_or_else(|| "MyModule".to_string());
+    let output = args.path.unwrap_or_else(|| "output.rs".to_string());
+    for table_name in tables {
+        println!("Generating code for table {} in database {} with module name {} and output path {}", table_name, url, module, output);
+        // TODO: Generate the code for the current table
+    }
 }

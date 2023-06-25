@@ -4,7 +4,7 @@
 # Build
 
 ```bash
-cargo build --release
+cargo build --release --bin rwf --out-dir target/release
 ```
 
 # Use cases
@@ -12,5 +12,6 @@ cargo build --release
 1. generate model code
 
 ```bash
-rwf -dc mysql://root:123456@localhost/rwf -t sys_user
+rwf -u mysql://root:123456@localhost/rwf -t sys_user -m user -p \
+/Users/CLionProjects/rust-web-framework/server/src/system
 ```

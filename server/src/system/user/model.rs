@@ -36,57 +36,6 @@ pub struct SysLog {
     pub occur_time: Option<NaiveDateTime>,
 }
 
-
-#[derive(Debug,Serialize,Queryable,Identifiable,Selectable,Insertable,AsChangeset)]
-#[table_name = "sys_menu"]
-pub struct SysMenu {
-    pub id: u64,
-    pub uuid: Option<String>,
-    pub menu_parent_uuid: Option<String>,
-    pub menu_name: Option<String>,
-    pub menu_url: Option<String>,
-    pub menu_perms: Option<String>,
-    pub menu_type: Option<String>,
-    pub menu_icon: Option<String>,
-    pub menu_order: Option<i32>,
-    pub menu_remark: Option<String>,
-    pub creator: Option<String>,
-    pub modifier: Option<String>,
-    pub gmt_create: NaiveDateTime,
-    pub gmt_modified: NaiveDateTime,
-    pub deleted: bool,
-}
-
-
-#[derive(Debug,Serialize,Queryable,Identifiable,Selectable,Insertable,AsChangeset)]
-#[table_name = "sys_role"]
-pub struct SysRole {
-    pub id: u64,
-    pub uuid: Option<String>,
-    pub role_name: Option<String>,
-    pub role_remark: Option<String>,
-    pub creator: Option<String>,
-    pub modifier: Option<String>,
-    pub gmt_create: NaiveDateTime,
-    pub gmt_modified: NaiveDateTime,
-    pub deleted: bool,
-}
-
-
-#[derive(Debug,Serialize,Queryable,Identifiable,Selectable,Insertable,AsChangeset)]
-#[table_name = "sys_role_of_menu"]
-pub struct SysRoleOfMenu {
-    pub id: u64,
-    pub uuid: Option<String>,
-    pub role_uuid: Option<String>,
-    pub menu_uuid: Option<String>,
-    pub creator: Option<String>,
-    pub modifier: Option<String>,
-    pub gmt_create: NaiveDateTime,
-    pub gmt_modified: NaiveDateTime,
-    pub deleted: bool,
-}
-
 #[derive(Debug,Serialize,Queryable,Identifiable,Selectable,Insertable,AsChangeset)]
 #[table_name = "sys_user"]
 #[diesel(check_for_backend(diesel::mysql::Mysql))]
@@ -104,19 +53,4 @@ pub struct SysUser {
     pub gmt_modified: NaiveDateTime,
     pub deleted: bool,
     pub avatar: Option<String>,
-}
-
-
-#[derive(Debug,Serialize,Queryable,Identifiable,Selectable,Insertable,AsChangeset)]
-#[table_name = "sys_user_of_role"]
-pub struct SysUserOfRole {
-    pub id: u64,
-    pub uuid: Option<String>,
-    pub user_uuid: Option<String>,
-    pub role_uuid: Option<String>,
-    pub creator: Option<String>,
-    pub modifier: Option<String>,
-    pub gmt_create: NaiveDateTime,
-    pub gmt_modified: NaiveDateTime,
-    pub deleted: bool,
 }
