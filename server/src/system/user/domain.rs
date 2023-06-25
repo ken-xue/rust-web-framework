@@ -1,8 +1,8 @@
 use std::error::Error;
 use crate::common::{request, response};
 use crate::system::user::model::SysUser;
-use crate::system::user::handler::{CreateUser, UpdateUser};
 use crate::system::user::repo::UserRepo;
+use crate::system::user::request::{CreateUser, UpdateUser};
 use crate::util;
 
 pub struct UserDomain {
