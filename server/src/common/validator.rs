@@ -1,13 +1,9 @@
 use async_trait::async_trait;
-use axum::{extract::{rejection::FormRejection, Form, FromRequest}, http::StatusCode, response::{Html, IntoResponse, Response}, routing::get, Router, BoxError};
+use axum::{extract::{rejection::FormRejection, Form, FromRequest}, http::StatusCode, response::{IntoResponse, Response}, BoxError, Json};
 use axum::body::HttpBody;
-use axum::extract::FromRequestParts;
-use axum::http::{header, Request};
-use axum::http::request::Parts;
-use serde::{de::DeserializeOwned, Deserialize};
+use axum::http::{Request};
+use serde::{de::DeserializeOwned};
 use thiserror::Error;
-use tokio::net::TcpListener;
-use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 use validator::Validate;
 
 #[derive(Debug, Clone, Copy, Default)]
@@ -25,7 +21,8 @@ impl<T, S, B> FromRequest<S, B> for ValidatedForm<T>
     type Rejection = ServerError;
 
     async fn from_request(req: Request<B>, _state: &S) -> Result<Self, Self::Rejection> {
-        let Form(value) = Form::<T>::from_request(req, _state).await?;
+        let Json(value) = Json::<T>::from_request(req, _state).await.unwrap();
+        // let Form(value) = Form::<T>::from_request(req, _state).await?;
         value.validate()?;
         Ok(ValidatedForm(value))
     }
