@@ -1,0 +1,13 @@
+use crate::database::schema::*;
+use diesel::prelude::*;
+use chrono::NaiveDateTime;
+use serde::{Serialize};
+
+#[derive(Debug,Serialize,Queryable,Identifiable,Selectable,Insertable,AsChangeset)]
+#[table_name = "{{table}}"]
+pub struct {{struct}} {
+<!--遍历所有的字段-->
+{{#each fields as |t| }}
+    pub {{t.name}}: {{t.type}},
+{{/each}}
+}

@@ -16,7 +16,10 @@
 
 1. 生成schema
 ```bash
+# 缺省全表
 diesel print-schema > src/schema.rs
+# 指定表名
+diesel print-schema -o sys_user_of_role
 ```
 2. 生成实体
 ```bash

@@ -1,4 +1,5 @@
 mod render;
+mod repo;
 
 use clap::Parser;
 
@@ -36,17 +37,23 @@ fn main() {
     let tables = args.tables;
     let module = args.module.unwrap_or_else(|| "MyModule".to_string());
     let output = args.path.unwrap_or_else(|| "./".to_string());
+    //模板
+    let templates = vec![
+        "model.hbs",
+    ];
     for table_name in tables {
         println!("Generating code for table {} in database {} with module name {} and output path {}", table_name, url, module, output);
-        //TODO: 获取数据库表信息(model使用diesel生成)
+        for template in templates {
+            //TODO: 获取数据库表信息(model使用diesel生成)
 
-        //TODO: 构造模板所需数据
-        let data = render::make_data();
-        //渲染模板
-        let result = render::render(data);
-        match result {
-            Ok(_) => (),
-            Err(e) => println!("{}", e)
+            //TODO: 构造模板所需数据
+            let data = render::make_data();
+            //渲染模板
+            let result = render::render(data);
+            match result {
+                Ok(_) => (),
+                Err(e) => println!("{}", e)
+            }
         }
     }
     println!("done")

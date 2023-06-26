@@ -59,25 +59,17 @@ static TYPES: &'static str = "serde_json";
 
 // define some data
 #[derive(Serialize)]
-pub struct Team {
+pub struct Field {
     name: String,
-    pts: u16,
+    type0: String,
 }
 
-
-pub fn render(data : Map<String, Json>) -> Result<(), Box<dyn Error>> {
+pub fn render(template :String,data : Map<String, Json>,output :String) -> Result<(), Box<dyn Error>> {
     env_logger::init();
     let mut handlebars = Handlebars::new();
-
-    handlebars.register_helper("format", Box::new(format_helper));
-    handlebars.register_helper("ranking_label", Box::new(rank_helper));
-    // handlebars.register_helper("format", Box::new(FORMAT_HELPER));
-
-    handlebars.register_template_file("template", "./src/template/template.hbs").unwrap();
-
-    let mut output_file = File::create("target/table.html")?;
+    handlebars.register_template_file("template", template).unwrap();
+    let mut output_file = File::create(output)?;
     handlebars.render_to_write("template", &data, &mut output_file)?;
-    println!("target/table.html generated");
     Ok(())
 }
 
