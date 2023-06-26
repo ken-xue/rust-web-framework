@@ -43,13 +43,13 @@ fn main() {
     ];
     for table_name in tables {
         println!("Generating code for table {} in database {} with module name {} and output path {}", table_name, url, module, output);
-        for template in templates {
+        for template in templates.clone().into_iter() {
             //TODO: 获取数据库表信息(model使用diesel生成)
 
             //TODO: 构造模板所需数据
             let data = render::make_data();
             //渲染模板
-            let result = render::render(data);
+            let result = render::render(template.to_string(),data,output.to_string());
             match result {
                 Ok(_) => (),
                 Err(e) => println!("{}", e)

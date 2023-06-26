@@ -10,6 +10,7 @@ clap = { version = "4.3.5", features = ["derive"]}
 handlebars = { version = "4.3.7", feature = ["full"]}
 serde_derive = "1.0.75"
 env_logger = "0.10"
-#serde = "1.0.0"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0.39"
+chrono = { version = "0.4", features = ["serde"] }
+diesel = { version = "2.1.0", features = ["mysql", "chrono"] }

@@ -61,7 +61,7 @@ static TYPES: &'static str = "serde_json";
 #[derive(Serialize)]
 pub struct Field {
     name: String,
-    type0: String,
+    data_type: String,
 }
 
 pub fn render(template :String,data : Map<String, Json>,output :String) -> Result<(), Box<dyn Error>> {
@@ -80,37 +80,9 @@ pub fn make_data() -> Map<String, Json> {
     data.insert("year".to_string(), to_json("2015"));
 
     let teams = vec![
-        Team {
+        Field {
             name: "Jiangsu Suning".to_string(),
-            pts: 43u16,
-        },
-        Team {
-            name: "Shanghai SIPG".to_string(),
-            pts: 39u16,
-        },
-        Team {
-            name: "Hebei CFFC".to_string(),
-            pts: 27u16,
-        },
-        Team {
-            name: "Guangzhou Evergrand".to_string(),
-            pts: 22u16,
-        },
-        Team {
-            name: "Shandong Luneng".to_string(),
-            pts: 12u16,
-        },
-        Team {
-            name: "Beijing Guoan".to_string(),
-            pts: 7u16,
-        },
-        Team {
-            name: "Hangzhou Greentown".to_string(),
-            pts: 7u16,
-        },
-        Team {
-            name: "Shanghai Shenhua".to_string(),
-            pts: 4u16,
+            data_type: "43u16".to_string(),
         },
     ];
 
