@@ -64,6 +64,23 @@ pub struct Team {
     pts: u16,
 }
 
+
+pub fn render(data : Map<String, Json>) -> Result<(), Box<dyn Error>> {
+    env_logger::init();
+    let mut handlebars = Handlebars::new();
+
+    handlebars.register_helper("format", Box::new(format_helper));
+    handlebars.register_helper("ranking_label", Box::new(rank_helper));
+    // handlebars.register_helper("format", Box::new(FORMAT_HELPER));
+
+    handlebars.register_template_file("template", "./src/template/template.hbs").unwrap();
+
+    let mut output_file = File::create("target/table.html")?;
+    handlebars.render_to_write("template", &data, &mut output_file)?;
+    println!("target/table.html generated");
+    Ok(())
+}
+
 // produce some data
 pub fn make_data() -> Map<String, Json> {
     let mut data = Map::new();
@@ -108,22 +125,4 @@ pub fn make_data() -> Map<String, Json> {
     data.insert("teams".to_string(), to_json(&teams));
     data.insert("engine".to_string(), to_json(TYPES));
     data
-}
-
-pub fn render() -> Result<(), Box<dyn Error>> {
-    env_logger::init();
-    let mut handlebars = Handlebars::new();
-
-    handlebars.register_helper("format", Box::new(format_helper));
-    handlebars.register_helper("ranking_label", Box::new(rank_helper));
-    // handlebars.register_helper("format", Box::new(FORMAT_HELPER));
-
-    let data = make_data();
-
-    handlebars.register_template_file("template", "./src/template/template.hbs").unwrap();
-
-    let mut output_file = File::create("target/table.html")?;
-    handlebars.render_to_write("template", &data, &mut output_file)?;
-    println!("target/table.html generated");
-    Ok(())
 }

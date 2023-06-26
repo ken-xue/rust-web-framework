@@ -1,20 +1,13 @@
-
 use axum::extract::{Path};
-
 use axum::{Json};
-
 use axum::response::IntoResponse;
-
 use serde::{Deserialize, Serialize};
-
 use crate::{database};
 use crate::common::{request, response};
 use crate::system::user::{domain, repo};
 use validator::{Validate};
 use crate::common::validator::Validated;
 use crate::system::user::request::{CreateUser, UpdateUser};
-
-
 // info
 pub async fn info(Path(id): Path<u64>) -> impl IntoResponse {
     let repo = repo::UserRepo::new(database::pool());
@@ -29,7 +22,6 @@ pub async fn page(Json(r): Json<request::Page>) -> impl IntoResponse {
     let response = domain.page(r);
     response::response(response)
 }
-
 // create
 pub async fn create(Validated(payload): Validated<CreateUser>) -> impl IntoResponse {
     let repo = repo::UserRepo::new(database::pool());
@@ -44,7 +36,6 @@ pub async fn update(Json(cmd): Json<UpdateUser>) -> impl IntoResponse {
     let response = domain.update(cmd);
     response::response(response)
 }
-
 // delete
 pub async fn delete(Json(cmd): Json<request::Delete>)  -> impl IntoResponse  {
     let repo = repo::UserRepo::new(database::pool());

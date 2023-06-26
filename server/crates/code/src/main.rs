@@ -20,6 +20,14 @@ struct Args {
     /// Path to the output file for the generated code
     #[arg(short, long)]
     path: Option<String>,
+
+    /// Use template file for the generated code , default all template
+    #[arg(long)]
+    template: Option<String>,
+
+    /// Need remove prefix table name
+    #[arg(long)]
+    prefix: Option<String>,
 }
 
 fn main() {
@@ -27,19 +35,19 @@ fn main() {
     let url = args.url;
     let tables = args.tables;
     let module = args.module.unwrap_or_else(|| "MyModule".to_string());
-    let output = args.path.unwrap_or_else(|| "output.rs".to_string());
+    let output = args.path.unwrap_or_else(|| "./".to_string());
     for table_name in tables {
         println!("Generating code for table {} in database {} with module name {} and output path {}", table_name, url, module, output);
-        // TODO: Generate the code for the current table
-        //./
-        // ├── domain.rs.hbs
-        // ├── handler.rs.hbs
-        // ├── mod.rs.hbs
-        // ├── model.rs.hbs
-        // ├── repo.rs.hbs
-        // ├── request.rs.hbs
-        // └── response.rs.hbs
+        //TODO: 获取数据库表信息(model使用diesel生成)
+
+        //TODO: 构造模板所需数据
+        let data = render::make_data();
+        //渲染模板
+        let result = render::render(data);
+        match result {
+            Ok(_) => (),
+            Err(e) => println!("{}", e)
+        }
     }
-    render::render();
     println!("done")
 }
