@@ -2,11 +2,9 @@ use std::collections::HashMap;
 use diesel::prelude::*;
 use diesel::mysql::MysqlConnection;
 use diesel::deserialize::QueryableByName;
-use serde_json::value::{self, Map, Value as Json};
 use diesel::sql_types::*;
 
 use chrono::NaiveDateTime;
-use clap::builder::Str;
 use serde_derive::Serialize;
 
 pub fn establish_connection(url: String) -> MysqlConnection {
@@ -46,7 +44,7 @@ pub fn query_table_info(connection: &mut MysqlConnection, table_name: &str) -> O
     result
 }
 
-#[derive(Debug, QueryableByName,Serialize)]
+#[derive(Debug, QueryableByName, Serialize)]
 pub struct ColumnInfo {
     #[sql_type = "Text"]
     pub column_name: String,
@@ -63,7 +61,7 @@ pub struct ColumnInfo {
     pub extra: String,
 }
 
-pub fn query_table_colum(connection: & mut MysqlConnection, table_name: &str) -> Vec<ColumnInfo> {
+pub fn query_table_colum(connection: &mut MysqlConnection, table_name: &str) -> Vec<ColumnInfo> {
     let mut results = diesel::sql_query("select column_name column_name,column_name column_mapping_type, data_type column_type, column_comment column_comment, column_key column_key, extra from information_schema.columns where table_name = ? and table_schema = (select database()) order by ordinal_position")
         .bind::<Text, _>(table_name.to_string())
         .load::<ColumnInfo>(connection)
@@ -77,20 +75,21 @@ pub fn query_table_colum(connection: & mut MysqlConnection, table_name: &str) ->
     results
 }
 
-#[derive(Debug,Serialize)]
+#[derive(Debug, Serialize)]
 pub struct Table {
-    pub table_info : TableInfo,
-    pub table_columns : Vec<ColumnInfo>,
+    pub table_info: TableInfo,
+    pub table_columns: Vec<ColumnInfo>,
 }
 
-pub fn get_table_info(conn: & mut MysqlConnection,table_name: &str) -> Table {
-    let table_info = query_table_info(conn,table_name);
-    let table_columns = query_table_colum(conn,table_name);
+pub fn get_table_info(conn: &mut MysqlConnection, table_name: &str) -> Table {
+    let table_info = query_table_info(conn, table_name);
+    let table_columns = query_table_colum(conn, table_name);
     return Table {
         table_info: table_info.unwrap(),
         table_columns,
-    }
+    };
 }
+
 use lazy_static::lazy_static;
 
 lazy_static! {

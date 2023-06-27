@@ -1,11 +1,9 @@
 mod render;
 mod repo;
 mod template;
-mod test;
 
 use std::env;
 use clap::Parser;
-use diesel::MysqlConnection;
 
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
@@ -40,14 +38,21 @@ fn main() {
     let args = Args::parse();
     let url = args.url;
     let tables = args.tables;
-    let module = args.module.unwrap_or_else(|| "MyModule".to_string());
+    let module = args.module.unwrap_or_else(|| "module".to_string());
     let output = args.path.unwrap_or_else(|| "./".to_string());
     //模板
     let templates = vec![
         "model.hbs",
+        "domain.hbs",
+        "handler.hbs",
+        "mod.hbs",
+        "model.hbs",
+        "repo.hbs",
+        "request.hbs",
+        "response.hbs",
     ];
     // 获取数据库连接
-    let conn  = &mut repo::establish_connection(url.clone());
+    let conn = &mut repo::establish_connection(url.clone());
     // 遍历所有数据库表
     for table_name in tables {
         println!("Generating code for table {} in database {} with module name {} and output path {}", table_name, url, module, output);
@@ -55,9 +60,9 @@ fn main() {
             //拉取模板或者检查缓存是否存在
             let _ = template::fetch_template(template);
             //查询数据表信息
-            let table = repo::get_table_info(conn,table_name.as_str());
+            let table = repo::get_table_info(conn, table_name.as_str());
             //渲染模板
-            match render::render(template.to_string(),table,output.to_string()) {
+            match render::render(template.to_string(), table, output.to_string()) {
                 Ok(_) => (),
                 Err(e) => println!("{}", e)
             }

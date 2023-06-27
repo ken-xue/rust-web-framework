@@ -12,6 +12,5 @@ cargo build --release --bin rwf --out-dir target/release
 1. generate model code
 
 ```bash
-rwf -u mysql://root:123456@localhost/rwf -t sys_user -m user -p \
-/Users/CLionProjects/rust-web-framework/server/src/system
+./target/debug/code -u mysql://root:123456@localhost/rwf -m system -t sys_user -p ./target/
 ```

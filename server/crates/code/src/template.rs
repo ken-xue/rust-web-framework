@@ -1,6 +1,6 @@
 use std::fs;
 use std::path::Path;
-use std::io::{self, Write};
+use std::io::{self};
 use reqwest;
 
 pub const TEMPLATE_DIR: &str = "/tmp/rwf/template";
@@ -23,7 +23,7 @@ pub fn fetch_template(template_name: &str) -> Result<(), Box<dyn std::error::Err
     let remote_url = format!("{}{}", DEFAULT_BASE_REMOTE_URL, template_name);
 
     // Fetch the template file from the remote URL
-    let mut response = reqwest::blocking::get(&remote_url)?;
+    let response = reqwest::blocking::get(&remote_url)?;
 
     if response.status().is_success() {
         let mut file = fs::File::create(&template_path)?;

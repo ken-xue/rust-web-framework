@@ -1,11 +1,7 @@
-use serde::Serialize;
-use serde_json::value::{self, Map, Value as Json};
+use serde_json::value::{Map, Value as Json};
 use std::error::Error;
-use std::fs::{File, metadata};
-use std::io::{Read, Write};
-use handlebars::{
-    to_json, Context, Handlebars, Helper, JsonRender, Output, RenderContext, RenderError,
-};
+use std::fs::{File};
+use handlebars::{to_json, Handlebars};
 use crate::{repo, template};
 
 pub fn render(template :String,table : repo::Table,output :String) -> Result<(), Box<dyn Error>> {
