@@ -3,26 +3,28 @@ use serde_json::value::{self, Map, Value as Json};
 use std::error::Error;
 use std::fs::{File, metadata};
 use std::io::{Read, Write};
-
 use handlebars::{
     to_json, Context, Handlebars, Helper, JsonRender, Output, RenderContext, RenderError,
 };
-use crate::repo;
-
-static TYPES: &'static str = "serde_json";
-
-// define some data
-#[derive(Serialize)]
-pub struct Field {
-    name: String,
-    data_type: String,
-}
+use crate::{repo, template};
 
 pub fn render(template :String,table : repo::Table,output :String) -> Result<(), Box<dyn Error>> {
     env_logger::init();
     let mut handlebars = Handlebars::new();
-    handlebars.register_template_file("template", "/Users/ithpnb04101/CLionProjects/rust-web-framework/server/crates/code/src/template/model.hbs").unwrap();
-    let mut output_file = File::create(output+"model.rs")?;
+    // 注册模板
+    handlebars.register_template_file("template", template::TEMPLATE_DIR.to_owned()+"/"+&template).unwrap();
+    // 输出文件
+    let mut output_path = String::from(output);
+    if !output_path.ends_with('/') {
+        output_path.push('/');
+    }
+    // 文件名
+    let mut parts_iter = template.splitn(2, '.');
+    let name = parts_iter.next().unwrap_or(&template);
+    output_path.push_str(name);
+    output_path.push_str(".rs");
+    // 创建文件
+    let mut output_file = File::create(output_path)?;
     // 构造数据
     let data = build_render_data(table);
     // 渲染模板
@@ -33,17 +35,7 @@ pub fn render(template :String,table : repo::Table,output :String) -> Result<(),
 // produce some data
 pub fn build_render_data(table : repo::Table) -> Map<String, Json> {
     let mut data = Map::new();
-
-    data.insert("year".to_string(), to_json("2015"));
-
-    let teams = vec![
-        Field {
-            name: "Jiangsu Suning".to_string(),
-            data_type: "43u16".to_string(),
-        },
-    ];
-
-    data.insert("teams".to_string(), to_json(&teams));
-    data.insert("engine".to_string(), to_json(TYPES));
+    data.insert("table_info".to_string(), to_json(table.table_info));
+    data.insert("table_columns".to_string(), to_json(table.table_columns));
     data
 }

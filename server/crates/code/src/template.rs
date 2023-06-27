@@ -3,8 +3,8 @@ use std::path::Path;
 use std::io::{self, Write};
 use reqwest;
 
-const TEMPLATE_DIR: &str = "/tmp/rwf/template";
-const DEFAULT_BASE_REMOTE_URL: &str = "https://raw.githubusercontent.com/ken-xue/rust-web-framework/main/server/crates/code/";
+pub const TEMPLATE_DIR: &str = "/tmp/rwf/template";
+pub const DEFAULT_BASE_REMOTE_URL: &str = "https://raw.githubusercontent.com/ken-xue/rust-web-framework/main/server/crates/code/template/";
 
 pub fn fetch_template(template_name: &str) -> Result<(), Box<dyn std::error::Error>> {
     // Check if the template directory exists

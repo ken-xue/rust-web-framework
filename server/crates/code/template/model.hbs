@@ -3,10 +3,13 @@ use diesel::prelude::*;
 use chrono::NaiveDateTime;
 use serde::{Serialize};
 
+// power by rwf : https://github.com/ken-xue/rust-web-framework/tree/main/server/crates/code
+
 #[derive(Debug,Serialize,Queryable,Identifiable,Selectable,Insertable,AsChangeset)]
-#[table_name = "{{table}}"]
-pub struct {{struct}} {
-{{#each fields as |t| }}
-    pub {{t.name}}: {{t.type}},
+#[table_name = "{{table_info.table_name}}"]
+//{{table_info.table_comment}} //{{table_info.create_time}}
+pub struct {{table_info.entity_name}} {
+{{#each table_columns as |t| }}
+    pub {{t.column_name}}: {{t.column_mapping_type}},//{{column_comment}}
 {{/each}}
 }
