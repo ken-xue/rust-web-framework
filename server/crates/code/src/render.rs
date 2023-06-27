@@ -21,17 +21,17 @@ pub struct Field {
 pub fn render(template :String,table : repo::Table,output :String) -> Result<(), Box<dyn Error>> {
     env_logger::init();
     let mut handlebars = Handlebars::new();
-    handlebars.register_template_file("template", template).unwrap();
-    let mut output_file = File::create(output)?;
+    handlebars.register_template_file("template", "/Users/ithpnb04101/CLionProjects/rust-web-framework/server/crates/code/src/template/model.hbs").unwrap();
+    let mut output_file = File::create(output+"model.rs")?;
     // 构造数据
-    let data = build_render_date(table);
+    let data = build_render_data(table);
     // 渲染模板
     handlebars.render_to_write("template", &data, &mut output_file)?;
     Ok(())
 }
 
 // produce some data
-pub fn build_render_date(table : repo::Table) -> Map<String, Json> {
+pub fn build_render_data(table : repo::Table) -> Map<String, Json> {
     let mut data = Map::new();
 
     data.insert("year".to_string(), to_json("2015"));
