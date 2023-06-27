@@ -50,15 +50,8 @@ fn main() {
     for table_name in tables {
         println!("Generating code for table {} in database {} with module name {} and output path {}", table_name, url, module, output);
         for template in templates.clone().into_iter() {
-            let table_info = repo::query_table_info(conn,table_name.as_str());
-            let table_colum = repo::query_table_colum(conn,table_name.as_str());
-            println!("{:?}", table_info);
-            println!("{:?}", table_colum);
-            //构造模板所需数据
-            let data = render::make_data();
-            //渲染模板
-            let result = render::render(template.to_string(),data,output.to_string());
-            match result {
+            let table = repo::get_table_info(conn,table_name.as_str());
+            match render::render(template.to_string(),table,output.to_string()) {
                 Ok(_) => (),
                 Err(e) => println!("{}", e)
             }
