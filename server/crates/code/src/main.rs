@@ -1,7 +1,9 @@
 mod render;
 mod repo;
 
+use std::env;
 use clap::Parser;
+use diesel::MysqlConnection;
 
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
@@ -32,6 +34,7 @@ struct Args {
 }
 
 fn main() {
+    env::set_var("RUST_LOG", "trace");
     let args = Args::parse();
     let url = args.url;
     let tables = args.tables;
@@ -41,12 +44,17 @@ fn main() {
     let templates = vec![
         "model.hbs",
     ];
+    // 获取数据库连接
+    let conn  = &mut repo::establish_connection(url.clone());
+    // 遍历所有数据库表
     for table_name in tables {
         println!("Generating code for table {} in database {} with module name {} and output path {}", table_name, url, module, output);
         for template in templates.clone().into_iter() {
-            //TODO: 获取数据库表信息(model使用diesel生成)
-
-            //TODO: 构造模板所需数据
+            let table_info = repo::query_table_info(conn,table_name.as_str());
+            let table_colum = repo::query_table_colum(conn,table_name.as_str());
+            println!("{:?}", table_info);
+            println!("{:?}", table_colum);
+            //构造模板所需数据
             let data = render::make_data();
             //渲染模板
             let result = render::render(template.to_string(),data,output.to_string());
