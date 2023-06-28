@@ -1,4 +1,3 @@
-use std::env;
 use axum::{
     async_trait,
     extract::FromRequestParts,
@@ -14,9 +13,6 @@ use once_cell::sync::Lazy;
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 use std::fmt::Display;
-use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
-use std::net::SocketAddr;
-
 
 static KEYS: Lazy<Keys> = Lazy::new(|| {
     // let secret = std::env::var("JWT_SECRET").expect("JWT_SECRET must be set");
