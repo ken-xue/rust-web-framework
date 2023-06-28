@@ -16,8 +16,6 @@ pub struct TableInfo {
     #[sql_type = "Text"]
     table_name: String,
     #[sql_type = "Text"]
-    entity_name: String,
-    #[sql_type = "Text"]
     engine: String,
     #[sql_type = "Nullable<Text>"]
     table_comment: Option<String>,
@@ -27,15 +25,7 @@ pub struct TableInfo {
 
 pub fn query_table_info(connection: &mut MysqlConnection, table_name: &str) -> Option<TableInfo> {
     //实体名称首字母大写,下划线后一个字母转为首字母大写
-    let result = diesel::sql_query("SELECT table_name,
-    CONCAT(
-        UPPER(SUBSTRING(SUBSTRING_INDEX(table_name, '_', 1), 1, 1)),
-        SUBSTRING(SUBSTRING_INDEX(table_name, '_', 1), 2),
-        UPPER(SUBSTRING(table_name, LOCATE('_', table_name) + 1, 1)),
-        SUBSTRING(table_name, LOCATE('_', table_name) + 2)
-    ) AS entity_name,
-    engine, table_comment,
-    CAST(create_time AS DATETIME) as create_time
+    let result = diesel::sql_query("SELECT table_name,engine,table_comment,CAST(create_time AS DATETIME) as create_time
     FROM information_schema.tables WHERE table_schema = (SELECT DATABASE()) AND table_name = ?")
         .bind::<Text, _>(table_name)
         .get_result::<TableInfo>(connection)
@@ -78,16 +68,53 @@ pub fn query_table_colum(connection: &mut MysqlConnection, table_name: &str) -> 
 #[derive(Debug, Serialize)]
 pub struct Table {
     pub table_info: TableInfo,
+    pub remove_prefix_table_name: String,//table_name移除前缀的
+    pub entity_name: String,
+    pub module_name: String,
+    pub remove_prefix_entity_name: String,//entity_name移除前缀的
     pub table_columns: Vec<ColumnInfo>,
 }
 
-pub fn get_table_info(conn: &mut MysqlConnection, table_name: &str) -> Table {
-    let table_info = query_table_info(conn, table_name);
+pub fn get_table_info(conn: &mut MysqlConnection,module_name: String,table_name: &str, prefix: Option<Vec<String>>) -> Table {
+    //获取表数据
+    let opt_table_info = query_table_info(conn, table_name);
     let table_columns = query_table_colum(conn, table_name);
+    let table_info = opt_table_info.unwrap();
+    let mut remove_prefix_table_name = table_info.table_name.to_string();
+    //对table_name取首字母大写且下划线去掉取首字母大写
+    let entity_name = get_entity_name(table_info.table_name.to_string().as_str());
+    let mut remove_prefix_entity_name = entity_name.to_string();
+    // 遍历prefix，如果当前table_info的table_name有该前缀则进行移除
+    if let Some(prefixes) = prefix {
+        for prefix in prefixes {
+            if remove_prefix_table_name.starts_with(&prefix) {
+                remove_prefix_table_name = remove_prefix_table_name[prefix.len()..].to_owned();
+                remove_prefix_entity_name = get_entity_name(remove_prefix_table_name.as_str());
+                break;
+            }
+        }
+    }
+    // 返回构造好的数据
     return Table {
-        table_info: table_info.unwrap(),
+        table_info,
+        remove_prefix_table_name,
+        entity_name,
+        module_name,
+        remove_prefix_entity_name,
         table_columns,
     };
+}
+
+// 首字母大写且下划线去掉取首字母大写
+pub fn get_entity_name(table_name: &str) -> String {
+    table_name
+        .split('_')
+        .map(|part| {
+            let first_letter = part.chars().next().unwrap().to_uppercase().to_string();
+            let remaining_letters = part.chars().skip(1).collect::<String>();
+            first_letter + &remaining_letters
+        })
+        .collect::<String>()
 }
 
 use lazy_static::lazy_static;

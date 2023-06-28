@@ -31,7 +31,6 @@ pub fn render(template :String,table : repo::Table,output :String) -> Result<(),
 // produce some data
 pub fn build_render_data(table : repo::Table) -> Map<String, Json> {
     let mut data = Map::new();
-    data.insert("table_info".to_string(), to_json(table.table_info));
-    data.insert("table_columns".to_string(), to_json(table.table_columns));
+    data.insert("table".to_string(), to_json(table));
     data
 }

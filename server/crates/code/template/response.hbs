@@ -1,7 +1,8 @@
 use serde::{Serialize};
 
 #[derive(Debug,Serialize)]
-pub struct User {
-    id: u64,
-    username: String,
+pub struct {{remove_prefix_entity_name}}Response {
+{{#each table.table_columns as |t| }}
+    pub {{t.column_name}}: {{t.column_mapping_type}},//{{column_comment}}
+{{/each}}
 }

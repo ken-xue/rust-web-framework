@@ -8,11 +8,11 @@ pub mod repo;
 mod response;
 mod request;
 
-pub fn user_router() -> Router {
+pub fn {{table.remove_prefix_table_name}}_router() -> Router {
     Router::new()
-    .route("/user/:id",  get(handler::info))
-    .route("/users",  post(handler::page))
-    .route("/user",  put(handler::update))
-    .route("/user",  post(handler::create))
-    .route("/user",  delete(handler::delete))
+    .route("/{{table.remove_prefix_table_name}}/:id",  get(handler::info))
+    .route("/{{table.remove_prefix_table_name}}",  post(handler::page))
+    .route("/{{table.remove_prefix_table_name}}",  put(handler::update))
+    .route("/{{table.remove_prefix_table_name}}",  post(handler::create))
+    .route("/{{table.remove_prefix_table_name}}",  delete(handler::delete))
 }
