@@ -13,13 +13,13 @@ pub fn establish_connection(url: String) -> MysqlConnection {
 
 #[derive(Debug, QueryableByName, Serialize)]
 pub struct TableInfo {
-    #[sql_type = "Text"]
+    #[diesel(sql_type = Text)]
     table_name: String,
-    #[sql_type = "Text"]
+    #[diesel(sql_type = Text)]
     engine: String,
-    #[sql_type = "Nullable<Text>"]
+    #[diesel(sql_type = Nullable<Text>)]
     table_comment: Option<String>,
-    #[sql_type = "Timestamp"]
+    #[diesel(sql_type = Timestamp)]
     create_time: NaiveDateTime,
 }
 
@@ -36,18 +36,18 @@ pub fn query_table_info(connection: &mut MysqlConnection, table_name: &str) -> O
 
 #[derive(Debug, QueryableByName, Serialize)]
 pub struct ColumnInfo {
-    #[sql_type = "Text"]
+    #[diesel(sql_type = Text)]
     pub column_name: String,
-    #[sql_type = "Text"]
+    #[diesel(sql_type = Text)]
     pub column_type: String,
     //映射成rust的类型
-    #[sql_type = "Text"]
+    #[diesel(sql_type = Text)]
     pub column_mapping_type: String,
-    #[sql_type = "Text"]
+    #[diesel(sql_type = Text)]
     pub column_comment: String,
-    #[sql_type = "Text"]
+    #[diesel(sql_type = Text)]
     pub column_key: String,
-    #[sql_type = "Text"]
+    #[diesel(sql_type = Text)]
     pub extra: String,
 }
 
