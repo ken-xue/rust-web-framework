@@ -2,7 +2,7 @@ mod render;
 mod repo;
 mod template;
 
-use std::env;
+// use std::env;
 use clap::Parser;
 
 #[derive(Parser, Debug)]
@@ -38,7 +38,7 @@ struct Args {
 }
 
 fn main() {
-    env::set_var("RUST_LOG", "trace");
+    // env::set_var("RUST_LOG", "trace");
     env_logger::init();
     let args = Args::parse();
     let url = args.url;
@@ -66,5 +66,5 @@ fn main() {
             }
         }
     }
-    println!("done")
+    println!("Generating code done")
 }

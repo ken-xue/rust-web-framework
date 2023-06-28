@@ -32,7 +32,7 @@ impl {{table.remove_prefix_entity_name}}Domain {
         }
     }
 
-    pub fn create(&mut self, u: CreateUser) -> Result<{{table.entity_name}},Box<dyn Error>> {
+    pub fn create(&mut self, u: Create{{table.remove_prefix_entity_name}}) -> Result<{{table.entity_name}},Box<dyn Error>> {
         let d: {{table.entity_name}} = u.into();
         match self.repo.create(d) {
             Ok(d) => Ok(d),
@@ -40,7 +40,7 @@ impl {{table.remove_prefix_entity_name}}Domain {
         }
     }
 
-    pub fn update(&mut self, u: UpdateUser) -> Result<(),Box<dyn Error>> {
+    pub fn update(&mut self, u: Update{{table.remove_prefix_entity_name}}) -> Result<(),Box<dyn Error>> {
         let d: {{table.entity_name}} = u.into();
         match self.repo.update(d) {
             Ok(Some(update)) if update > 0 => Ok(()),
