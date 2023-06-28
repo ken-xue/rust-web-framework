@@ -30,16 +30,19 @@ struct Args {
 
     /// Need remove prefix table name
     #[arg(long)]
-    prefix: Option<String>,
+    prefix: Option<Vec<String>>,
 }
 
 fn main() {
     env::set_var("RUST_LOG", "trace");
+    env_logger::init();
     let args = Args::parse();
     let url = args.url;
     let tables = args.tables;
+    let prefix = args.prefix;
     let module = args.module.unwrap_or_else(|| "module".to_string());
     let output = args.path.unwrap_or_else(|| "./".to_string());
+
     //模板
     let templates = vec![
         "model.hbs",
@@ -60,9 +63,9 @@ fn main() {
             //拉取模板或者检查缓存是否存在
             let _ = template::fetch_template(template);
             //查询数据表信息
-            let table = repo::get_table_info(conn, table_name.as_str());
+            let table = repo::get_table_info(conn, module.to_string(),table_name.as_str(),prefix.clone());
             //渲染模板
-            match render::render(template.to_string(), table, output.to_string()) {
+            match render::render(template.to_string(), module.to_string(),table, output.to_string()) {
                 Ok(_) => (),
                 Err(e) => println!("{}", e)
             }
