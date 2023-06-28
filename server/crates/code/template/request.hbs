@@ -4,7 +4,7 @@ use validator::{Validate};
 #[derive(Debug, Validate, Deserialize)]
 pub struct Update{{table.remove_prefix_entity_name}} {
 {{#each table.table_columns as |t| }}
-    pub {{t.column_name}}: {{t.column_mapping_type}},//{{column_comment}}
+    pub {{t.column_name}}: {{{t.column_mapping_type}}},//{{column_comment}}
 {{/each}}
 }
 
@@ -12,6 +12,6 @@ pub struct Update{{table.remove_prefix_entity_name}} {
 pub struct Create{{table.remove_prefix_entity_name}} {
     //#[validate(length(min = 1, message = "Can not be empty"))]
 {{#each table.table_columns as |t| }}
-    pub {{t.column_name}}: {{t.column_mapping_type}},//{{column_comment}}
+    pub {{t.column_name}}: {{{t.column_mapping_type}}},//{{column_comment}}
 {{/each}}
 }

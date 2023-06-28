@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+use std::fmt::format;
 use diesel::prelude::*;
 use diesel::mysql::MysqlConnection;
 use diesel::deserialize::QueryableByName;
@@ -48,18 +49,24 @@ pub struct ColumnInfo {
     #[diesel(sql_type = Text)]
     pub column_key: String,
     #[diesel(sql_type = Text)]
+    pub is_nullable: String,
+    #[diesel(sql_type = Text)]
     pub extra: String,
 }
 
 pub fn query_table_colum(connection: &mut MysqlConnection, table_name: &str) -> Vec<ColumnInfo> {
-    let mut results = diesel::sql_query("select column_name column_name,column_name column_mapping_type, data_type column_type, column_comment column_comment, column_key column_key, extra from information_schema.columns where table_name = ? and table_schema = (select database()) order by ordinal_position")
+    let mut results = diesel::sql_query("select column_name column_name,column_name column_mapping_type, data_type column_type, column_comment column_comment, column_key column_key,IS_NULLABLE is_nullable, extra from information_schema.columns where table_name = ? and table_schema = (select database()) order by ordinal_position")
         .bind::<Text, _>(table_name.to_string())
         .load::<ColumnInfo>(connection)
         .unwrap();
     //通过result.column_type作为map的key去TYPE_MAP中查找对应的value，如果没找到则使用result.column_type赋值给column_mapping_type
     for mut result in results.iter_mut() {
         if let Some(column_mapping_type) = TYPE_MAP.get(result.column_type.as_str()) {
-            result.column_mapping_type = column_mapping_type.to_string();
+            if result.is_nullable.eq("YES") {//适配diesel加上Option<>
+                result.column_mapping_type = "Option<".to_owned()+&column_mapping_type.to_string()+">";
+            } else {
+                result.column_mapping_type = column_mapping_type.to_string();
+            }
         }
     }
     results

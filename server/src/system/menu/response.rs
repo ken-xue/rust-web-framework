@@ -1,15 +1,8 @@
-use crate::database::schema::*;
-use diesel::prelude::*;
-use chrono::NaiveDateTime;
 use serde::{Serialize};
 
-// power by rwf : https://github.com/ken-xue/rust-web-framework/tree/main/server/crates/code
-
-#[derive(Debug,Serialize,Queryable,Identifiable,Selectable,Insertable,AsChangeset)]
-#[table_name = "sys_menu"]
-//菜单表 //2023-06-28T08:44:43
-pub struct SysMenu {
-    pub id: u64,//主键
+#[derive(Debug,Serialize)]
+pub struct Response {
+    pub id: i64,//主键
     pub uuid: Option<String>,//uuid
     pub menu_parent_uuid: Option<String>,//父菜单uuid
     pub menu_name: String,//菜单名
@@ -23,5 +16,5 @@ pub struct SysMenu {
     pub modifier: Option<String>,//修改人
     pub gmt_create: chrono::NaiveDateTime,//创建时间
     pub gmt_modified: chrono::NaiveDateTime,//修改时间
-    pub deleted: bool,//逻辑删除
+    pub deleted: i32,//逻辑删除
 }

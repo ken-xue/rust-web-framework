@@ -4,12 +4,13 @@ use chrono::NaiveDateTime;
 use serde::{Serialize};
 
 // power by rwf : https://github.com/ken-xue/rust-web-framework/tree/main/server/crates/code
+// template engine by handlebars : https://docs.rs/handlebars/4.3.7/handlebars/
 
 #[derive(Debug,Serialize,Queryable,Identifiable,Selectable,Insertable,AsChangeset)]
 #[table_name = "{{table.table_info.table_name}}"]
 //{{table.table_info.table_comment}} //{{table.table_info.create_time}}
 pub struct {{table.entity_name}} {
 {{#each table.table_columns as |t| }}
-    pub {{t.column_name}}: {{t.column_mapping_type}},//{{column_comment}}
+    pub {{t.column_name}}: {{{t.column_mapping_type}}},//{{column_comment}}
 {{/each}}
 }

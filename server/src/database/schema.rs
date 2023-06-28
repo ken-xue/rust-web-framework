@@ -57,7 +57,7 @@ diesel::table! {
         #[max_length = 32]
         menu_parent_uuid -> Nullable<Varchar>,
         #[max_length = 64]
-        menu_name -> Nullable<Varchar>,
+        menu_name -> Varchar,
         #[max_length = 200]
         menu_url -> Nullable<Varchar>,
         #[max_length = 200]
