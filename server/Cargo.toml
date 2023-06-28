@@ -8,11 +8,13 @@ edition = "2021"
 [dependencies]
 serde = { version = "1.0", features = ["derive"] }
 serde_yaml = "0.9.21"
+serde_json = "1.0.99"
 warp = "0.3"
 tracing = "0.1.37"
 tracing-subscriber = {version = "0.3.16", features = ["env-filter"]}
 tokio = { version = "1.22.0", features = ["full"] }
-axum = "0.6.18"
+#axum = "0.6.18"
+axum = { version = "0.6.18", features = ["headers"] }
 lazy_static = "1.4.0"
 r2d2 = "0.8.9"
 diesel = { version = "2.1.0", features = ["mysql", "r2d2", "chrono"] }
@@ -24,17 +26,8 @@ validator = { version = "0.16.1", features = ["derive"] }
 hyper = "0.14"
 tower = {version = "0.4",features = ["full"]}
 tower-http = { version = "0.4.0", features = ["map-request-body", "util"] }
-axum-extra = { version = "0.7.4", features = ["form"] }
-#async-trait = "0.1"
-
-
-
+axum-extra = { version = "0.7.4", features = ["form","typed-routing"] }
 async-trait = "0.1.67"
-#axum = { version="0.6.1" }
 http-body = "0.4.3"
-#serde = { version = "1.0", features = ["derive"] }
 thiserror = "1.0.29"
-#tokio = { version = "1.0", features = ["full"] }
-#tracing = "0.1"
-#tracing-subscriber = { version = "0.3", features = ["env-filter"] }
-#validator = { version = "0.14.0", features = ["derive"] }
+jsonwebtoken = "8.0"
