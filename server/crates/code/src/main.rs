@@ -1,6 +1,7 @@
 mod render;
 mod repo;
 mod template;
+mod schema;
 
 use std::env;
 use clap::Parser;
@@ -31,6 +32,10 @@ struct Args {
     /// Need remove prefix table name
     #[arg(long)]
     prefix: Option<Vec<String>>,
+
+    /// Refresh the latest template
+    #[arg(short, long)]
+    refresh: Option<bool>,
 }
 
 fn main() {
@@ -42,6 +47,7 @@ fn main() {
     let prefix = args.prefix;
     let module = args.module.unwrap_or_else(|| "module".to_string());
     let output = args.path.unwrap_or_else(|| "./".to_string());
+    let refresh = args.refresh.unwrap_or_else(|| false);
 
     //模板
     let templates = vec![
@@ -61,7 +67,7 @@ fn main() {
         println!("Generating code for table {} in database {} with module name {} and output path {}", table_name, url, module, output);
         for template in templates.clone().into_iter() {
             //拉取模板或者检查缓存是否存在
-            let _ = template::fetch_template(template);
+            let _ = template::fetch_template(template,refresh);
             //查询数据表信息
             let table = repo::get_table_info(conn, module.to_string(),table_name.as_str(),prefix.clone());
             //渲染模板

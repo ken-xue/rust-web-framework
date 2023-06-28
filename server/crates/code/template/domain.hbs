@@ -1,8 +1,8 @@
 use std::error::Error;
 use crate::common::{request, response};
 use crate::system::{{table.remove_prefix_table_name}}::model::{{table.entity_name}};
-use crate::system::{{table.remove_prefix_table_name}}::repo::UserRepo;
-use crate::system::{{table.remove_prefix_table_name}}::request::{Create{{table.entity_name}}, Update{{table.entity_name}} };
+use crate::system::{{table.remove_prefix_table_name}}::repo::{{table.remove_prefix_entity_name}}Repo;
+use crate::system::{{table.remove_prefix_table_name}}::request::{Create{{table.remove_prefix_entity_name}}, Update{{table.remove_prefix_entity_name}} };
 use crate::util;
 
 pub struct {{table.remove_prefix_entity_name}}Domain {
@@ -17,7 +17,7 @@ impl {{table.remove_prefix_entity_name}}Domain {
 
     pub fn get_by_id(&mut self, i: u64) -> Result<{{table.entity_name}}, Box<dyn Error>> {
         match self.repo.get_by_id(i) {
-            Ok(do) => Ok(do),
+            Ok(d) => Ok(d),
             Err(e) => Err(format!("Error retrieving {{table.entity_name}}: {}", e).into()),
         }
     }
@@ -33,16 +33,16 @@ impl {{table.remove_prefix_entity_name}}Domain {
     }
 
     pub fn create(&mut self, u: CreateUser) -> Result<{{table.entity_name}},Box<dyn Error>> {
-        let do: {{table.entity_name}} = u.into();
-        match self.repo.create(do) {
-            Ok(do) => Ok(do),
+        let d: {{table.entity_name}} = u.into();
+        match self.repo.create(d) {
+            Ok(d) => Ok(d),
             Err(e) => Err(format!("Error create {{table.entity_name}}: {}", e).into()),
         }
     }
 
     pub fn update(&mut self, u: UpdateUser) -> Result<(),Box<dyn Error>> {
-        let do: {{table.entity_name}} = u.into();
-        match self.repo.update(do) {
+        let d: {{table.entity_name}} = u.into();
+        match self.repo.update(d) {
             Ok(Some(update)) if update > 0 => Ok(()),
             Ok(_) => Err(format!("No {{table.entity_name}} was update").into()),
             Err(e) => Err(format!("Error update {{table.entity_name}}: {}", e).into()),
@@ -59,42 +59,22 @@ impl {{table.remove_prefix_entity_name}}Domain {
 }
 
 
-impl From<CreateUser> for {{table.entity_name}} {
-    fn from(user: CreateUser) -> {{table.entity_name}} {
+impl From<Create{{table.remove_prefix_entity_name}}> for {{table.entity_name}} {
+    fn from(req: Create{{table.remove_prefix_entity_name}}) -> {{table.entity_name}} {
         {{table.entity_name}} {
-            id: 0,
-            uuid: Some(util::uuid()),
-            account: Option::from(user.account),
-            password: Option::from(user.password),
-            name: Some(user.name),
-            email: Option::from(user.email),
-            status: None,
-            creator: None,
-            modifier: None,
-            gmt_create: Default::default(),
-            gmt_modified: Default::default(),
-            avatar: None,
-            deleted: false,
+        {{#each table.table_columns as |t| }}
+            {{t.column_name}}: req.{{t.column_name}},//{{column_comment}}
+        {{/each}}
         }
     }
 }
 
-impl From<UpdateUser> for {{table.entity_name}} {
-    fn from(req: UpdateUser) -> {{table.entity_name}} {
+impl From<Update{{table.remove_prefix_entity_name}}> for {{table.entity_name}} {
+    fn from(req: Update{{table.remove_prefix_entity_name}}) -> {{table.entity_name}} {
         {{table.entity_name}} {
-            id: req.id,
-            uuid: None,
-            account: Option::from(req.account),
-            password: Option::from(req.password),
-            name: Some(req.name),
-            email: Option::from(req.email),
-            status: None,
-            creator: None,
-            modifier: None,
-            gmt_create: Default::default(),
-            gmt_modified: Default::default(),
-            avatar: None,
-            deleted: false,
+        {{#each table.table_columns as |t| }}
+            {{t.column_name}}: req.{{t.column_name}},//{{column_comment}}
+        {{/each}}
         }
     }
 }

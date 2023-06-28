@@ -1,51 +1,50 @@
-use std::ops::{DerefMut};
 use diesel::{ExpressionMethods, OptionalExtension, QueryDsl, RunQueryDsl, SelectableHelper};
 use diesel::result::Error;
 
 use crate::database;
-use crate::{{table.module_name}}::user::model::SysUser;
-use crate::database::schema::sys_user::dsl::*;
-use crate::database::schema::sys_user;
+use crate::{{table.module_name}}::{{table.remove_prefix_table_name}}::model::{{table.entity_name}};
+use crate::database::schema::{{table.table_info.table_name}}::dsl::*;
+use crate::database::schema::{{table.table_info.table_name}};
 
-pub struct UserRepo {
+pub struct {{table.remove_prefix_entity_name}}Repo {
     conn: database::PoolConnection
 }
 
-impl UserRepo {
+impl {{table.remove_prefix_entity_name}}Repo {
 
     pub fn new(conn: database::PoolConnection) -> Self {
-        UserRepo { conn }
+        {{table.remove_prefix_entity_name}}Repo { conn }
     }
 
-    pub fn get_by_id(&mut self, i: u64) -> Result<SysUser, Error> {
-        sys_user.filter(id.eq(i))
-            .select(SysUser::as_select())
+    pub fn get_by_id(&mut self, i: u64) -> Result<{{table.entity_name}}, Error> {
+        {{table.table_info.table_name}}.filter(id.eq(i))
+            .select({{table.entity_name}}::as_select())
             .first(self.conn.deref_mut())
     }
 
-    pub fn update(&mut self,user: SysUser) -> Result<Option<usize>, Error> {
-        diesel::update(sys_user.filter(id.eq(user.id)))
-            .set(&user)
+    pub fn update(&mut self,d: {{table.entity_name}}) -> Result<Option<usize>, Error> {
+        diesel::update({{table.table_info.table_name}}.filter(id.eq(d.id)))
+            .set(&d)
             .execute(self.conn.deref_mut()).optional()
     }
 
-    pub fn create(&mut self, user: SysUser) -> Result<SysUser, Error> {
-        match diesel::insert_into(sys_user::table).values(&user).execute(self.conn.deref_mut()) {
-            Ok(_) => Ok(user),
+    pub fn create(&mut self, d: {{table.entity_name}}) -> Result<{{table.entity_name}}, Error> {
+        match diesel::insert_into({{table.table_info.table_name}}::table).values(&d).execute(self.conn.deref_mut()) {
+            Ok(_) => Ok(d),
             Err(e) => Err(e)
         }
     }
 
     pub fn delete_by_ids(&mut self, ids: Vec<u64>,) -> Result<Option<usize>, Error> {
-        diesel::delete(sys_user.filter(id.eq_any(ids)))
+        diesel::delete({{table.table_info.table_name}}.filter(id.eq_any(ids)))
             .execute(self.conn.deref_mut()).optional().map_err(Error::from)
     }
 
-    pub fn page(&mut self, page: i64, size: i64) -> Result<(Vec<SysUser>, i64), Error> {
+    pub fn page(&mut self, page: i64, size: i64) -> Result<(Vec<{{table.entity_name}}>, i64), Error> {
         let offset = size * (page - 1);
-        let query_result = sys_user.select(SysUser::as_select()).limit(size).offset(offset).load::<SysUser>(self.conn.deref_mut())?;
-        let total_count = sys_user.count().first::<i64>(self.conn.deref_mut())?;
-        let records: Vec<SysUser> = query_result.into_iter().map(|u| u.into()).collect();
+        let query_result = {{table.table_info.table_name}}.select({{table.entity_name}}::as_select()).limit(size).offset(offset).load::<{{table.entity_name}}>(self.conn.deref_mut())?;
+        let total_count = {{table.table_info.table_name}}.count().first::<i64>(self.conn.deref_mut())?;
+        let records: Vec<{{table.entity_name}}> = query_result.into_iter().map(|u| u.into()).collect();
         Ok((records, total_count))
     }
 }
