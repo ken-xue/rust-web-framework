@@ -11,6 +11,8 @@ pub fn initialize() -> Router {
         .route("/healthz", get(|| async { "Hello,It works. " }))
         //...
         .nest("/system", user_router())
+
+        .merge(system::auth::get_auth_router())
         //token验证中间件
         .route_layer(middleware::from_fn(system::auth::auth));
 }

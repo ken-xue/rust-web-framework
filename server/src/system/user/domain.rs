@@ -1,10 +1,22 @@
 use std::error::Error;
 use bcrypt::{DEFAULT_COST, hash};
+use lazy_static::lazy_static;
+use std::sync::Mutex;
 use crate::common::{request, response};
+use crate::database;
 use crate::system::user::model::SysUser;
 use crate::system::user::repo::UserRepo;
 use crate::system::user::request::{CreateUser, UpdateUser};
 use crate::util;
+
+lazy_static! {
+    // UserDomain 的全局单例
+    pub static ref USER_DOMAIN: Mutex<UserDomain> = {
+        let repo = UserRepo::new(database::pool());
+        let domain = UserDomain::new(repo);
+        Mutex::new(domain)
+    };
+}
 
 pub struct UserDomain {
     repo: UserRepo,
@@ -36,7 +48,8 @@ impl UserDomain {
     pub fn create(&mut self, u: CreateUser) -> Result<SysUser,Box<dyn Error>> {
         let mut user: SysUser = u.into();
         //密码加密
-        let hashed_password = match hash(user.password.unwrap_or_else("123456"), DEFAULT_COST) {
+        let password = user.password.unwrap_or_else(|| "123456".to_string());
+        let hashed_password = match hash(password, DEFAULT_COST) {
             Ok(hashed) => hashed,
             Err(_) => return Err(Box::try_from("Failed to hash password.".to_string()).unwrap()),
         };

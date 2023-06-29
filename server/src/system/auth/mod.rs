@@ -1,14 +1,38 @@
 mod handler;
 mod domain;
 
-use axum::{async_trait,Router, extract::TypedHeader, http::StatusCode, headers::authorization::{Authorization, Bearer}, http::Request, middleware::{Next}, response::Response, routing::get, RequestPartsExt, Json};
+use std::borrow::Borrow;
+use axum::{
+    async_trait,Router, extract::TypedHeader, http::StatusCode,
+    headers::authorization::{Authorization, Bearer}, http::Request, middleware::{Next},
+    response::Response, routing::get, RequestPartsExt, Json
+};
+use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, Validation};
+use once_cell::sync::Lazy;
+use serde::{Deserialize, Serialize};
+use serde_json::json;
+use std::fmt::Display;
+use std::ops::Deref;
+use axum::extract::FromRequestParts;
+use axum::http::header::HeaderValue;
+use axum::http::request::Parts;
+use axum::response::IntoResponse;
+use axum::routing::post;
+use crate::system;
 
-pub async fn auth<B>(TypedHeader(auth): TypedHeader<Authorization<Bearer>>,request: Request<B>,next: Next<B>) -> Result<Response, StatusCode> {
-    //验证token,如果token将要过期则颁布新的token在请求头中refresh
+pub const X_REFRESH_TOKEN: &str = "x-refresh-token";
+
+pub async fn auth<B>(
+    TypedHeader(auth): TypedHeader<Authorization<Bearer>>,
+    request: Request<B>,next: Next<B>,
+) -> Result<Response, StatusCode> {
+    //验证token
     let token_data = decode::<Claims>(auth.token(), &KEYS.decoding, &Validation::default()).map_err(|_| AuthError::InvalidToken);
     if token_is_valid(auth.token()) {
-        let response = next.run(request).await;
-        response.headers().append()
+        let mut response = next.run(request).await;
+        //如果token将要过期则颁布新的token在请求头中refresh
+        let val = HeaderValue::from_static("hello");
+        response.headers_mut().append(X_REFRESH_TOKEN, val);
         Ok(response)
     } else {
         Err(StatusCode::UNAUTHORIZED)
@@ -16,22 +40,11 @@ pub async fn auth<B>(TypedHeader(auth): TypedHeader<Authorization<Bearer>>,reque
 }
 
  fn token_is_valid(token: &str) -> bool {
-    let token_data = decode::<Claims>(token, &KEYS.decoding, &Validation::default()).map_err(|_| AuthError::InvalidToken);
-    return false
+    // let token_data = decode::<Claims>(token, &KEYS.decoding, &Validation::default()).map_err(|_| AuthError::InvalidToken);
+    return true
 }
 
 ///////////////
-
-
-use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, Validation};
-use once_cell::sync::Lazy;
-use serde::{Deserialize, Serialize};
-use serde_json::json;
-use std::fmt::Display;
-use axum::extract::FromRequestParts;
-use axum::http::request::Parts;
-use axum::response::IntoResponse;
-use axum::routing::post;
 
 static KEYS: Lazy<Keys> = Lazy::new(|| {
     // let secret = std::env::var("JWT_SECRET").expect("JWT_SECRET must be set");
@@ -54,18 +67,22 @@ async fn protected(claims: Claims) -> Result<String, AuthError> {
 // 授权
 async fn authorize(Json(payload): Json<AuthPayload>) -> Result<Json<AuthBody>, AuthError> {
     // Check if the user sent the credentials
-    if payload.client_id.is_empty() || payload.client_secret.is_empty() {
+    if payload.username.is_empty() || payload.password.is_empty() {
         return Err(AuthError::MissingCredentials);
     }
     // Here you can check the user credentials from a database
-    if payload.client_id != "foo" || payload.client_secret != "bar" {
+    // 查询用户
+    let domain = system::user::domain::USER_DOMAIN.lock().unwrap();
+    // domain.get_by_id()
+    if payload.username != "foo" || payload.password != "bar" {
         return Err(AuthError::WrongCredentials);
     }
     let claims = Claims {
         sub: "b@b.com".to_owned(),
         company: "ACME".to_owned(),
         // Mandatory expiry time as UTC timestamp
-        exp: 2000000000, // May 2033
+        // exp: 2000000000, // May 2033
+        exp: 2, // May 2033
     };
     // Create the authorization token
     let token = encode(&Header::default(), &claims, &KEYS.encoding).map_err(|_| AuthError::TokenCreation)?;
@@ -153,8 +170,8 @@ struct AuthBody {
 
 #[derive(Debug, Deserialize)]
 struct AuthPayload {
-    client_id: String,
-    client_secret: String,
+    username: String,
+    password: String,
 }
 
 #[derive(Debug)]
