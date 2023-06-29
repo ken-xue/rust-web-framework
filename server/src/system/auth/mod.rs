@@ -1,28 +1,22 @@
 mod handler;
 mod domain;
 
-use axum::{Router, extract::TypedHeader, http::StatusCode, headers::authorization::{Authorization, Bearer}, http::Request, middleware::{Next}, response::Response, routing::get, RequestPartsExt, Json};
+use axum::{async_trait,Router, extract::TypedHeader, http::StatusCode, headers::authorization::{Authorization, Bearer}, http::Request, middleware::{Next}, response::Response, routing::get, RequestPartsExt, Json};
 
-pub async fn auth<B>(
-    // run the `TypedHeader` extractor
-    TypedHeader(auth): TypedHeader<Authorization<Bearer>>,
-    // you can also add more extractors here but the last
-    // extractor must implement `FromRequest` which
-    // `Request` does
-    request: Request<B>,
-    next: Next<B>,
-) -> Result<Response, StatusCode> {
+pub async fn auth<B>(TypedHeader(auth): TypedHeader<Authorization<Bearer>>,request: Request<B>,next: Next<B>) -> Result<Response, StatusCode> {
     //验证token,如果token将要过期则颁布新的token在请求头中refresh
+    let token_data = decode::<Claims>(auth.token(), &KEYS.decoding, &Validation::default()).map_err(|_| AuthError::InvalidToken);
     if token_is_valid(auth.token()) {
         let response = next.run(request).await;
+        response.headers().append()
         Ok(response)
     } else {
         Err(StatusCode::UNAUTHORIZED)
     }
 }
 
-fn token_is_valid(token: &str) -> bool {
-    // ...
+ fn token_is_valid(token: &str) -> bool {
+    let token_data = decode::<Claims>(token, &KEYS.decoding, &Validation::default()).map_err(|_| AuthError::InvalidToken);
     return false
 }
 
@@ -37,6 +31,7 @@ use std::fmt::Display;
 use axum::extract::FromRequestParts;
 use axum::http::request::Parts;
 use axum::response::IntoResponse;
+use axum::routing::post;
 
 static KEYS: Lazy<Keys> = Lazy::new(|| {
     // let secret = std::env::var("JWT_SECRET").expect("JWT_SECRET must be set");

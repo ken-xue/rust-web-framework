@@ -1,4 +1,5 @@
 use std::error::Error;
+use bcrypt::{DEFAULT_COST, hash};
 use crate::common::{request, response};
 use crate::system::user::model::SysUser;
 use crate::system::user::repo::UserRepo;
@@ -33,7 +34,13 @@ impl UserDomain {
     }
 
     pub fn create(&mut self, u: CreateUser) -> Result<SysUser,Box<dyn Error>> {
-        let user: SysUser = u.into();
+        let mut user: SysUser = u.into();
+        //密码加密
+        let hashed_password = match hash(user.password.unwrap_or_else("123456"), DEFAULT_COST) {
+            Ok(hashed) => hashed,
+            Err(_) => return Err(Box::try_from("Failed to hash password.".to_string()).unwrap()),
+        };
+        user.password = Option::from(hashed_password);
         match self.repo.create(user) {
             Ok(user) => Ok(user),
             Err(e) => Err(format!("Error create user: {}", e).into()),
