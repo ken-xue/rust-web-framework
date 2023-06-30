@@ -1,16 +1,6 @@
 // @generated automatically by Diesel CLI.
 
 diesel::table! {
-    posts (id) {
-        id -> Integer,
-        #[max_length = 256]
-        title -> Varchar,
-        body -> Text,
-        published -> Bool,
-    }
-}
-
-diesel::table! {
     sys_captcha (id) {
         #[max_length = 36]
         uuid -> Char,
@@ -18,6 +8,31 @@ diesel::table! {
         code -> Varchar,
         expire_time -> Nullable<Datetime>,
         id -> Bigint,
+    }
+}
+
+diesel::table! {
+    sys_config (id) {
+        id -> Unsigned<Bigint>,
+        #[max_length = 32]
+        uuid -> Nullable<Varchar>,
+        #[max_length = 64]
+        name -> Nullable<Varchar>,
+        config -> Nullable<Text>,
+        #[max_length = 128]
+        remark -> Nullable<Varchar>,
+        #[max_length = 64]
+        creator -> Nullable<Varchar>,
+        #[max_length = 64]
+        modifier -> Nullable<Varchar>,
+        gmt_create -> Datetime,
+        gmt_modified -> Datetime,
+        #[max_length = 1]
+        deleted -> Char,
+        #[max_length = 1]
+        deletable -> Char,
+        #[max_length = 1]
+        editable -> Nullable<Char>,
     }
 }
 
@@ -55,20 +70,20 @@ diesel::table! {
         #[max_length = 32]
         uuid -> Nullable<Varchar>,
         #[max_length = 32]
-        menu_parent_uuid -> Nullable<Varchar>,
+        parent_uuid -> Nullable<Varchar>,
         #[max_length = 64]
-        menu_name -> Varchar,
+        name -> Nullable<Varchar>,
         #[max_length = 200]
-        menu_url -> Nullable<Varchar>,
+        url -> Nullable<Varchar>,
         #[max_length = 200]
-        menu_perms -> Nullable<Varchar>,
+        perms -> Nullable<Varchar>,
         #[max_length = 1]
         menu_type -> Nullable<Varchar>,
         #[max_length = 20]
-        menu_icon -> Nullable<Varchar>,
-        menu_order -> Nullable<Integer>,
+        icon -> Nullable<Varchar>,
+        order -> Nullable<Integer>,
         #[max_length = 64]
-        menu_remark -> Nullable<Varchar>,
+        remark -> Nullable<Varchar>,
         #[max_length = 64]
         creator -> Nullable<Varchar>,
         #[max_length = 64]
@@ -85,9 +100,9 @@ diesel::table! {
         #[max_length = 32]
         uuid -> Nullable<Varchar>,
         #[max_length = 64]
-        role_name -> Nullable<Varchar>,
+        name -> Nullable<Varchar>,
         #[max_length = 64]
-        role_remark -> Nullable<Varchar>,
+        remark -> Nullable<Varchar>,
         #[max_length = 64]
         creator -> Nullable<Varchar>,
         #[max_length = 64]
@@ -121,16 +136,16 @@ diesel::table! {
     sys_user (id) {
         id -> Unsigned<Bigint>,
         #[max_length = 32]
-        uuid -> Nullable<Varchar>,
+        uuid -> Varchar,
         #[max_length = 64]
-        account -> Nullable<Varchar>,
+        username -> Varchar,
         #[max_length = 64]
-        password -> Nullable<Varchar>,
+        password -> Varchar,
         #[max_length = 64]
-        name -> Nullable<Varchar>,
+        name -> Varchar,
         #[max_length = 128]
-        email -> Nullable<Varchar>,
-        status -> Nullable<Integer>,
+        email -> Varchar,
+        status -> Integer,
         #[max_length = 64]
         creator -> Nullable<Varchar>,
         #[max_length = 64]
@@ -163,8 +178,8 @@ diesel::table! {
 }
 
 diesel::allow_tables_to_appear_in_same_query!(
-    posts,
     sys_captcha,
+    sys_config,
     sys_dictionary,
     sys_log,
     sys_menu,

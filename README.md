@@ -17,7 +17,7 @@
 1. 生成schema
 ```bash
 # 缺省全表
-diesel print-schema > src/schema.rs
+diesel print-schema > src/database/schema.rs
 # 指定表名
 diesel print-schema -o sys_user_of_role
 ```

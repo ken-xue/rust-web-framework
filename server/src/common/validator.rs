@@ -5,6 +5,7 @@ use axum::http::{Request};
 use serde::{de::DeserializeOwned};
 use thiserror::Error;
 use validator::Validate;
+use crate::common::response::error;
 
 #[derive(Debug, Clone, Copy, Default)]
 pub struct Validated<T>(pub T);
@@ -39,11 +40,13 @@ pub enum ServerError {
 impl IntoResponse for ServerError {
     fn into_response(self) -> Response {
         match self {
-            ServerError::ValidationError(_) => {
-                let message = format!("Input validation error: [{}]", self).replace('\n', ", ");
-                (StatusCode::BAD_REQUEST, message)
+            ServerError::ValidationError(e) => {
+                // let message = format!("Input validation error: [{}]", self).replace('\n', ", ");
+                error(Box::try_from(e).unwrap())
+                // (StatusCode::BAD_REQUEST, message)
             }
-            ServerError::AxumFormRejection(_) => (StatusCode::BAD_REQUEST, self.to_string()),
+            // ServerError::AxumFormRejection(_) => (StatusCode::BAD_REQUEST, self.to_string()),
+            ServerError::AxumFormRejection(e) => error(Box::try_from(e).unwrap()),
         }.into_response()
     }
 }

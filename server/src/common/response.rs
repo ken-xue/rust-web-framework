@@ -31,7 +31,7 @@ pub fn error(e: Box<dyn Error>) -> impl IntoResponse {
     let response = Response {
         code: 500,
         message: e.to_string(),
-        data: Some(e.to_string()),
+        data: Some(""),
     };
     (StatusCode::OK, Json(response))
 }

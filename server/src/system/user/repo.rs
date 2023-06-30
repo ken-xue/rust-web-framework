@@ -24,6 +24,12 @@ impl UserRepo {
             .first(self.conn.deref_mut())
     }
 
+    pub fn get_by_username(&mut self, username: &str) -> Result<SysUser, Error> {
+        sys_user.filter(username.eq(username))
+            .select(SysUser::as_select())
+            .first(self.conn.deref_mut())
+    }
+
     pub fn update(&mut self,user: SysUser) -> Result<Option<usize>, Error> {
         diesel::update(sys_user.filter(id.eq(user.id)))
             .set(&user)

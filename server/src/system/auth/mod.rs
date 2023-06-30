@@ -18,7 +18,10 @@ use axum::http::header::HeaderValue;
 use axum::http::request::Parts;
 use axum::response::IntoResponse;
 use axum::routing::post;
-use crate::system;
+use validator::{Validate};
+use crate::{common, database, system};
+use crate::common::validator::Validated;
+use crate::system::user::repo;
 
 pub const X_REFRESH_TOKEN: &str = "x-refresh-token";
 
@@ -52,31 +55,32 @@ static KEYS: Lazy<Keys> = Lazy::new(|| {
     Keys::new(secret.as_bytes())
 });
 
-pub fn get_auth_router() -> Router {
-    let router = Router::new()
-        .route("/protected", get(protected))
-        .route("/authorize", post(authorize));
-    router
+pub fn auth_router() -> Router {
+    Router::new().route("/authorize", post(authorize))
 }
 
-async fn protected(claims: Claims) -> Result<String, AuthError> {
-    // Send the protected data to the user
-    Ok(format!("Welcome to the protected area :)\nYour data:\n{}", claims))
-}
+// async fn protected(claims: Claims) -> Result<String, AuthError> {
+//     // Send the protected data to the user
+//     Ok(format!("Welcome to the protected area :)\nYour data:\n{}", claims))
+// }
 
 // 授权
-async fn authorize(Json(payload): Json<AuthPayload>) -> Result<Json<AuthBody>, AuthError> {
+// async fn authorize(Json(payload): Json<AuthPayload>) -> Result<Json<AuthBody>, AuthError> {
+// async fn authorize(Json(payload): Json<AuthPayload>) -> impl IntoResponse {
+async fn authorize(Validated(payload): Validated<AuthPayload>) -> impl IntoResponse {
     // Check if the user sent the credentials
     if payload.username.is_empty() || payload.password.is_empty() {
         return Err(AuthError::MissingCredentials);
     }
     // Here you can check the user credentials from a database
     // 查询用户
-    let domain = system::user::domain::USER_DOMAIN.lock().unwrap();
-    // domain.get_by_id()
-    if payload.username != "foo" || payload.password != "bar" {
-        return Err(AuthError::WrongCredentials);
-    }
+    let mut repo = repo::UserRepo::new(database::pool());
+    let mut domain = system::user::domain::UserDomain::new(repo);
+    let response = domain.authorize(payload.username,payload.password);
+
+    // if payload.username != "foo" || payload.password != "bar" {
+    //     return Err(AuthError::WrongCredentials);
+    // }
     let claims = Claims {
         sub: "b@b.com".to_owned(),
         company: "ACME".to_owned(),
@@ -88,7 +92,9 @@ async fn authorize(Json(payload): Json<AuthPayload>) -> Result<Json<AuthBody>, A
     let token = encode(&Header::default(), &claims, &KEYS.encoding).map_err(|_| AuthError::TokenCreation)?;
 
     // Send the authorized token
-    Ok(Json(AuthBody::new(token)))
+    // Ok(Json(AuthBody::new(token)))
+    let body = AuthBody::new(token);
+    Ok(common::response::response(Ok(body)))
 }
 
 impl Display for Claims {
@@ -168,10 +174,12 @@ struct AuthBody {
     token_type: String,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Validate, Deserialize)]
 struct AuthPayload {
-    username: String,
-    password: String,
+    #[validate(length(min = 1, message = "username can not be empty"))]
+    pub username: String,
+    #[validate(length(min = 1, message = "password can not be empty"))]
+    pub password: String,
 }
 
 #[derive(Debug)]

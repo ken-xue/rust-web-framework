@@ -4,7 +4,21 @@
 # Build
 
 ```bash
-cargo build --release --bin rwf --out-dir target/release
+cargo build --release
+```
+
+clean
+
+```bash
+cargo clean
+```
+
+add to path
+
+```bash
+CODE_PATH=$(pwd)
+echo $CODE_PATH
+export PATH="$PATH:$CODE_PATH/target/release"
 ```
 
 # Use cases
@@ -12,5 +26,5 @@ cargo build --release --bin rwf --out-dir target/release
 1. generate model code
 
 ```bash
-./target/debug/code -u mysql://root:123456@localhost/rwf -m system -t sys_user -p ./target/ --prefix sys_
+code -u mysql://root:123456@localhost/rwf -m system -t sys_user -p ./target/ --prefix sys_
 ```

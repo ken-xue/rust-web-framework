@@ -64,14 +64,14 @@ impl From<CreateMenu> for SysMenu {
         SysMenu {
             id: req.id,//主键
             uuid: req.uuid,//uuid
-            menu_parent_uuid: req.menu_parent_uuid,//父菜单uuid
-            menu_name: req.menu_name,//菜单名
-            menu_url: req.menu_url,//菜单url
-            menu_perms: req.menu_perms,//授权标识
+            parent_uuid: req.parent_uuid,//父菜单uuid
+            name: req.name,//菜单名
+            url: req.url,//菜单url
+            perms: req.perms,//授权标识
             menu_type: req.menu_type,//0:目录 1:菜单 2:按钮
-            menu_icon: req.menu_icon,//图标
-            menu_order: req.menu_order,//排序
-            menu_remark: req.menu_remark,//备注
+            icon: req.icon,//图标
+            order: req.order,//排序
+            remark: req.remark,//备注
             creator: req.creator,//创建人
             modifier: req.modifier,//修改人
             gmt_create: req.gmt_create,//创建时间
@@ -86,14 +86,14 @@ impl From<UpdateMenu> for SysMenu {
         SysMenu {
             id: req.id,//主键
             uuid: req.uuid,//uuid
-            menu_parent_uuid: req.menu_parent_uuid,//父菜单uuid
-            menu_name: req.menu_name,//菜单名
-            menu_url: req.menu_url,//菜单url
-            menu_perms: req.menu_perms,//授权标识
+            parent_uuid: req.parent_uuid,//父菜单uuid
+            name: req.name,//菜单名
+            url: req.url,//菜单url
+            perms: req.perms,//授权标识
             menu_type: req.menu_type,//0:目录 1:菜单 2:按钮
-            menu_icon: req.menu_icon,//图标
-            menu_order: req.menu_order,//排序
-            menu_remark: req.menu_remark,//备注
+            icon: req.icon,//图标
+            order: req.order,//排序
+            remark: req.remark,//备注
             creator: req.creator,//创建人
             modifier: req.modifier,//修改人
             gmt_create: req.gmt_create,//创建时间
