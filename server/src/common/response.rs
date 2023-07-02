@@ -36,6 +36,15 @@ pub fn error(e: Box<dyn Error>) -> impl IntoResponse {
     (StatusCode::OK, Json(response))
 }
 
+pub fn err(code :i16,message : String) -> impl IntoResponse {
+    let response = Response {
+        code,
+        message,
+        data: Some(""),
+    };
+    (StatusCode::OK, Json(response))
+}
+
 pub fn success<T: 'static + Serialize>(data: T) -> impl IntoResponse {
     (StatusCode::OK, Json(Response {
         code : 200,

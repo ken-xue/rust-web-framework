@@ -45,3 +45,7 @@ cargo test
 ```bash
 cargo bench
 ```
+
+# TOOD
+- 全局错误处理
+- 

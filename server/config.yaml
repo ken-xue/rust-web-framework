@@ -14,3 +14,7 @@ database:
   url : mysql://root:123456@localhost/rwf?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=UTC
   username: root
   password: 123456
+
+############################# jwt #############################
+jwt:
+  expire: 3600 # seconds

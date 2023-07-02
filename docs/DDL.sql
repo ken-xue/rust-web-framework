@@ -197,7 +197,7 @@ CREATE TABLE `sys_user` (
                             `deleted` tinyint(1) NOT NULL DEFAULT '0' COMMENT '逻辑删除',
                             `avatar` varchar(100) DEFAULT NULL COMMENT '头像',
                             PRIMARY KEY (`id`),
-                            UNIQUE KEY `sys_user_user_id_uindex` (`account`)
+                            UNIQUE KEY `sys_user_user_id_uindex` (`username`)
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COMMENT='用户表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 

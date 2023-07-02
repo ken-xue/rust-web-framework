@@ -20,25 +20,36 @@ use axum::response::IntoResponse;
 use axum::routing::post;
 use validator::{Validate};
 use crate::{common, database, system};
+use crate::common::response;
+use crate::common::response::response;
 use crate::common::validator::Validated;
 use crate::system::user::repo;
 
 pub const X_REFRESH_TOKEN: &str = "x-refresh-token";
+pub const TOKEN_TYPE: &str = "Bearer";
+pub const TOKEN_EXPIRATION_BUFFER: i64 = 60 * 10; // JWT令牌过期缓冲时间，单位是秒
 
 pub async fn auth<B>(
     TypedHeader(auth): TypedHeader<Authorization<Bearer>>,
     request: Request<B>,next: Next<B>,
-) -> Result<Response, StatusCode> {
+) -> Result<Response, AuthError> {
     //验证token
-    let token_data = decode::<Claims>(auth.token(), &KEYS.decoding, &Validation::default()).map_err(|_| AuthError::InvalidToken);
+    let token_data = decode::<Claims>(auth.token(), &KEYS.decoding, &Validation::default())
+        .map_err(|_| AuthError::InvalidToken)?;
     if token_is_valid(auth.token()) {
         let mut response = next.run(request).await;
-        //如果token将要过期则颁布新的token在请求头中refresh
-        let val = HeaderValue::from_static("hello");
-        response.headers_mut().append(X_REFRESH_TOKEN, val);
+        let claims = token_data.claims;
+        // 获取当前时间戳
+        let current_time = chrono::Utc::now().timestamp();
+        //如果token将要过期则颁布新的token在请求头中
+        if claims.exp < (current_time + TOKEN_EXPIRATION_BUFFER) as usize {
+            let token = encode(&Header::default(), &claims, &KEYS.encoding).map_err(|_| AuthError::InvalidToken)?;
+            let val = HeaderValue::from_str((TOKEN_TYPE.to_string() + " " + token.as_str()).as_str());
+            response.headers_mut().append(X_REFRESH_TOKEN, val.unwrap());
+        }
         Ok(response)
     } else {
-        Err(StatusCode::UNAUTHORIZED)
+        Err(AuthError::WrongCredentials)
     }
 }
 
@@ -76,17 +87,19 @@ async fn authorize(Validated(payload): Validated<AuthPayload>) -> impl IntoRespo
     // 查询用户
     let mut repo = repo::UserRepo::new(database::pool());
     let mut domain = system::user::domain::UserDomain::new(repo);
-    let response = domain.authorize(payload.username,payload.password);
+    // let response = domain.authorize(payload.username,payload.password);
 
     // if payload.username != "foo" || payload.password != "bar" {
     //     return Err(AuthError::WrongCredentials);
     // }
+
+    let current_time = chrono::Utc::now().timestamp();
     let claims = Claims {
         sub: "b@b.com".to_owned(),
         company: "ACME".to_owned(),
         // Mandatory expiry time as UTC timestamp
         // exp: 2000000000, // May 2033
-        exp: 2, // May 2033
+        exp: (current_time + 60 * 10) as usize, // May 2033
     };
     // Create the authorization token
     let token = encode(&Header::default(), &claims, &KEYS.encoding).map_err(|_| AuthError::TokenCreation)?;
@@ -107,7 +120,7 @@ impl AuthBody {
     fn new(access_token: String) -> Self {
         Self {
             access_token,
-            token_type: "Bearer".to_string(),
+            token_type: TOKEN_TYPE.to_string(),
         }
     }
 }
@@ -142,9 +155,21 @@ impl IntoResponse for AuthError {
             AuthError::TokenCreation => (StatusCode::INTERNAL_SERVER_ERROR, "Token creation error"),
             AuthError::InvalidToken => (StatusCode::BAD_REQUEST, "Invalid token"),
         };
-        let body = Json(json!({"error": error_message,}));
-        (status, body).into_response()
+        // let body = Json(json!({"error": error_message,}));
+        // (status, body).into_response()
+
+        let bd: Resp = Resp {
+            code: status.as_u16(),
+            message: error_message.to_string(),
+        };
+        (status, Json(bd)).into_response()
     }
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct Resp {
+    pub code: u16,
+    pub message: String,
 }
 
 struct Keys {
@@ -183,7 +208,7 @@ struct AuthPayload {
 }
 
 #[derive(Debug)]
-enum AuthError {
+pub enum AuthError {
     WrongCredentials,
     MissingCredentials,
     TokenCreation,
