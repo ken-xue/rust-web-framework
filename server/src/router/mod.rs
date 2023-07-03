@@ -8,7 +8,7 @@ use axum::middleware::Next;
 use axum::response::{IntoResponse, Response};
 use axum::routing::get;
 use hyper::Body;
-use server::{common, system};
+use server::{system};
 use server::system::user::{user_router};
 
 //初始化各个模块的路由
@@ -43,14 +43,11 @@ mod auth;
 // // the request back together
 // async fn buffer_request_body<T>(request: Request<T>) -> Result<Request<T>, Response> {
 //     let (parts, body) = request.into_parts();
-//
 //     // this wont work if the body is an long running stream
 //     let bytes = hyper::body::to_bytes(body)
 //         .await
 //         .map_err(|err| (StatusCode::INTERNAL_SERVER_ERROR, err.to_string()).into_response())?;
-//
 //     do_thing_with_request_body(bytes.clone());
-//
 //     Ok(Request::from_parts(parts, Body::from(bytes)))
 // }
 //
@@ -69,7 +66,7 @@ mod auth;
 // #[async_trait]
 // impl<S,B> FromRequest<S, B> for BufferRequestBody
 //     where
-//         S: Send + Sync,
+//         S: Send + Sync, B: axum::body::HttpBody
 // {
 //     type Rejection = Response;
 //

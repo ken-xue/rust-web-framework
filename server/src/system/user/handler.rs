@@ -26,12 +26,10 @@ pub async fn info(Path(id): Path<u64>) -> Result<impl IntoResponse, AppError> {
 //     // (StatusCode::CREATED,Json(response))
 // }
 // // page
-// pub async fn page(Json(r): Json<request::Page>) -> impl IntoResponse {
-//     let repo = repo::UserRepo::new(database::pool());
-//     let mut domain = domain::UserDomain::new(repo);
-//     let response = domain.page(r);
-//     response::response(response)
-// }
+pub async fn page(Json(r): Json<request::Page>) -> Result<impl IntoResponse, AppError> {
+    let response = domain::UserDomain::default().page(r)?;
+    Ok(response::success(response))
+}
 // // create
 // pub async fn create(Validated(payload): Validated<CreateUser>) -> impl IntoResponse {
 //     let repo = repo::UserRepo::new(database::pool());

@@ -1,7 +1,4 @@
-use std::fmt;
-use std::fmt::{Display, Formatter};
 use std::ops::{DerefMut};
-use anyhow::bail;
 use diesel::{ExpressionMethods, OptionalExtension, QueryDsl, RunQueryDsl, SelectableHelper};
 use diesel::result::Error;
 
@@ -33,57 +30,37 @@ impl UserRepo {
             .first(self.conn.deref_mut())?;
         Ok(ret)
     }
-    //
-    // pub fn get_by_username(&mut self, _username: &str) -> Result<SysUser, UserRepoError> {
-    //     sys_user.filter(username.eq(_username))
-    //         .select(SysUser::as_select())
-    //         .first(self.conn.deref_mut())
-    // }
-    //
-    // pub fn update(&mut self,user: SysUser) -> Result<Option<usize>, UserRepoError> {
-    //     diesel::update(sys_user.filter(id.eq(user.id)))
-    //         .set(&user)
-    //         .execute(self.conn.deref_mut()).optional()
-    // }
-    //
-    // pub fn create(&mut self, user: SysUser) -> Result<SysUser, UserRepoError> {
-    //     match diesel::insert_into(sys_user::table).values(&user).execute(self.conn.deref_mut()) {
-    //         Ok(_) => Ok(user),
-    //         Err(e) => Err(e)
-    //     }
-    // }
-    //
-    // pub fn delete_by_ids(&mut self, ids: Vec<u64>,) -> Result<Option<usize>, UserRepoError> {
-    //     diesel::delete(sys_user.filter(id.eq_any(ids)))
-    //         .execute(self.conn.deref_mut()).optional().map_err(Error::from)
-    // }
-    //
-    // pub fn page(&mut self, page: i64, size: i64) -> Result<(Vec<SysUser>, i64), UserRepoError> {
-    //     let offset = size * (page - 1);
-    //     let query_result = sys_user.select(SysUser::as_select()).limit(size).offset(offset).load::<SysUser>(self.conn.deref_mut())?;
-    //     let total_count = sys_user.count().first::<i64>(self.conn.deref_mut())?;
-    //     let records: Vec<SysUser> = query_result.into_iter().map(|u| u.into()).collect();
-    //     Ok((records, total_count))
-    // }
-}
 
-/// Errors that can happen when using the user repo.
-#[derive(Debug)]
-pub enum UserRepoError {
-    #[allow(dead_code)]
-    NotFound,
-    #[allow(dead_code)]
-    InvalidUsername,
-    #[allow(dead_code)]
-    Error(String),
-}
+    pub fn get_by_username(&mut self, _username: &str) -> Result<SysUser, anyhow::Error> {
+        let ret = sys_user.filter(username.eq(_username))
+            .select(SysUser::as_select())
+            .first(self.conn.deref_mut())?;
+        Ok(ret)
+    }
 
-impl fmt::Display for UserRepoError {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match self {
-            UserRepoError::NotFound => write!(f, "User not found"),
-            UserRepoError::InvalidUsername => write!(f, "Invalid username"),
-            UserRepoError::Error(e) => write!(f, "UserRepoError {:?}",e),
-        }
+    pub fn update(&mut self,user: SysUser) -> Result<Option<usize>, anyhow::Error> {
+        let ret = diesel::update(sys_user.filter(id.eq(user.id)))
+            .set(&user)
+            .execute(self.conn.deref_mut()).optional()?;
+        Ok(ret)
+    }
+
+    pub fn create(&mut self, user: SysUser) -> Result<SysUser, anyhow::Error> {
+        diesel::insert_into(sys_user::table).values(&user).execute(self.conn.deref_mut())?;
+        Ok(user)
+    }
+
+    pub fn delete_by_ids(&mut self, ids: Vec<u64>,) -> Result<Option<usize>, anyhow::Error> {
+        let ret = diesel::delete(sys_user.filter(id.eq_any(ids)))
+            .execute(self.conn.deref_mut()).optional().map_err(Error::from)?;
+        Ok(ret)
+    }
+
+    pub fn page(&mut self, page: i64, size: i64) -> Result<(Vec<SysUser>, i64), anyhow::Error> {
+        let offset = size * (page - 1);
+        let query_result = sys_user.select(SysUser::as_select()).limit(size).offset(offset).load::<SysUser>(self.conn.deref_mut())?;
+        let total_count = sys_user.count().first::<i64>(self.conn.deref_mut())?;
+        let records: Vec<SysUser> = query_result.into_iter().map(|u| u.into()).collect();
+        Ok((records, total_count))
     }
 }
