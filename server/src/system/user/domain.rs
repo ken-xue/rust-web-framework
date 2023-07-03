@@ -1,11 +1,10 @@
 use std::error::Error;
-use std::io::ErrorKind;
 use anyhow::bail;
 use bcrypt::{DEFAULT_COST, hash, verify};
 use crate::common::{request, response};
 use crate::database::schema::sys_user::password;
 use crate::system::user::model::SysUser;
-use crate::system::user::repo::{UserRepo, UserRepoError};
+use crate::system::user::repo::{UserRepo};
 use crate::system::user::request::{CreateUser, UpdateUser};
 use crate::util;
 
@@ -15,16 +14,19 @@ pub struct UserDomain {
 
 impl UserDomain {
     
+    pub fn default() -> Self {
+        let repo = UserRepo::default();
+        UserDomain { repo }
+    }
+
     pub fn new(repo: UserRepo) -> Self {
         UserDomain { repo }
     }
 
     pub fn get_by_id(&mut self, i: u64) -> Result<SysUser, anyhow::Error> {
-        match self.repo.get_by_id(i) {
-            Ok(u) => Ok(u),
-            Err(e) => bail!(e),
-        }
+       self.repo.get_by_id(i)
     }
+
     // pub fn authorize(&mut self, username: String, pwd: String) -> Result<SysUser, AuthError> {
     //     // Check the user credentials from a database
     //     let response = self.repo.get_by_username(username.as_str());
@@ -43,8 +45,6 @@ impl UserDomain {
     //         Err(_) => Err(Box::new(Error::new(<dyn std::error::Error>::description(&ErrorKind::Other), "Username not found.")) as Box<dyn Error>),
     //     }
     // }
-
-
 
     fn decrypt_password(pwd: &str) -> Result<String, Box<dyn Error>> {
         // Decrypt the password here

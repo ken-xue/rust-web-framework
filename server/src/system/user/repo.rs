@@ -17,6 +17,11 @@ pub struct UserRepo {
 
 impl UserRepo {
 
+    pub fn default() -> Self {
+        let conn = database::pool();
+        UserRepo { conn }
+    }
+
     pub fn new(conn: database::PoolConnection) -> Self {
         UserRepo { conn }
     }

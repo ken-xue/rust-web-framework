@@ -7,16 +7,24 @@ use crate::{database};
 use crate::common::{request, response};
 use crate::system::user::{domain, repo};
 use validator::{Validate};
+use crate::common::error::AppError;
 use crate::common::validator::Validated;
+use crate::system::user::model::SysUser;
 use crate::system::user::request::{CreateUser, UpdateUser};
+
 // info
-pub async fn info(Path(id): Path<u64>) -> impl IntoResponse {
-    let repo = repo::UserRepo::new(database::pool());
-    let mut domain = domain::UserDomain::new(repo);
-    let response = domain.get_by_id(id)?;
-    // response::response(response)
-    (StatusCode::CREATED,Json(response))
+pub async fn info(Path(id): Path<u64>) -> Result<impl IntoResponse, AppError> {
+    let response = domain::UserDomain::default().get_by_id(id)?;
+    Ok(response::success(response))
 }
+// pub async fn info(Path(id): Path<u64>) -> impl IntoResponse {
+// pub async fn info(Path(id): Path<u64>) -> Result<(), AppError> {
+//     let mut domain = domain::UserDomain::default();
+//     let response = domain.get_by_id(id)?;
+//     Ok(())
+//     // response::response(response)
+//     // (StatusCode::CREATED,Json(response))
+// }
 // // page
 // pub async fn page(Json(r): Json<request::Page>) -> impl IntoResponse {
 //     let repo = repo::UserRepo::new(database::pool());

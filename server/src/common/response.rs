@@ -11,6 +11,12 @@ pub struct Response<T> {
     pub data: Option<T>,
 }
 
+#[derive(Serialize)]
+pub struct ErrorResponse {
+    pub code: u16,
+    pub message: String,
+}
+
 pub fn response<T: 'static + Serialize>(data: Result<T, Box<dyn Error>>) -> impl IntoResponse {
     let result = match data {
         Ok(d) => Response {
@@ -45,7 +51,7 @@ pub fn err(code :i16,message : String) -> impl IntoResponse {
     (StatusCode::OK, Json(response))
 }
 
-pub fn success<T: 'static + Serialize>(data: T) -> impl IntoResponse {
+pub fn success<T: Serialize>(data: T) -> impl IntoResponse {
     (StatusCode::OK, Json(Response {
         code : 200,
         message: "success".parse().unwrap(),

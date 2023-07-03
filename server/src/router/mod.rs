@@ -29,7 +29,6 @@ pub fn initialize() -> Router {
                get(|| async { format!("Hello, It works. Version {}",
                                       std::env::var("VERSION").unwrap_or_else(|_| "unknown".to_string()))
                }))
-        .route("/anyhow", get(handler));
 }
 
 mod auth;
@@ -80,83 +79,3 @@ mod auth;
 //         Ok(Self(body))
 //     }
 // }
-
-
-
-async fn handler() -> Result<(), AppError> {
-    try_thing()?;
-    Ok(())
-}
-
-fn try_thing() -> Result<(), anyhow::Error> {
-    anyhow::bail!("it failed!")
-}
-
-// Make our own error that wraps `anyhow::Error`.
-// struct AppError(anyhow::Error);
-// struct AppError {
-//     inner: anyhow::Error,
-//     status: StatusCode,
-// }
-
-use serde::Serialize;
-#[derive(Debug, Serialize)]
-struct ErrorResponse {
-    code: u16,
-    message: String,
-}
-// Tell axum how to convert `AppError` into a response.
-// impl IntoResponse for AppError {
-//     fn into_response(self) -> Response {
-//
-//         let message = format!("Something went wrong: {}", self.inner);
-//         let response = ErrorResponse {
-//             code: self.status.as_u16(),
-//             message,
-//         };
-//         (self.status, Json(response)).into_response()
-//     }
-// }
-
-impl IntoResponse for AppError {
-    fn into_response(self) -> Response {
-        let error_code = self.error_code.unwrap_or(StatusCode::INTERNAL_SERVER_ERROR.as_u16());
-        let message = format!("Something went wrong: {}", self.inner);
-        let response = ErrorResponse {
-            code: error_code,
-            message,
-        };
-        (StatusCode::INTERNAL_SERVER_ERROR, Json(response)).into_response()
-    }
-}
-
-// This enables using `?` on functions that return `Result<_, anyhow::Error>` to turn them into
-// `Result<_, AppError>`. That way you don't need to do that manually.
-struct AppError {
-    inner: anyhow::Error,
-    error_code: Option<u16>,  // 可选状态码
-}
-
-impl<E> From<E> for AppError
-    where
-        E: Into<anyhow::Error>,
-{
-    fn from(err: E) -> Self {
-        let e = err.into();
-        let code = match e.downcast_ref::<u16>() {
-            Some(e) => Some(*e),
-            None => None,   // 没有状态码,所以是 `None`
-        };
-        Self {
-            inner: e,
-            error_code: code,
-        }
-    }
-}
-
-use thiserror::Error;
-#[derive(Error, Debug)]
-enum ScienceError {
-    #[error("recursion limit exceeded")]
-    RecursionLimitExceeded(u64),
-}
