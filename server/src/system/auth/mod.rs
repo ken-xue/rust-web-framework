@@ -1,18 +1,15 @@
 mod handler;
 mod domain;
 
-use std::borrow::Borrow;
 use axum::{
-    async_trait,Router, extract::TypedHeader, http::StatusCode,
+    async_trait, Router, extract::TypedHeader, http::StatusCode,
     headers::authorization::{Authorization, Bearer}, http::Request, middleware::{Next},
-    response::Response, routing::get, RequestPartsExt, Json
+    response::Response, routing::get, RequestPartsExt, Json,
 };
 use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, Validation};
 use once_cell::sync::Lazy;
 use serde::{Deserialize, Serialize};
-use serde_json::json;
 use std::fmt::Display;
-use std::ops::Deref;
 use axum::extract::FromRequestParts;
 use axum::http::header::HeaderValue;
 use axum::http::request::Parts;
@@ -20,8 +17,6 @@ use axum::response::IntoResponse;
 use axum::routing::post;
 use validator::{Validate};
 use crate::{common, database, system};
-use crate::common::response;
-use crate::common::response::response;
 use crate::common::validator::Validated;
 use crate::system::user::repo;
 
@@ -31,31 +26,22 @@ pub const TOKEN_EXPIRATION_BUFFER: i64 = 60 * 10; // JWT令牌过期缓冲时间
 
 pub async fn auth<B>(
     TypedHeader(auth): TypedHeader<Authorization<Bearer>>,
-    request: Request<B>,next: Next<B>,
+    request: Request<B>, next: Next<B>,
 ) -> Result<Response, AuthError> {
     //验证token
     let token_data = decode::<Claims>(auth.token(), &KEYS.decoding, &Validation::default())
         .map_err(|_| AuthError::InvalidToken)?;
-    if token_is_valid(auth.token()) {
-        let mut response = next.run(request).await;
-        let claims = token_data.claims;
-        // 获取当前时间戳
-        let current_time = chrono::Utc::now().timestamp();
-        //如果token将要过期则颁布新的token在请求头中
-        if claims.exp < (current_time + TOKEN_EXPIRATION_BUFFER) as usize {
-            let token = encode(&Header::default(), &claims, &KEYS.encoding).map_err(|_| AuthError::InvalidToken)?;
-            let val = HeaderValue::from_str((TOKEN_TYPE.to_string() + " " + token.as_str()).as_str());
-            response.headers_mut().append(X_REFRESH_TOKEN, val.unwrap());
-        }
-        Ok(response)
-    } else {
-        Err(AuthError::WrongCredentials)
+    let mut response = next.run(request).await;
+    let claims = token_data.claims;
+    // 获取当前时间戳
+    let current_time = chrono::Utc::now().timestamp();
+    //如果token将要过期则颁布新的token在请求头中
+    if claims.exp < (current_time + TOKEN_EXPIRATION_BUFFER) as usize {
+        let token = encode(&Header::default(), &claims, &KEYS.encoding).map_err(|_| AuthError::InvalidToken)?;
+        let val = HeaderValue::from_str((TOKEN_TYPE.to_string() + " " + token.as_str()).as_str());
+        response.headers_mut().append(X_REFRESH_TOKEN, val.unwrap());
     }
-}
-
- fn token_is_valid(token: &str) -> bool {
-    // let token_data = decode::<Claims>(token, &KEYS.decoding, &Validation::default()).map_err(|_| AuthError::InvalidToken);
-    return true
+    Ok(response)
 }
 
 ///////////////
@@ -78,16 +64,15 @@ pub fn auth_router() -> Router {
 // 授权
 // async fn authorize(Json(payload): Json<AuthPayload>) -> Result<Json<AuthBody>, AuthError> {
 // async fn authorize(Json(payload): Json<AuthPayload>) -> impl IntoResponse {
-async fn authorize(Validated(payload): Validated<AuthPayload>) -> impl IntoResponse {
+async fn authorize(Validated(payload): Validated<AuthPayload>) -> Result<impl IntoResponse,anyhow::Error> {
     // Check if the user sent the credentials
     if payload.username.is_empty() || payload.password.is_empty() {
-        return Err(AuthError::MissingCredentials);
+        return AuthError::MissingCredentials;
     }
     // Here you can check the user credentials from a database
     // 查询用户
-    let mut repo = repo::UserRepo::new(database::pool());
-    let mut domain = system::user::service::UserService::new(repo);
-    // let response = domain.authorize(payload.username,payload.password);
+    let mut domain = system::user::service::UserService::default();
+    let response = domain.authorize(payload.username,payload.password)?;
 
     // if payload.username != "foo" || payload.password != "bar" {
     //     return Err(AuthError::WrongCredentials);
@@ -107,7 +92,7 @@ async fn authorize(Validated(payload): Validated<AuthPayload>) -> impl IntoRespo
     // Send the authorized token
     // Ok(Json(AuthBody::new(token)))
     let body = AuthBody::new(token);
-    Ok(common::response::response(Ok(body)))
+    Ok(common::response::success(body))
 }
 
 impl Display for Claims {

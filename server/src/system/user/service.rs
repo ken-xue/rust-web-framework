@@ -2,12 +2,10 @@ use std::error::Error;
 use anyhow::bail;
 use bcrypt::{DEFAULT_COST, hash, verify};
 use crate::common::{request, response};
-use crate::database::schema::sys_user::password;
 use crate::system::user::model::SysUser;
 use crate::system::user::repo::{UserRepo};
 use crate::system::user::request::{CreateUser, UpdateUser};
 use crate::system::user::response::UserResponse;
-use crate::util;
 
 pub struct UserService {
     repo: UserRepo,
@@ -29,29 +27,16 @@ impl UserService {
         Ok(resp.into())
     }
 
-    // pub fn authorize(&mut self, username: String, pwd: String) -> Result<SysUser, AuthError> {
-    //     // Check the user credentials from a database
-    //     let response = self.repo.get_by_username(username.as_str());
-    //     // Decrypt the password first
-    //     let decoded_password = "$2b$12$n4dpJplhF9Di3n8dk7cjT.B/Uc5YGXLQUaLeYJdSEcDRX4we7XI66";
-    //
-    //     match response {
-    //         Ok(user) => {
-    //             // Check if the decrypted password matches the stored password
-    //             if verify(&decoded_password, &user.password).is_ok() {
-    //                 Ok(user)
-    //             } else {
-    //                 Err(Box::new(Error::new(<dyn std::error::Error>::description(&ErrorKind::Other), "Incorrect password.")) as Box<dyn Error>)
-    //             }
-    //         }
-    //         Err(_) => Err(Box::new(Error::new(<dyn std::error::Error>::description(&ErrorKind::Other), "Username not found.")) as Box<dyn Error>),
-    //     }
-    // }
-
-    fn decrypt_password(pwd: &str) -> Result<String,  anyhow::Error> {
-        // Decrypt the password here
-        // ...
-        Ok("$2b$12$n4dpJplhF9Di3n8dk7cjT.B/Uc5YGXLQUaLeYJdSEcDRX4we7XI66".parse().unwrap())
+    pub fn authorize(&mut self, username: String, password: String) -> Result<SysUser, anyhow::Error> {
+        // Check the user credentials from a database
+        let user = self.repo.get_by_username(username.as_str())?;
+        // Decrypt the password first
+        let decoded_password = "$2b$12$n4dpJplhF9Di3n8dk7cjT.B/Uc5YGXLQUaLeYJdSEcDRX4we7XI66";
+        //验证密码
+        if verify(&decoded_password, &user.password)? {
+            return Ok(user)
+        }
+        bail!("Incorrect password.")
     }
 
     pub fn page(&mut self, r: request::Page) -> Result<response::PageResponse<UserResponse>, anyhow::Error> {
@@ -65,17 +50,17 @@ impl UserService {
         }
     }
 
-    pub fn create(&mut self, u: CreateUser) -> Result<SysUser, anyhow::Error> {
+    pub fn create(&mut self, u: CreateUser) -> Result<UserResponse, anyhow::Error> {
         let mut user: SysUser = u.into();
         //密码加密
         // let password = user.password.unwrap_or_else(|| "123456".to_string());
         let hashed_password = match hash(user.password.to_string(), DEFAULT_COST) {
             Ok(hashed) => hashed,
-            Err(_) => return bail!("Failed to hash password."),
+            Err(_) => bail!("Failed to hash password"),
         };
         user.password = hashed_password;
         match self.repo.create(user) {
-            Ok(user) => Ok(user),
+            Ok(user) => Ok(user.into()),
             Err(e) => bail!("Error create user: {}", e),
         }
     }
