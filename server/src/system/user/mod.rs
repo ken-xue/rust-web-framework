@@ -3,16 +3,17 @@ use axum::routing::{get, post, put,delete};
 
 pub mod model;
 pub mod handler;
-pub mod domain;
+pub mod service;
 pub mod repo;
 mod response;
 mod request;
+mod converter;
 
 pub fn user_router() -> Router {
     Router::new()
         .route("/user/:id",  get(handler::info))
-        // .route("/users",  post(handler::page))
-        // .route("/user",  put(handler::update))
-        // .route("/user",  post(handler::create))
-        // .route("/user",  delete(handler::delete))
+        .route("/users",  post(handler::page))
+        .route("/user",  put(handler::update))
+        .route("/user",  post(handler::create))
+        .route("/user",  delete(handler::delete))
 }

@@ -6,25 +6,27 @@ use crate::database::schema::sys_user::password;
 use crate::system::user::model::SysUser;
 use crate::system::user::repo::{UserRepo};
 use crate::system::user::request::{CreateUser, UpdateUser};
+use crate::system::user::response::UserResponse;
 use crate::util;
 
-pub struct UserDomain {
+pub struct UserService {
     repo: UserRepo,
 }
 
-impl UserDomain {
+impl UserService {
     
     pub fn default() -> Self {
         let repo = UserRepo::default();
-        UserDomain { repo }
+        UserService { repo }
     }
 
     pub fn new(repo: UserRepo) -> Self {
-        UserDomain { repo }
+        UserService { repo }
     }
 
-    pub fn get_by_id(&mut self, i: u64) -> Result<SysUser, anyhow::Error> {
-       self.repo.get_by_id(i)
+    pub fn get_by_id(&mut self, i: u64) -> Result<UserResponse, anyhow::Error> {
+       let resp = self.repo.get_by_id(i)?;
+        Ok(resp.into())
     }
 
     // pub fn authorize(&mut self, username: String, pwd: String) -> Result<SysUser, AuthError> {
@@ -46,7 +48,7 @@ impl UserDomain {
     //     }
     // }
 
-    fn decrypt_password(pwd: &str) -> Result<String, Box<dyn Error>> {
+    fn decrypt_password(pwd: &str) -> Result<String,  anyhow::Error> {
         // Decrypt the password here
         // ...
         Ok("$2b$12$n4dpJplhF9Di3n8dk7cjT.B/Uc5YGXLQUaLeYJdSEcDRX4we7XI66".parse().unwrap())
@@ -62,76 +64,35 @@ impl UserDomain {
         }
     }
 
-    pub fn create(&mut self, u: CreateUser) -> Result<SysUser,Box<dyn Error>> {
+    pub fn create(&mut self, u: CreateUser) -> Result<SysUser, anyhow::Error> {
         let mut user: SysUser = u.into();
         //密码加密
         // let password = user.password.unwrap_or_else(|| "123456".to_string());
         let hashed_password = match hash(user.password.to_string(), DEFAULT_COST) {
             Ok(hashed) => hashed,
-            Err(_) => return Err(Box::try_from("Failed to hash password.".to_string()).unwrap()),
+            Err(_) => return bail!("Failed to hash password."),
         };
         user.password = hashed_password;
         match self.repo.create(user) {
             Ok(user) => Ok(user),
-            Err(e) => Err(format!("Error create user: {}", e).into()),
+            Err(e) => bail!("Error create user: {}", e),
         }
     }
 
-    pub fn update(&mut self, u: UpdateUser) -> Result<(),Box<dyn Error>> {
+    pub fn update(&mut self, u: UpdateUser) -> Result<(), anyhow::Error> {
         let user: SysUser = u.into();
         match self.repo.update(user) {
             Ok(Some(update)) if update > 0 => Ok(()),
-            Ok(_) => Err(format!("No user was update").into()),
-            Err(e) => Err(format!("Error update user: {}", e).into()),
+            Ok(_) => bail!("No user was update"),
+            Err(e) => bail!("Error update user: {}", e),
         }
     }
 
-    pub fn delete(&mut self, d: request::Delete) -> Result<(),Box<dyn Error>> {
+    pub fn delete(&mut self, d: request::Delete) -> Result<(), anyhow::Error> {
         match self.repo.delete_by_ids(d.ids) {
             Ok(Some(deleted)) if deleted > 0 => Ok(()),
-            Ok(_) => Err(format!("No user was deleted").into()),
-            Err(e) => Err(format!("Error delete user by ids: {}", e).into()),
-        }
-    }
-}
-
-
-impl From<CreateUser> for SysUser {
-    fn from(user: CreateUser) -> SysUser {
-        SysUser {
-            id: 0,
-            uuid: util::uuid(),
-            username: user.username,
-            password: user.password,
-            name: user.name,
-            email: user.email,
-            status: 0,
-            creator: None,
-            modifier: None,
-            gmt_create: Default::default(),
-            gmt_modified: Default::default(),
-            avatar: None,
-            deleted: false,
-        }
-    }
-}
-
-impl From<UpdateUser> for SysUser {
-    fn from(user: UpdateUser) -> SysUser {
-        SysUser {
-            id: user.id,
-            uuid: "".to_string(),
-            username: user.username,
-            password: user.password,
-            name: user.name,
-            email: user.email,
-            status: 0,
-            creator: None,
-            modifier: None,
-            gmt_create: Default::default(),
-            gmt_modified: Default::default(),
-            avatar: None,
-            deleted: false,
+            Ok(_) => bail!("No user was deleted"),
+            Err(e) => bail!("Error delete user by ids: {}", e),
         }
     }
 }
@@ -142,5 +103,5 @@ enum UserStatus {
     #[allow(dead_code)]
     Normal,
     #[allow(dead_code)]
-    Blocked,
+    Disable,
 }

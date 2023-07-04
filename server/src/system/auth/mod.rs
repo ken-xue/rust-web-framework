@@ -86,7 +86,7 @@ async fn authorize(Validated(payload): Validated<AuthPayload>) -> impl IntoRespo
     // Here you can check the user credentials from a database
     // 查询用户
     let mut repo = repo::UserRepo::new(database::pool());
-    let mut domain = system::user::domain::UserDomain::new(repo);
+    let mut domain = system::user::service::UserService::new(repo);
     // let response = domain.authorize(payload.username,payload.password);
 
     // if payload.username != "foo" || payload.password != "bar" {
