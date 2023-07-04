@@ -5,9 +5,9 @@ pub mod model;
 pub mod handler;
 pub mod service;
 pub mod repo;
-mod response;
-mod request;
-mod converter;
+pub mod response;
+pub mod request;
+pub mod converter;
 
 pub fn user_router() -> Router {
     Router::new()

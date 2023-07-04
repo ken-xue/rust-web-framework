@@ -54,10 +54,11 @@ impl UserService {
         Ok("$2b$12$n4dpJplhF9Di3n8dk7cjT.B/Uc5YGXLQUaLeYJdSEcDRX4we7XI66".parse().unwrap())
     }
 
-    pub fn page(&mut self, r: request::Page) -> Result<response::PageResponse<SysUser>, anyhow::Error> {
+    pub fn page(&mut self, r: request::Page) -> Result<response::PageResponse<UserResponse>, anyhow::Error> {
         match self.repo.page(r.page, r.size) {
             Ok((records, total)) => {
-                let response = response::PageResponse::new(records, r.page, r.size, total);
+                let users = records.into_iter().map(|user| UserResponse::from(user)).collect();
+                let response = response::PageResponse::new(users, r.page, r.size, total);
                 Ok(response)
             },
             Err(e) => bail!(e),
