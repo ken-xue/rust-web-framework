@@ -31,7 +31,8 @@ impl UserService {
         // Check the user credentials from a database
         let user = self.repo.get_by_username(username.as_str())?;
         // Decrypt the password first
-        let decoded_password = "$2b$12$n4dpJplhF9Di3n8dk7cjT.B/Uc5YGXLQUaLeYJdSEcDRX4we7XI66";
+        let decoded_password = "123456";//TODO: fix me that
+        // return Ok(user);
         //验证密码
         if verify(&decoded_password, &user.password)? {
             return Ok(user)
