@@ -2,6 +2,7 @@
 // use aes::cipher::{Block, BlockDecrypt, BlockEncrypt, Key, KeyInit};
 use uuid::Uuid;
 mod util;
+mod encrypt;
 
 pub fn uuid() -> String {
     let uuid = Uuid::new_v4();
@@ -43,7 +44,7 @@ mod tests {
         use rsa::{Pkcs1v15Encrypt, RsaPrivateKey, RsaPublicKey};
         use base64::encode;
         let mut rng = rand::thread_rng();
-        let bits = 2048;
+        let bits = 1024;
         let priv_key = RsaPrivateKey::new(&mut rng, bits).expect("failed to generate a key");
         let pub_key = RsaPublicKey::from(&priv_key);
         println!("priv_key: {:?}", priv_key);
