@@ -82,6 +82,6 @@ pub fn default_encrypt(ciphertext: &[u8]) -> Result<String,anyhow::Error> {
 // 缺省解密
 pub fn default_decrypt(ciphertext: &[u8]) -> Result<String,anyhow::Error>  {
     let (priv_key,_) = &*DEFAULT_KEY;
-    let dec_data = priv_key.decrypt(Pkcs1v15Encrypt, ciphertext)?;;
+    let dec_data = priv_key.decrypt(Pkcs1v15Encrypt, ciphertext)?;
     Ok(std::str::from_utf8(&dec_data).unwrap().to_string())
 }
