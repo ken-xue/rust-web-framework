@@ -1,6 +1,3 @@
-mod handler;
-mod domain;
-
 use axum::{
     async_trait, Router, extract::TypedHeader, http::StatusCode,
     headers::authorization::{Authorization, Bearer}, http::Request, middleware::{Next},
@@ -45,8 +42,6 @@ pub async fn auth<B>(
     }
     Ok(response)
 }
-
-///////////////
 
 static KEYS: Lazy<Keys> = Lazy::new(|| {
     // let secret = std::env::var("JWT_SECRET").expect("JWT_SECRET must be set");
@@ -96,28 +91,6 @@ impl AuthBody {
         }
     }
 }
-
-// #[async_trait]
-// impl<S> FromRequestParts<S> for Claims
-//     where
-//         S: Send + Sync,
-// {
-//     type Rejection = AuthError;
-//
-//     // 中间件拦截
-//     async fn from_request_parts(parts: &mut Parts, _state: &S) -> Result<Self, Self::Rejection> {
-//         // Extract the token from the authorization header
-//         let TypedHeader(Authorization(bearer)) = parts
-//             .extract::<TypedHeader<Authorization<Bearer>>>()
-//             .await
-//             .map_err(|_| AuthError::InvalidToken)?;
-//         // 解码拿到token中的用户信息
-//         let token_data = decode::<Claims>(bearer.token(), &KEYS.decoding, &Validation::default())
-//             .map_err(|_| AuthError::InvalidToken)?;
-//
-//         Ok(token_data.claims)
-//     }
-// }
 
 impl IntoResponse for AuthError {
     fn into_response(self) -> Response {
