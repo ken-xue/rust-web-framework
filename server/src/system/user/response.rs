@@ -1,4 +1,5 @@
 use serde::{Serialize};
+use crate::system::user::model::SysUser;
 
 #[derive(Debug,Serialize)]
 pub struct UserResponse {
@@ -13,4 +14,24 @@ pub struct UserResponse {
     pub gmt_create: chrono::NaiveDateTime,//创建时间
     pub gmt_modified: chrono::NaiveDateTime,//修改时间
     pub avatar: Option<String>,//头像
+}
+
+
+
+impl From<SysUser> for UserResponse {
+    fn from(user: SysUser) -> UserResponse {
+        UserResponse {
+            id: user.id,
+            uuid: user.uuid,
+            username: user.username,
+            name: user.name,
+            email: user.email,
+            status: user.status,
+            creator: user.creator,
+            modifier: user.modifier,
+            gmt_create: user.gmt_create,
+            gmt_modified: user.gmt_modified,
+            avatar: user.avatar,
+        }
+    }
 }

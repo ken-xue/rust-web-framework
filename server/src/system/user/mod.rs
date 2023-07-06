@@ -7,7 +7,6 @@ pub mod service;
 pub mod repo;
 pub mod response;
 pub mod request;
-pub mod converter;
 
 pub fn user_router() -> Router {
     Router::new()
