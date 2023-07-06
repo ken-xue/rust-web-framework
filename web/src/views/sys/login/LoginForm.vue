@@ -100,6 +100,7 @@
   import { useUserStore } from '/@/store/modules/user';
   import { LoginStateEnum, useLoginState, useFormRules, useFormValid } from './useLogin';
   import { useDesign } from '/@/hooks/web/useDesign';
+  import {encrypt} from "@/utils/encrypt";
   //import { onKeyStroke } from '@vueuse/core';
 
   const ACol = Col;
@@ -119,7 +120,7 @@
   const rememberMe = ref(false);
 
   const formData = reactive({
-    account: 'vben',
+    account: 'admin',
     password: '123456',
   });
 
@@ -134,8 +135,9 @@
     if (!data) return;
     try {
       loading.value = true;
+      let pwd = encrypt(data.password);
       const userInfo = await userStore.login({
-        password: data.password,
+        password: pwd,
         username: data.account,
         mode: 'none', //不要默认的错误提示
       });

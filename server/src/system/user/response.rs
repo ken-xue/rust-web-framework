@@ -16,8 +16,6 @@ pub struct UserResponse {
     pub avatar: Option<String>,//头像
 }
 
-
-
 impl From<SysUser> for UserResponse {
     fn from(user: SysUser) -> UserResponse {
         UserResponse {

@@ -50,7 +50,7 @@ static KEYS: Lazy<Keys> = Lazy::new(|| {
 });
 
 pub fn auth_router() -> Router {
-    Router::new().route("/authorize", post(authorize))
+    Router::new().route("/api/authorize", post(authorize))
 }
 
 // 授权

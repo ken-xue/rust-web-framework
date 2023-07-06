@@ -15,7 +15,7 @@ use server::system::user::{user_router};
 pub fn initialize() -> Router {
     return Router::new()
         //...
-        .nest("/v1/system", user_router())
+        .nest("/api/system", user_router())
         //...
 
         //token验证中间件

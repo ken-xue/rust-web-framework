@@ -1,5 +1,5 @@
 use axum::Router;
-use axum::routing::{get, post, put,delete};
+use axum::routing::{get, post, put, delete};
 
 pub mod model;
 pub mod handler;
