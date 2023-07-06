@@ -1,3 +1,4 @@
+use anyhow::bail;
 use rsa::{Pkcs1v15Encrypt, RsaPrivateKey, RsaPublicKey};
 use rsa::pkcs8::{DecodePrivateKey, DecodePublicKey, EncodePrivateKey, EncodePublicKey, LineEnding};
 use base64::{decode, encode};
@@ -12,6 +13,35 @@ pub fn generate_keys() -> (RsaPrivateKey, RsaPublicKey) {
     (priv_key, pub_key)
 }
 
+pub fn fmt_print_keys(pub_key: &RsaPublicKey, priv_key: &RsaPrivateKey) -> (String, String) {
+    let pub_key_pem = pub_key.to_public_key_pem(LineEnding::LF).expect("failed to convert public key to PKCS#8 PEM");
+    println!("Public Key (PKCS#8 PEM): \n{}", pub_key_pem.as_str());
+    let priv_key_pem = priv_key.to_pkcs8_pem(LineEnding::LF).expect("failed to convert private key to PKCS#8 PEM");
+    println!("Private Key (PKCS#8 PEM): \n{}", priv_key_pem.as_str());
+    (pub_key_pem.as_str().to_string(), priv_key_pem.as_str().to_string())
+}
+
+// 加密
+pub fn encrypt(pub_key: &RsaPublicKey, ciphertext: &[u8]) -> String {
+    let mut rng = rand::thread_rng();
+    let enc_data = pub_key.encrypt(&mut rng, Pkcs1v15Encrypt, &ciphertext[..]).expect("failed to encrypt");
+    encode(&enc_data)
+}
+
+// 解密
+pub fn decrypt(priv_key: &RsaPrivateKey, ciphertext: &[u8]) -> String {
+    let dec_data = priv_key.decrypt(Pkcs1v15Encrypt, ciphertext).expect("failed to decrypt");
+    std::str::from_utf8(&dec_data).unwrap().to_string()
+}
+
+// 创建一个全局的公私钥
+lazy_static::lazy_static! {
+    pub static ref DEFAULT_KEY: (RsaPrivateKey, RsaPublicKey) = {
+        default_keys()
+    };
+}
+
+// 缺省秘钥
 pub fn default_keys() -> (RsaPrivateKey, RsaPublicKey) {
     let pub_key_pem = "-----BEGIN PUBLIC KEY-----
 MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCxC6org1ozXX9i+FS+eLwM0+kv
@@ -41,30 +71,23 @@ VcJC60FS26OgHgAixikmIsdR5JCSO3PmLVtRbGsHmIZm9NR4YV8U/X3NRw+ZBQ1Z
     (priv_key, pub_key)
 }
 
-pub fn fmt_print_keys(pub_key: &RsaPublicKey, priv_key: &RsaPrivateKey) -> (String, String) {
-    let pub_key_pem = pub_key.to_public_key_pem(LineEnding::LF).expect("failed to convert public key to PKCS#8 PEM");
-    println!("Public Key (PKCS#8 PEM): \n{}", pub_key_pem.as_str());
-    let priv_key_pem = priv_key.to_pkcs8_pem(LineEnding::LF).expect("failed to convert private key to PKCS#8 PEM");
-    println!("Private Key (PKCS#8 PEM): \n{}", priv_key_pem.as_str());
-    (pub_key_pem.as_str().to_string(), priv_key_pem.as_str().to_string())
-}
-
-// 加密
-pub fn encrypt(pub_key: &RsaPublicKey, ciphertext: &[u8]) -> String {
+// 缺省加密
+pub fn default_encrypt(ciphertext: &[u8]) -> Result<String,anyhow::Error> {
+    let (_, pub_key) = &*DEFAULT_KEY;
     let mut rng = rand::thread_rng();
-    let enc_data = pub_key.encrypt(&mut rng, Pkcs1v15Encrypt, &ciphertext[..]).expect("failed to encrypt");
-    encode(&enc_data)
+    let enc_data = pub_key.encrypt(&mut rng, Pkcs1v15Encrypt, &ciphertext[..])?;
+    Ok(encode(&enc_data))
 }
 
-// 解密
-pub fn decrypt(priv_key: &RsaPrivateKey, ciphertext: &[u8]) -> String {
-    let dec_data = priv_key.decrypt(Pkcs1v15Encrypt, ciphertext).expect("failed to decrypt");
-    std::str::from_utf8(&dec_data).unwrap().to_string()
+// 缺省解密
+pub fn default_decrypt(ciphertext: &[u8]) -> Result<String,anyhow::Error>  {
+    let (priv_key,_) = &*DEFAULT_KEY;
+    let dec_data = priv_key.decrypt(Pkcs1v15Encrypt, ciphertext)?;;
+    Ok(std::str::from_utf8(&dec_data).unwrap().to_string())
 }
 
 #[cfg(test)]
 mod tests {
-    // use rsa::pkcs1::DecodeRsaPrivateKey;
     use rsa::pkcs8::DecodePublicKey;
     use rsa::pkcs8::DecodePrivateKey;
     use super::*;
@@ -84,7 +107,21 @@ mod tests {
         assert_eq!(&data[..], &dec_data[..]);
         println!("Decrypted data: {:?}", std::str::from_utf8(&dec_data).unwrap());
     }
-
+    #[test]
+    fn rsasfffaad() {
+        let mut rng = rand::thread_rng();
+        let (priv_key, pub_key) = default_keys();
+        fmt_print_keys(&pub_key, &priv_key);
+        // Encrypt
+        let data = b"abcdd@/_efafdcas2dsa323";
+        let enc_data = pub_key.encrypt(&mut rng, Pkcs1v15Encrypt, &data[..]).expect("failed to encrypt");
+        println!("Encrypted data: {}", encode(&enc_data));
+        assert_ne!(&data[..], &enc_data[..]);
+        // Decrypt
+        let dec_data = priv_key.decrypt(Pkcs1v15Encrypt, &enc_data).expect("failed to decrypt");
+        assert_eq!(&data[..], &dec_data[..]);
+        println!("Decrypted data: {:?}", std::str::from_utf8(&dec_data).unwrap());
+    }
     #[test]
     fn rsax() {
         use rsa::{RsaPublicKey, pkcs8::DecodePublicKey};
@@ -101,7 +138,6 @@ LwIDAQAB
 
         let public_key = RsaPublicKey::from_public_key_pem(pem).unwrap();
     }
-
     #[test]
     fn rsasss() {
         let pub_key_pem = "-----BEGIN PUBLIC KEY-----
@@ -143,7 +179,6 @@ VcJC60FS26OgHgAixikmIsdR5JCSO3PmLVtRbGsHmIZm9NR4YV8U/X3NRw+ZBQ1Z
         assert_eq!(&data[..], &dec_data[..]);
         println!("Decrypted data: {:?}", std::str::from_utf8(&dec_data).unwrap());
     }
-
     #[test]
     fn rsasssdff() {
         let pub_key_pem = "-----BEGIN PUBLIC KEY-----
@@ -177,6 +212,16 @@ VcJC60FS26OgHgAixikmIsdR5JCSO3PmLVtRbGsHmIZm9NR4YV8U/X3NRw+ZBQ1Z
         println!("Encrypted data: {}",enc_data_str);
         let enc_data = decode(&enc_data_str).expect("failed to decode Base64");
         let dec_data = decrypt(&priv_key,&enc_data);
+        println!("Decrypted data: {:?}", dec_data);
+    }
+    #[test]
+    fn rsasssdfffff() {
+        let data = b"123456";
+        let mut rng = rand::thread_rng();
+        let enc_data_str = default_encrypt(data)?;
+        println!("Encrypted data: {}",enc_data_str);
+        let enc_data = decode(&enc_data_str).expect("failed to decode Base64");
+        let dec_data = default_decrypt(&enc_data);
         println!("Decrypted data: {:?}", dec_data);
     }
 }

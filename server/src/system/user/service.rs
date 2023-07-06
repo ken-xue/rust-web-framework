@@ -1,11 +1,13 @@
 use std::error::Error;
 use anyhow::bail;
+use base64::decode;
 use bcrypt::{DEFAULT_COST, hash, verify};
 use crate::common::{request, response};
 use crate::system::user::model::SysUser;
 use crate::system::user::repo::{UserRepo};
 use crate::system::user::request::{CreateUser, UpdateUser};
 use crate::system::user::response::UserResponse;
+use crate::util;
 
 pub struct UserService {
     repo: UserRepo,
@@ -31,9 +33,10 @@ impl UserService {
         // Check the user credentials from a database
         let user = self.repo.get_by_username(username.as_str())?;
         // Decrypt the password first
-        let decoded_password = "123456";//TODO: fix me that
-        // return Ok(user);
-        //验证密码
+        let decode_base64_password = decode(password)?;
+        // 解密密码
+        let decoded_password = util::encrypt::default_decrypt(&decode_base64_password)?;
+        // 验证密码
         if verify(&decoded_password, &user.password)? {
             return Ok(user)
         }
@@ -54,7 +57,6 @@ impl UserService {
     pub fn create(&mut self, u: CreateUser) -> Result<UserResponse, anyhow::Error> {
         let mut user: SysUser = u.into();
         //密码加密
-        // let password = user.password.unwrap_or_else(|| "123456".to_string());
         let hashed_password = match hash(user.password.to_string(), DEFAULT_COST) {
             Ok(hashed) => hashed,
             Err(_) => bail!("Failed to hash password"),

@@ -1,8 +1,8 @@
 // use aes::Aes128;
 // use aes::cipher::{Block, BlockDecrypt, BlockEncrypt, Key, KeyInit};
 use uuid::Uuid;
-mod util;
-mod encrypt;
+pub mod util;
+pub mod encrypt;
 
 pub fn uuid() -> String {
     let uuid = Uuid::new_v4();
