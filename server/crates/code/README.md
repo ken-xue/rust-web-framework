@@ -28,3 +28,7 @@ export PATH="$PATH:$CODE_PATH/target/release"
 ```bash
 code -u mysql://root:123456@localhost/rwf -m system -t sys_user -p ./target/ --prefix sys_
 ```
+
+```bash
+code -u mysql://root:123456@localhost/rwf -m system -t sys_role -p /Users/biaoyang/CLionProjects/rust-web-framework/server/src/system --prefix sys_ 
+```

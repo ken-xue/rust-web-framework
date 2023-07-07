@@ -48,7 +48,7 @@ fn main() {
     let output = args.path.unwrap_or_else(|| "./".to_string());
     let refresh = args.refresh.unwrap_or_else(|| false);
     //模板
-    let templates = vec!["model.hbs", "domain.hbs", "handler.hbs", "mod.hbs", "model.hbs", "repo.hbs", "request.hbs", "response.hbs"];
+    let templates = vec!["model.hbs", "service.hbs", "handler.hbs", "mod.hbs", "model.hbs", "repo.hbs", "request.hbs", "response.hbs"];
     // 获取数据库连接
     let conn = &mut repo::establish_connection(url.clone());
     // 遍历所有数据库表

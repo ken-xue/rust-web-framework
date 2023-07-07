@@ -15,3 +15,23 @@ pub struct Create{{table.remove_prefix_entity_name}} {
     pub {{t.column_name}}: {{{t.column_mapping_type}}},//{{column_comment}}
 {{/each}}
 }
+
+impl From<Create{{table.remove_prefix_entity_name}}> for {{table.entity_name}} {
+    fn from(req: Create{{table.remove_prefix_entity_name}}) -> {{table.entity_name}} {
+        {{table.entity_name}} {
+        {{#each table.table_columns as |t| }}
+            {{t.column_name}}: req.{{t.column_name}},//{{column_comment}}
+        {{/each}}
+        }
+    }
+}
+
+impl From<Update{{table.remove_prefix_entity_name}}> for {{table.entity_name}} {
+    fn from(req: Update{{table.remove_prefix_entity_name}}) -> {{table.entity_name}} {
+        {{table.entity_name}} {
+        {{#each table.table_columns as |t| }}
+            {{t.column_name}}: req.{{t.column_name}},//{{column_comment}}
+        {{/each}}
+        }
+    }
+}
