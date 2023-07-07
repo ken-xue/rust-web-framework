@@ -1,24 +1,21 @@
+mod handler;
+
 use axum::{
     async_trait, Router, extract::TypedHeader, http::StatusCode,
     headers::authorization::{Authorization, Bearer}, http::Request, middleware::{Next},
-    response::Response, routing::get, RequestPartsExt, Json,
+    response::Response, RequestPartsExt, Json,
 };
 use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, Validation};
 use once_cell::sync::Lazy;
 use serde::{Deserialize, Serialize};
 use std::fmt::Display;
-use std::thread;
-use anyhow::bail;
 use axum::extract::FromRequestParts;
 use axum::http::header::HeaderValue;
 use axum::http::request::Parts;
 use axum::response::IntoResponse;
-use axum::routing::post;
+use axum::routing::{get, post};
 use thiserror::Error;
 use validator::{Validate};
-use crate::{common, database, system};
-use crate::common::validator::Validated;
-use crate::system::user::repo;
 
 pub const X_REFRESH_TOKEN: &str = "x-refresh-token";
 pub const TOKEN_TYPE: &str = "Bearer";
@@ -47,7 +44,8 @@ pub async fn auth<B>(
     //如果token将要过期则颁布新的token在请求头中
     if claims.exp < (current_time + TOKEN_EXPIRATION_BUFFER) as usize {
         let token = encode(&Header::default(), &claims, &KEYS.encoding).map_err(|_| AuthError::InvalidToken)?;
-        let val = HeaderValue::from_str((TOKEN_TYPE.to_string() + " " + token.as_str()).as_str());
+        // let val = HeaderValue::from_str((TOKEN_TYPE.to_string() + " " + token.as_str()).as_str());
+        let val = HeaderValue::from_str(token.as_str());
         response.headers_mut().append(X_REFRESH_TOKEN, val.unwrap());
     }
     //响应
@@ -61,41 +59,15 @@ static KEYS: Lazy<Keys> = Lazy::new(|| {
 });
 
 pub fn auth_router() -> Router {
-    Router::new().route("/api/authorize", post(authorize))
-}
-
-// 授权
-async fn authorize(Validated(payload): Validated<AuthPayload>) -> Result<impl IntoResponse,AuthError> {
-    // Check if the user sent the credentials
-    if payload.username.is_empty() || payload.password.is_empty() {
-        return Err(AuthError::MissingCredentials)
-    }
-    // Here you can check the user credentials from a database
-    let mut domain = system::user::service::UserService::default();
-    // check
-    let user = domain.authorize(payload.username,payload.password).map_err(|e|AuthError::WrongCredentials)?;
-    // token
-    let current_time = chrono::Utc::now().timestamp();
-    let claims = Claims {
-        sub: user.username.to_owned(),
-        exp: (current_time + 60 * 10) as usize, // Mandatory expiry time as UTC timestamp
-    };
-    // Create the authorization token
-    let token = encode(&Header::default(), &claims, &KEYS.encoding).map_err(|_| AuthError::TokenCreation)?;
-    // Send the authorized token
-    let body = AuthBody::new(token);
-    // find all permission
-    // user.roles
-    // save permission to cached
-    // database::redis::sadd(user.username, "")?;
-    //
-    Ok(common::response::success(body))
+    Router::new()
+        .route("/api/authorize", post(handler::authorize))
+        .route("/api/logout", get(handler::logout))
 }
 
 impl Display for Claims {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         // write!(f, "Email: {}\nCompany: {}", self.sub, self.company)
-        write!(f, "Email: {}\nCompany: {}", self.sub, "")
+        write!(f, "username: {}\n exp: {}", self.sub, self.exp)
     }
 }
 
@@ -130,7 +102,7 @@ pub struct Resp {
     pub message: String,
 }
 
-struct Keys {
+pub struct Keys {
     encoding: EncodingKey,
     decoding: DecodingKey,
 }
@@ -150,35 +122,35 @@ pub struct Claims {
     exp: usize,
 }
 
-#[async_trait]
-impl<S> FromRequestParts<S> for Claims
-    where
-        S: Send + Sync,
-{
-    type Rejection = AuthError;
-
-    async fn from_request_parts(parts: &mut Parts, _state: &S) -> Result<Self, Self::Rejection> {
-        // Extract the token from the authorization header
-        let TypedHeader(Authorization(bearer)) = parts
-            .extract::<TypedHeader<Authorization<Bearer>>>()
-            .await
-            .map_err(|_| AuthError::InvalidToken)?;
-        // Decode the user data
-        let token_data = decode::<Claims>(bearer.token(), &KEYS.decoding, &Validation::default())
-            .map_err(|_| AuthError::InvalidToken)?;
-
-        Ok(token_data.claims)
-    }
-}
+// #[async_trait]
+// impl<S> FromRequestParts<S> for Claims
+//     where
+//         S: Send + Sync,
+// {
+//     type Rejection = AuthError;
+//
+//     async fn from_request_parts(parts: &mut Parts, _state: &S) -> Result<Self, Self::Rejection> {
+//         // Extract the token from the authorization header
+//         let TypedHeader(Authorization(bearer)) = parts
+//             .extract::<TypedHeader<Authorization<Bearer>>>()
+//             .await
+//             .map_err(|_| AuthError::InvalidToken)?;
+//         // Decode the user data
+//         let token_data = decode::<Claims>(bearer.token(), &KEYS.decoding, &Validation::default())
+//             .map_err(|_| AuthError::InvalidToken)?;
+//
+//         Ok(token_data.claims)
+//     }
+// }
 
 #[derive(Debug, Serialize)]
-struct AuthBody {
+pub struct AuthBody {
     access_token: String,
     token_type: String,
 }
 
 #[derive(Debug, Validate, Deserialize)]
-struct AuthPayload {
+pub struct AuthPayload {
     #[validate(length(min = 1, message = "username can not be empty"))]
     pub username: String,
     #[validate(length(min = 1, message = "password can not be empty"))]

@@ -1,29 +1,24 @@
-use std::ops::Deref;
-// extern crate redis;
+use std::sync::Mutex;
 use redis::{Client, Commands, Connection, RedisResult};
 
-// 创建一个全局的连接
 lazy_static::lazy_static! {
-    static ref CONN: Connection = {
-        let client = redis::Client::open("redis://127.0.0.1/")
-            .expect("Failed to create Redis client");
-        let con = client.get_connection()
-            .expect("Failed to get Redis connection");
-        con
+    static ref CONN: Mutex<Connection> = {
+        let client = redis::Client::open("redis://127.0.0.1/").expect("Failed to create Redis client");
+        let con = client.get_connection().expect("Failed to get Redis connection");
+        Mutex::new(con)
     };
 }
 
-// 集合某个value是否存在
 pub fn exist(key:String, member: String) -> bool {
-     match CONN.deref().sismember(key,member) {
-         Ok(exist) => exist,
-         Err(_) => false
-     }
+    match CONN.lock().unwrap().sismember(key,member) {
+        Ok(exist) => exist,
+        Err(_) => false
+    }
 }
-//添加集合
+
 pub fn sadd(key:String, members: &[&str]) -> RedisResult<isize> {
-    // 添加集合成员
-    let size: i64 = CONN.deref().sadd(key,members)?;
+    let mut con = CONN.lock().unwrap();
+    let size: i64 = con.sadd(key,members)?;
     Ok(size as isize)
 }
 
