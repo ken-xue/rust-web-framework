@@ -1,9 +1,9 @@
 //https://github.com/travist/jsencrypt
 
-import {JSEncrypt} from "jsencrypt";
+import { JSEncrypt } from 'jsencrypt';
 
-const crypt = new JSEncrypt();
-const decrpt = new JSEncrypt();
+// const crypt = new JSEncrypt();
+// const decrpt = new JSEncrypt();
 
 const pub_key_pem = `-----BEGIN PUBLIC KEY-----
 MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCxC6org1ozXX9i+FS+eLwM0+kv
@@ -29,22 +29,22 @@ VcJC60FS26OgHgAixikmIsdR5JCSO3PmLVtRbGsHmIZm9NR4YV8U/X3NRw+ZBQ1Z
 27pOPx4/O7yT3yY=
     -----END PRIVATE KEY-----`;
 
-export function encrypt(plaintext:string) : string {
+export function encrypt(plaintext: string): string {
   // Create the encryption object and set the key.
   const crypt = new JSEncrypt();
   crypt.setPublicKey(pub_key_pem);
   crypt.setPrivateKey(priv_key_pem);
-  const text = '123456';
-// Encrypt the data with the public key.
+  // const text = '123456';
+  // Encrypt the data with the public key.
   const enc = crypt.encrypt(plaintext);
-// Now decrypt the crypted text with the private key.
-//   const dec = crypt.decrypt(enc);
+  // Now decrypt the crypted text with the private key.
+  //   const dec = crypt.decrypt(enc);
 
-// Now a simple check to see if the round-trip worked.
-//   if (dec === text){
-//     alert('It works!!!');
-//   } else {
-//     alert('Something went wrong....');
-//   }
-  return typeof enc === "string" ? enc : ""
+  // Now a simple check to see if the round-trip worked.
+  //   if (dec === text){
+  //     alert('It works!!!');
+  //   } else {
+  //     alert('Something went wrong....');
+  //   }
+  return typeof enc === 'string' ? enc : '';
 }

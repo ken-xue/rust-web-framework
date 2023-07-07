@@ -29,6 +29,11 @@ impl UserService {
         Ok(resp.into())
     }
 
+    pub fn get_by_username(&mut self, i: String) -> Result<UserResponse, anyhow::Error> {
+       let resp = self.repo.get_by_username(i.as_str())?;
+        Ok(resp.into())
+    }
+
     pub fn authorize(&mut self, username: String, password: String) -> Result<SysUser, anyhow::Error> {
         // Check the user credentials from a database
         let user = self.repo.get_by_username(username.as_str())?;

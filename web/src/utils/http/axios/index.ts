@@ -45,16 +45,16 @@ const transform: AxiosTransform = {
     }
     // 错误的时候返回
 
-    const { data } = res;
-    if (!data) {
+    // const { data } = res;
+    const result = res.data;
+    if (!result) {
       // return '[HTTP] Request has no return value';
       throw new Error(t('sys.api.apiRequestFailed'));
     }
     //  这里 code，result，message为 后台统一的字段，需要在 types.ts内修改为项目自己的接口返回格式
-    const { code, result, message } = data;
-
+    const { code, data, message } = result;
     // 这里逻辑可以根据项目进行修改
-    const hasSuccess = data && Reflect.has(data, 'code') && code === ResultEnum.SUCCESS;
+    const hasSuccess = result && Reflect.has(result, 'code') && code === ResultEnum.SUCCESS;
     if (hasSuccess) {
       let successMsg = message;
 
@@ -67,7 +67,7 @@ const transform: AxiosTransform = {
       } else if (options.successMessageMode === 'message') {
         createMessage.success(successMsg);
       }
-      return result;
+      return data;
     }
 
     // 在此处根据自己项目的实际情况对不同的code执行不同的操作
@@ -188,7 +188,6 @@ const transform: AxiosTransform = {
     if (axios.isCancel(error)) {
       return Promise.reject(error);
     }
-
     try {
       if (code === 'ECONNABORTED' && message.indexOf('timeout') !== -1) {
         errMessage = t('sys.api.apiTimeoutMessage');
@@ -230,7 +229,7 @@ function createAxios(opt?: Partial<CreateAxiosOptions>) {
         // See https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication#authentication_schemes
         // authentication schemes，e.g: Bearer
         // authenticationScheme: 'Bearer',
-        authenticationScheme: '',
+        authenticationScheme: 'Bearer',
         timeout: 10 * 1000,
         // 基础接口地址
         // baseURL: globSetting.apiUrl,

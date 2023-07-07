@@ -9,11 +9,18 @@ use crate::common::{request, response};
 use crate::system::user::{service, repo};
 use crate::common::error::AppError;
 use crate::common::validator::Validated;
+use crate::system::auth::Claims;
 use crate::system::user::model::SysUser;
 use crate::system::user::request::{CreateUser, UpdateUser};
 
 // info
-pub async fn info(Path(id): Path<u64>) -> Result<impl IntoResponse, AppError> {
+pub async fn info(claims: Claims) -> Result<impl IntoResponse, AppError> {
+    let username = claims.sub;
+    let response = service::UserService::default().get_by_username(username)?;
+    Ok(response::success(response))
+}
+// get
+pub async fn get(Path(id): Path<u64>) -> Result<impl IntoResponse, AppError> {
     let response = service::UserService::default().get_by_id(id)?;
     Ok(response::success(response))
 }
