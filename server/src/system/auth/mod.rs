@@ -1,17 +1,11 @@
 mod handler;
 
-use axum::{
-    async_trait, Router, extract::TypedHeader, http::StatusCode,
-    headers::authorization::{Authorization, Bearer}, http::Request, middleware::{Next},
-    response::Response, RequestPartsExt, Json,
-};
+use axum::{ Router, extract::TypedHeader, http::StatusCode, headers::authorization::{Authorization, Bearer}, http::Request, middleware::{Next}, response::Response, RequestPartsExt, Json, middleware};
 use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, Validation};
 use once_cell::sync::Lazy;
 use serde::{Deserialize, Serialize};
 use std::fmt::Display;
-use axum::extract::FromRequestParts;
 use axum::http::header::HeaderValue;
-use axum::http::request::Parts;
 use axum::response::IntoResponse;
 use axum::routing::{get, post};
 use thiserror::Error;
@@ -60,8 +54,11 @@ static KEYS: Lazy<Keys> = Lazy::new(|| {
 
 pub fn auth_router() -> Router {
     Router::new()
-        .route("/api/authorize", post(handler::authorize))
+        //退出登录需要取token里面的用户名所以必须加上中间件
         .route("/api/logout", get(handler::logout))
+        //token验证中间件
+        .route_layer(middleware::from_fn(auth))
+        .route("/api/login", post(handler::login))
 }
 
 impl Display for Claims {
@@ -121,27 +118,6 @@ pub struct Claims {
     pub sub: String,
     exp: usize,
 }
-
-// #[async_trait]
-// impl<S> FromRequestParts<S> for Claims
-//     where
-//         S: Send + Sync,
-// {
-//     type Rejection = AuthError;
-//
-//     async fn from_request_parts(parts: &mut Parts, _state: &S) -> Result<Self, Self::Rejection> {
-//         // Extract the token from the authorization header
-//         let TypedHeader(Authorization(bearer)) = parts
-//             .extract::<TypedHeader<Authorization<Bearer>>>()
-//             .await
-//             .map_err(|_| AuthError::InvalidToken)?;
-//         // Decode the user data
-//         let token_data = decode::<Claims>(bearer.token(), &KEYS.decoding, &Validation::default())
-//             .map_err(|_| AuthError::InvalidToken)?;
-//
-//         Ok(token_data.claims)
-//     }
-// }
 
 #[derive(Debug, Serialize)]
 pub struct AuthBody {

@@ -18,8 +18,8 @@ enum Api {
 export function loginApi(params: LoginParams, mode: ErrorMessageMode = 'modal') {
   return defHttp.post<LoginResultModel>(
     {
-      // url: Api.Login,
-      url: '/authorize',
+      url: Api.Login,
+      // url: '/authorize',
       params,
     },
     {

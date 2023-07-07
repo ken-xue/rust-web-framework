@@ -1,30 +1,14 @@
-use axum::{
-    async_trait, Router, extract::TypedHeader, http::StatusCode,
-    headers::authorization::{Authorization, Bearer}, http::Request, middleware::{Next},
-    response::Response, RequestPartsExt, Json,
-};
 use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, Validation};
-use once_cell::sync::Lazy;
-use serde::{Deserialize, Serialize};
-use std::fmt::Display;
 use std::ops::Deref;
-
-
-use axum::extract::FromRequestParts;
-use axum::http::header::HeaderValue;
-use axum::http::request::Parts;
 use axum::response::IntoResponse;
-use axum::routing::post;
-use thiserror::Error;
-use validator::{Validate};
 use crate::{common, database, system};
 use crate::common::error::AppError;
 use crate::common::validator::Validated;
-use crate::system::auth::{AuthBody, AuthError, AuthPayload, Claims, KEYS};
+use crate::system::auth::{AuthBody, AuthError, AuthPayload, Claims, CURRENT_USER, KEYS};
 
 
 // 登录授权
-pub async fn authorize(Validated(payload): Validated<AuthPayload>) -> Result<impl IntoResponse,AuthError> {
+pub async fn login(Validated(payload): Validated<AuthPayload>) -> Result<impl IntoResponse,AuthError> {
     // Check if the user sent the credentials
     if payload.username.is_empty() || payload.password.is_empty() {
         return Err(AuthError::MissingCredentials)
@@ -43,17 +27,22 @@ pub async fn authorize(Validated(payload): Validated<AuthPayload>) -> Result<imp
     let token = encode(&Header::default(), &claims, &KEYS.encoding).map_err(|_| AuthError::TokenCreation)?;
     // Send the authorized token
     let body = AuthBody::new(token);
-    // find all permission
+    // TODO : find all permission
     let permissions: Vec<&str> = Vec::new();
     // save permission to cached
-    // database::redis::sadd(user.username, permissions.deref()).map_err(|_| AuthError::TokenCreation)?;
+    // database::redis::sadd(user.username, permissions.deref()).map_err(|_| AuthError::InvalidToken)?;
+    database::redis::sadd(user.username, &["apple", "banana", "orange"]).map_err(|_| AuthError::InvalidToken)?;
     //
     Ok(common::response::success(body))
 }
 
 
 // 退出登录
-pub async fn logout() -> Result<impl IntoResponse, AppError> {
+pub async fn logout() -> Result<impl IntoResponse, AuthError> {
+    let username = CURRENT_USER.with(|cell| {
+        cell.borrow().clone()
+    });
     //清理缓存
+    database::redis::del(username.unwrap()).map_err(|_| AuthError::InvalidToken)?;
     Ok(common::response::success(""))
 }

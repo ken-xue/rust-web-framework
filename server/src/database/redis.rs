@@ -1,5 +1,5 @@
 use std::sync::Mutex;
-use redis::{Client, Commands, Connection, RedisResult};
+use redis::{Commands, Connection, RedisResult};
 
 lazy_static::lazy_static! {
     static ref CONN: Mutex<Connection> = {
@@ -19,6 +19,12 @@ pub fn exist(key:String, member: String) -> bool {
 pub fn sadd(key:String, members: &[&str]) -> RedisResult<isize> {
     let mut con = CONN.lock().unwrap();
     let size: i64 = con.sadd(key,members)?;
+    Ok(size as isize)
+}
+
+pub fn del(key:String) -> RedisResult<isize> {
+    let mut con = CONN.lock().unwrap();
+    let size: i64 = con.del(key)?;
     Ok(size as isize)
 }
 
