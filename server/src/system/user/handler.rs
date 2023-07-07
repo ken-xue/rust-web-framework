@@ -20,7 +20,7 @@ pub async fn info() -> Result<impl IntoResponse, AppError> {
     let username = auth::CURRENT_USER.with(|cell| {
         cell.borrow().clone()
     });
-    let response = service::UserService::default().get_by_info(username.unwrap())?;
+    let response = service::UserService::default().get_by_username(username.unwrap())?;
     Ok(response::success(response))
 }
 // get

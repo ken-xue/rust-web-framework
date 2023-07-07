@@ -28,14 +28,15 @@ impl UserService {
         Ok(resp.into())
     }
 
-    pub fn get_by_info(&mut self, i: String) -> Result<UserResponse, anyhow::Error> {
+    pub fn get_by_username(&mut self, i: String) -> Result<UserResponse, anyhow::Error> {
         let resp = self.repo.get_by_username(i.as_str())?;
         //TODO:查询角色和菜单
         Ok(resp.into())
     }
 
-    pub fn authorize(&mut self, username: String, password: String) -> Result<SysUser, anyhow::Error> {
+    pub fn authorize(&mut self, username: String, password: String) -> Result<UserResponse, anyhow::Error> {
         // Check the user credentials from a database
+        // let user = self.repo.get_by_username(username.as_str())?;
         let user = self.repo.get_by_username(username.as_str())?;
         // Decrypt the password first
         let decode_base64_password = decode(password)?;
@@ -43,7 +44,7 @@ impl UserService {
         let decoded_password = util::encrypt::default_decrypt(&decode_base64_password)?;
         // 验证密码
         if verify(&decoded_password, &user.password)? {
-            return Ok(user);
+            return Ok(user.into());
         }
         bail!("Incorrect password.")
     }

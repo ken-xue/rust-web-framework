@@ -84,6 +84,11 @@ async fn authorize(Validated(payload): Validated<AuthPayload>) -> Result<impl In
     let token = encode(&Header::default(), &claims, &KEYS.encoding).map_err(|_| AuthError::TokenCreation)?;
     // Send the authorized token
     let body = AuthBody::new(token);
+    // find all permission
+    // user.roles
+    // save permission to cached
+    // database::redis::sadd(user.username, "")?;
+    //
     Ok(common::response::success(body))
 }
 

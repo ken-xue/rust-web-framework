@@ -12,6 +12,8 @@ async fn main() {
     env::set_var("RUST_LOG", "trace");
     // initialize tracing
     tracing_subscriber::fmt::init();
+    // load application config
+    // let config = config::load();
     // build our application with a route
     let router = router::initialize();
     // `axum::Server` is a re-export of `hyper::Server`

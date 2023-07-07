@@ -14,6 +14,7 @@ pub struct UserResponse {
     pub gmt_create: chrono::NaiveDateTime,//创建时间
     pub gmt_modified: chrono::NaiveDateTime,//修改时间
     pub avatar: Option<String>,//头像
+    pub roles: Option<Vec<String>>,
 }
 
 impl From<SysUser> for UserResponse {
@@ -30,6 +31,7 @@ impl From<SysUser> for UserResponse {
             gmt_create: user.gmt_create,
             gmt_modified: user.gmt_modified,
             avatar: user.avatar,
+            roles: None,
         }
     }
 }

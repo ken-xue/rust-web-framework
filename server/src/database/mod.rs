@@ -1,5 +1,6 @@
 pub mod database;
 pub mod schema;
+pub mod redis;
 
 use diesel::mysql::MysqlConnection;
 use diesel::prelude::*;
@@ -16,8 +17,9 @@ lazy_static::lazy_static! {
     static ref POOL: Pool<ConnectionManager<MysqlConnection>> = {
         let config = config::get();
         let url = config.database.url.clone();
+        let max_size = config.database.max_size.clone();
         let manager = ConnectionManager::<MysqlConnection>::new(url);
-        Pool::builder().max_size(10).build(manager).unwrap()
+        Pool::builder().max_size(max_size).build(manager).unwrap()
     };
 }
 

@@ -42,6 +42,7 @@ use serde::{Deserialize, Serialize};
 pub struct Config {
     pub application: Application,
     pub database: DataBase,
+    pub redis: Redis,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -53,6 +54,15 @@ pub struct Application {
 #[derive(Debug, Serialize, Deserialize)]
 pub struct DataBase {
     pub url: String,
+    pub max_size: u32,
+    pub username: String,
+    pub password: String,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct Redis {
+    pub port: i16,
+    pub endpoint: String,
     pub username: String,
     pub password: String,
 }

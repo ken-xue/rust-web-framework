@@ -117,7 +117,8 @@
 
   const formRef = ref();
   const loading = ref(false);
-  const rememberMe = ref(false);
+  // const rememberMe = ref(false);
+  const rememberMe = ref(true);
 
   const formData = reactive({
     account: 'admin',
