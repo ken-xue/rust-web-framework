@@ -14,7 +14,6 @@ pub struct UserService {
 }
 
 impl UserService {
-    
     pub fn default() -> Self {
         let repo = UserRepo::default();
         UserService { repo }
@@ -25,12 +24,13 @@ impl UserService {
     }
 
     pub fn get_by_id(&mut self, i: u64) -> Result<UserResponse, anyhow::Error> {
-       let resp = self.repo.get_by_id(i)?;
+        let resp = self.repo.get_by_id(i)?;
         Ok(resp.into())
     }
 
-    pub fn get_by_username(&mut self, i: String) -> Result<UserResponse, anyhow::Error> {
-       let resp = self.repo.get_by_username(i.as_str())?;
+    pub fn get_by_info(&mut self, i: String) -> Result<UserResponse, anyhow::Error> {
+        let resp = self.repo.get_by_username(i.as_str())?;
+        //TODO:查询角色和菜单
         Ok(resp.into())
     }
 
@@ -43,7 +43,7 @@ impl UserService {
         let decoded_password = util::encrypt::default_decrypt(&decode_base64_password)?;
         // 验证密码
         if verify(&decoded_password, &user.password)? {
-            return Ok(user)
+            return Ok(user);
         }
         bail!("Incorrect password.")
     }
@@ -54,7 +54,7 @@ impl UserService {
                 let users = records.into_iter().map(|user| UserResponse::from(user)).collect();
                 let response = response::PageResponse::new(users, r.page, r.size, total);
                 Ok(response)
-            },
+            }
             Err(e) => bail!(e),
         }
     }

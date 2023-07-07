@@ -7,6 +7,7 @@ use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, Validation}
 use once_cell::sync::Lazy;
 use serde::{Deserialize, Serialize};
 use std::fmt::Display;
+use std::thread;
 use anyhow::bail;
 use axum::extract::FromRequestParts;
 use axum::http::header::HeaderValue;
@@ -23,6 +24,10 @@ pub const X_REFRESH_TOKEN: &str = "x-refresh-token";
 pub const TOKEN_TYPE: &str = "Bearer";
 pub const TOKEN_EXPIRATION_BUFFER: i64 = 60 * 10; // JWT令牌过期缓冲时间，单位是秒
 
+thread_local! {
+    pub static CURRENT_USER: std::cell::RefCell<Option<String>> = std::cell::RefCell::new(None);
+}
+
 pub async fn auth<B>(
     TypedHeader(auth): TypedHeader<Authorization<Bearer>>,
     request: Request<B>, next: Next<B>,
@@ -30,8 +35,13 @@ pub async fn auth<B>(
     //验证token
     let token_data = decode::<Claims>(auth.token(), &KEYS.decoding, &Validation::default())
         .map_err(|_| AuthError::InvalidToken)?;
-    let mut response = next.run(request).await;
     let claims = token_data.claims;
+    let username = claims.sub.clone();
+    //当前线程存入用户信息,方便在更新数据时写入当前操作者是谁
+    CURRENT_USER.with(|cell| {
+        *cell.borrow_mut() = Some(username);
+    });
+    let mut response = next.run(request).await;
     // 获取当前时间戳
     let current_time = chrono::Utc::now().timestamp();
     //如果token将要过期则颁布新的token在请求头中
@@ -40,6 +50,7 @@ pub async fn auth<B>(
         let val = HeaderValue::from_str((TOKEN_TYPE.to_string() + " " + token.as_str()).as_str());
         response.headers_mut().append(X_REFRESH_TOKEN, val.unwrap());
     }
+    //响应
     Ok(response)
 }
 

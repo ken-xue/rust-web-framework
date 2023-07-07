@@ -1,3 +1,4 @@
+use std::thread;
 use axum::extract::{Path};
 use axum::{Json};
 use axum::response::IntoResponse;
@@ -9,14 +10,17 @@ use crate::common::{request, response};
 use crate::system::user::{service, repo};
 use crate::common::error::AppError;
 use crate::common::validator::Validated;
+use crate::system::auth;
 use crate::system::auth::Claims;
 use crate::system::user::model::SysUser;
 use crate::system::user::request::{CreateUser, UpdateUser};
 
 // info
-pub async fn info(claims: Claims) -> Result<impl IntoResponse, AppError> {
-    let username = claims.sub;
-    let response = service::UserService::default().get_by_username(username)?;
+pub async fn info() -> Result<impl IntoResponse, AppError> {
+    let username = auth::CURRENT_USER.with(|cell| {
+        cell.borrow().clone()
+    });
+    let response = service::UserService::default().get_by_info(username.unwrap())?;
     Ok(response::success(response))
 }
 // get

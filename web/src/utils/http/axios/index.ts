@@ -16,7 +16,7 @@ import { setObjToUrlParams, deepMerge } from '/@/utils';
 import { useErrorLogStoreWithOut } from '/@/store/modules/errorLog';
 import { useI18n } from '/@/hooks/web/useI18n';
 import { joinTimestamp, formatRequestDate } from './helper';
-import { useUserStoreWithOut } from '/@/store/modules/user';
+import { useUserStore, useUserStoreWithOut} from '/@/store/modules/user';
 import { AxiosRetry } from '/@/utils/http/axios/axiosRetry';
 import axios from 'axios';
 
@@ -66,6 +66,13 @@ const transform: AxiosTransform = {
         createSuccessModal({ title: t('sys.api.successTip'), content: successMsg });
       } else if (options.successMessageMode === 'message') {
         createMessage.success(successMsg);
+      }
+      //如果响应头包含refresh_token则进行更新
+      const refresh_token = res.headers['x-refresh-token'];
+      if (refresh_token) {
+        console.log('x-refresh-token');
+        const userStore = useUserStore();
+        userStore.setToken(refresh_token);
       }
       return data;
     }
