@@ -38,12 +38,12 @@ impl {{table.remove_prefix_entity_name}}Repo {
 
     pub fn create(&mut self, d: {{table.entity_name}}) -> Result<{{table.entity_name}}, anyhow::Error> {
         diesel::insert_into({{table.table_info.table_name}}::table).values(&d).execute(self.conn.deref_mut())?;
-        Ok(user)
+        Ok(d)
     }
 
     pub fn delete_by_ids(&mut self, ids: Vec<u64>,) -> Result<Option<usize>, anyhow::Error> {
         let ret = diesel::delete({{table.table_info.table_name}}.filter(id.eq_any(ids)))
-            .execute(self.conn.deref_mut()).optional().map_err(Error::from)?
+            .execute(self.conn.deref_mut()).optional().map_err(Error::from)?;
         Ok(ret)
     }
 

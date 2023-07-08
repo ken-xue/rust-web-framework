@@ -4,10 +4,11 @@ use chrono::NaiveDateTime;
 use serde::{Serialize};
 
 // power by rwf : https://github.com/ken-xue/rust-web-framework/tree/main/server/crates/code
+// template engine by handlebars : https://docs.rs/handlebars/4.3.7/handlebars/
 
 #[derive(Debug,Serialize,Queryable,Identifiable,Selectable,Insertable,AsChangeset)]
 #[table_name = "sys_menu"]
-//菜单表 //2023-06-30T04:50:19
+//菜单表 //2023-07-01T02:59:49
 pub struct SysMenu {
     pub id: u64,//主键
     pub uuid: Option<String>,//uuid

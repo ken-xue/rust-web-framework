@@ -1,9 +1,9 @@
-use std::error::Error;
+use anyhow::bail;
 use crate::common::{request, response};
-use crate::system::{{table.remove_prefix_table_name}}::model::{{table.entity_name}};
-use crate::system::{{table.remove_prefix_table_name}}::repo::{{table.remove_prefix_entity_name}}Repo;
-use crate::system::{{table.remove_prefix_table_name}}::request::{Create{{table.remove_prefix_entity_name}}, Update{{table.remove_prefix_entity_name}} };
-use crate::util;
+use crate::{{table.module_name}}::{{table.remove_prefix_table_name}}::response::{{table.remove_prefix_entity_name}}Response;
+use crate::{{table.module_name}}::{{table.remove_prefix_table_name}}::model::{{table.entity_name}};
+use crate::{{table.module_name}}::{{table.remove_prefix_table_name}}::repo::{{table.remove_prefix_entity_name}}Repo;
+use crate::{{table.module_name}}::{{table.remove_prefix_table_name}}::request::{Create{{table.remove_prefix_entity_name}}, Update{{table.remove_prefix_entity_name}} };
 
 pub struct {{table.remove_prefix_entity_name}}Service {
     repo: {{table.remove_prefix_entity_name}}Repo,
@@ -21,7 +21,7 @@ impl {{table.remove_prefix_entity_name}}Service {
     }
 
     pub fn get_by_id(&mut self, i: u64) -> Result<{{table.remove_prefix_entity_name}}Response, anyhow::Error> {
-        let resp self.repo.get_by_id(i)?;
+        let resp = self.repo.get_by_id(i)?;
         Ok(resp.into())
     }
 

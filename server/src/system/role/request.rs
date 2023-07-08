@@ -1,18 +1,12 @@
 use serde::{Deserialize};
 use validator::{Validate};
-use crate::system::menu::model::SysMenu;
+use crate::system::role::model::SysRole;
 
 #[derive(Debug, Validate, Deserialize)]
-pub struct UpdateMenu {
+pub struct UpdateRole {
     pub id: u64,//主键
     pub uuid: Option<String>,//uuid
-    pub parent_uuid: Option<String>,//父菜单uuid
-    pub name: Option<String>,//菜单名
-    pub url: Option<String>,//菜单url
-    pub perms: Option<String>,//授权标识
-    pub menu_type: Option<String>,//0:目录 1:菜单 2:按钮
-    pub icon: Option<String>,//图标
-    pub order: Option<i32>,//排序
+    pub name: Option<String>,//角色名
     pub remark: Option<String>,//备注
     pub creator: Option<String>,//创建人
     pub modifier: Option<String>,//修改人
@@ -22,17 +16,11 @@ pub struct UpdateMenu {
 }
 
 #[derive(Debug, Validate, Deserialize)]
-pub struct CreateMenu {
+pub struct CreateRole {
     //#[validate(length(min = 1, message = "Can not be empty"))]
     pub id: u64,//主键
     pub uuid: Option<String>,//uuid
-    pub parent_uuid: Option<String>,//父菜单uuid
-    pub name: Option<String>,//菜单名
-    pub url: Option<String>,//菜单url
-    pub perms: Option<String>,//授权标识
-    pub menu_type: Option<String>,//0:目录 1:菜单 2:按钮
-    pub icon: Option<String>,//图标
-    pub order: Option<i32>,//排序
+    pub name: Option<String>,//角色名
     pub remark: Option<String>,//备注
     pub creator: Option<String>,//创建人
     pub modifier: Option<String>,//修改人
@@ -41,18 +29,12 @@ pub struct CreateMenu {
     pub deleted: bool,//逻辑删除
 }
 
-impl From<CreateMenu> for SysMenu {
-    fn from(req: CreateMenu) -> SysMenu {
-        SysMenu {
+impl From<CreateRole> for SysRole {
+    fn from(req: CreateRole) -> SysRole {
+        SysRole {
             id: req.id,//主键
             uuid: req.uuid,//uuid
-            parent_uuid: req.parent_uuid,//父菜单uuid
-            name: req.name,//菜单名
-            url: req.url,//菜单url
-            perms: req.perms,//授权标识
-            menu_type: req.menu_type,//0:目录 1:菜单 2:按钮
-            icon: req.icon,//图标
-            order: req.order,//排序
+            name: req.name,//角色名
             remark: req.remark,//备注
             creator: req.creator,//创建人
             modifier: req.modifier,//修改人
@@ -63,18 +45,12 @@ impl From<CreateMenu> for SysMenu {
     }
 }
 
-impl From<UpdateMenu> for SysMenu {
-    fn from(req: UpdateMenu) -> SysMenu {
-        SysMenu {
+impl From<UpdateRole> for SysRole {
+    fn from(req: UpdateRole) -> SysRole {
+        SysRole {
             id: req.id,//主键
             uuid: req.uuid,//uuid
-            parent_uuid: req.parent_uuid,//父菜单uuid
-            name: req.name,//菜单名
-            url: req.url,//菜单url
-            perms: req.perms,//授权标识
-            menu_type: req.menu_type,//0:目录 1:菜单 2:按钮
-            icon: req.icon,//图标
-            order: req.order,//排序
+            name: req.name,//角色名
             remark: req.remark,//备注
             creator: req.creator,//创建人
             modifier: req.modifier,//修改人

@@ -3,16 +3,16 @@ use axum::routing::{get, post, put,delete};
 
 pub mod model;
 pub mod handler;
-pub mod domain;
+pub mod service;
 pub mod repo;
 mod response;
 mod request;
 
 pub fn {{table.remove_prefix_table_name}}_router() -> Router {
     Router::new()
-    .route("/{{table.remove_prefix_table_name}}/:id",  get(handler::info))
-    .route("/{{table.remove_prefix_table_name}}",  post(handler::page))
-    .route("/{{table.remove_prefix_table_name}}",  put(handler::update))
-    .route("/{{table.remove_prefix_table_name}}",  post(handler::create))
-    .route("/{{table.remove_prefix_table_name}}",  delete(handler::delete))
+    .route("/:id",  get(handler::info))
+    .route("/page",  post(handler::page))
+    .route("/",  put(handler::update))
+    .route("/",  post(handler::create))
+    .route("/",  delete(handler::delete))
 }

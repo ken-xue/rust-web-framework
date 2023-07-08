@@ -1,15 +1,16 @@
 use serde::{Serialize};
+use crate::{{table.module_name}}::{{table.remove_prefix_table_name}}::model::{{table.entity_name}};
 
 #[derive(Debug,Serialize)]
-pub struct {{remove_prefix_entity_name}}Response {
+pub struct {{table.remove_prefix_entity_name}}Response {
 {{#each table.table_columns as |t| }}
     pub {{t.column_name}}: {{{t.column_mapping_type}}},//{{column_comment}}
 {{/each}}
 }
 
-impl From<{{table.remove_prefix_entity_name}}Response> for {{table.entity_name}} {
-    fn from(req: Update{{table.remove_prefix_entity_name}}) -> {{table.entity_name}}Response {
-        {{table.entity_name}}Response {
+impl From<{{table.entity_name}}> for {{table.remove_prefix_entity_name}}Response {
+    fn from(req: {{table.entity_name}}) -> {{table.remove_prefix_entity_name}}Response {
+        {{table.remove_prefix_entity_name}}Response {
         {{#each table.table_columns as |t| }}
             {{t.column_name}}: req.{{t.column_name}},//{{column_comment}}
         {{/each}}

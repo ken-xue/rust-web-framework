@@ -1,34 +1,43 @@
 pub mod router;
 
-use axum::{middleware, Router, async_trait, Json};
-use axum::body::Bytes;
-use axum::extract::FromRequest;
-use axum::http::{Request, StatusCode};
-use axum::middleware::Next;
-use axum::response::{IntoResponse, Response};
+use axum::{middleware, Router};
 use axum::routing::get;
-use hyper::Body;
 use server::{system};
-use server::system::user::{user_router};
 
 //初始化各个模块的路由
 pub fn initialize() -> Router {
-    return Router::new()
-        //...
-        .nest("/api/system", user_router())
-        //...
-
+    Router::new()
+        .nest("/api/v1", Router::new()
+            .nest("/system", system::system_router())
+              //...
+              // .nest("/xxxxx", system::system_router())
+        )
         //token验证中间件
         .route_layer(middleware::from_fn(system::auth::auth))
         //获取token接口
         .merge(system::auth::auth_router())
-        //
         // .route_layer(middleware::from_fn(print_request_body))
         //服务健康检查
         .route("/healthz",
                get(|| async { format!("Hello, It works. Version {}",
                                       std::env::var("VERSION").unwrap_or_else(|_| "unknown".to_string()))
                }))
+    // return Router::new()
+    //     //...
+    //     .nest("/api/system", system::system_router())
+    //     //...
+    //
+    //     //token验证中间件
+    //     .route_layer(middleware::from_fn(system::auth::auth))
+    //     //获取token接口
+    //     .merge(system::auth::auth_router())
+    //     //
+    //     // .route_layer(middleware::from_fn(print_request_body))
+    //     //服务健康检查
+    //     .route("/healthz",
+    //            get(|| async { format!("Hello, It works. Version {}",
+    //                                   std::env::var("VERSION").unwrap_or_else(|_| "unknown".to_string()))
+    //            }))
 }
 
 mod auth;

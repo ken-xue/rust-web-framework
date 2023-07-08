@@ -1,32 +1,22 @@
-// use crate::database::schema::*;
-// use diesel::prelude::*;
-// use chrono::NaiveDateTime;
-// use serde::{Serialize};
-//
-// #[derive(Debug,Serialize,Queryable,Identifiable,Selectable,Insertable,AsChangeset)]
-// #[table_name = "sys_role"]
-// pub struct SysRole {
-//     pub id: u64,
-//     pub uuid: Option<String>,
-//     pub role_name: Option<String>,
-//     pub role_remark: Option<String>,
-//     pub creator: Option<String>,
-//     pub modifier: Option<String>,
-//     pub gmt_create: NaiveDateTime,
-//     pub gmt_modified: NaiveDateTime,
-//     pub deleted: bool,
-// }
-//
-// #[derive(Debug,Serialize,Queryable,Identifiable,Selectable,Insertable,AsChangeset)]
-// #[table_name = "sys_user_of_role"]
-// pub struct SysUserOfRole {
-//     pub id: u64,
-//     pub uuid: Option<String>,
-//     pub user_uuid: Option<String>,
-//     pub role_uuid: Option<String>,
-//     pub creator: Option<String>,
-//     pub modifier: Option<String>,
-//     pub gmt_create: NaiveDateTime,
-//     pub gmt_modified: NaiveDateTime,
-//     pub deleted: bool,
-// }
+use crate::database::schema::*;
+use diesel::prelude::*;
+use chrono::NaiveDateTime;
+use serde::{Serialize};
+
+// power by rwf : https://github.com/ken-xue/rust-web-framework/tree/main/server/crates/code
+// template engine by handlebars : https://docs.rs/handlebars/4.3.7/handlebars/
+
+#[derive(Debug,Serialize,Queryable,Identifiable,Selectable,Insertable,AsChangeset)]
+#[table_name = "sys_role"]
+//角色表 //2023-07-01T02:59:49
+pub struct SysRole {
+    pub id: u64,//主键
+    pub uuid: Option<String>,//uuid
+    pub name: Option<String>,//角色名
+    pub remark: Option<String>,//备注
+    pub creator: Option<String>,//创建人
+    pub modifier: Option<String>,//修改人
+    pub gmt_create: chrono::NaiveDateTime,//创建时间
+    pub gmt_modified: chrono::NaiveDateTime,//修改时间
+    pub deleted: bool,//逻辑删除
+}

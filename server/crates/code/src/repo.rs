@@ -85,7 +85,7 @@ pub struct Table {
 pub fn get_table_info(conn: &mut MysqlConnection,module_name: String,table_name: &str, prefix: Option<Vec<String>>) -> Table {
     //获取表数据
     let opt_table_info = query_table_info(conn, table_name);
-    let table_columns = query_table_colum(conn, table_name);
+    let mut  table_columns = query_table_colum(conn, table_name);
     let table_info = opt_table_info.unwrap();
     let mut remove_prefix_table_name = table_info.table_name.to_string();
     //对table_name取首字母大写且下划线去掉取首字母大写
@@ -101,6 +101,8 @@ pub fn get_table_info(conn: &mut MysqlConnection,module_name: String,table_name:
             }
         }
     }
+    // 适配diesel的id和bool
+    fix_diesel_table_columns(&mut table_columns);
     // 返回构造好的数据
     return Table {
         table_info,
@@ -110,6 +112,17 @@ pub fn get_table_info(conn: &mut MysqlConnection,module_name: String,table_name:
         remove_prefix_entity_name,
         table_columns,
     };
+}
+
+fn fix_diesel_table_columns(table_columns: &mut Vec<ColumnInfo>) {
+    for column in table_columns.iter_mut() {
+        if column.column_name == "id" {
+            column.column_mapping_type = "u64".parse().unwrap();
+        }
+        if column.column_name == "deleted" {
+            column.column_mapping_type = "bool".parse().unwrap();
+        }
+    }
 }
 
 // 首字母大写且下划线去掉取首字母大写

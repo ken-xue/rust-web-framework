@@ -1,5 +1,6 @@
 use serde::{Deserialize};
 use validator::{Validate};
+use crate::{{table.module_name}}::{{table.remove_prefix_table_name}}::model::{{table.entity_name}};
 
 #[derive(Debug, Validate, Deserialize)]
 pub struct Update{{table.remove_prefix_entity_name}} {

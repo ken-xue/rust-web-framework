@@ -30,5 +30,9 @@ code -u mysql://root:123456@localhost/rwf -m system -t sys_user -p ./target/ --p
 ```
 
 ```bash
-code -u mysql://root:123456@localhost/rwf -m system -t sys_role -p /Users/biaoyang/CLionProjects/rust-web-framework/server/src/system --prefix sys_ 
+code -u mysql://root:123456@localhost/rwf -m system -t sys_role -p /Users/biaoyang/CLionProjects/rust-web-framework/server/src --prefix sys_ 
+```
+
+```bash
+code -u mysql://root:123456@localhost/rwf -m system -t sys_menu -p /Users/biaoyang/CLionProjects/rust-web-framework/server/src --prefix sys_ 
 ```
