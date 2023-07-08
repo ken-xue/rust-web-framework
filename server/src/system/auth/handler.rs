@@ -28,6 +28,7 @@ pub async fn login(Validated(payload): Validated<AuthPayload>) -> Result<impl In
     // Send the authorized token
     let body = AuthBody::new(token);
     // TODO : find all permission
+
     let permissions: Vec<&str> = Vec::new();
     // save permission to cached
     // database::redis::sadd(user.username, permissions.deref()).map_err(|_| AuthError::InvalidToken)?;
