@@ -5,7 +5,7 @@ use crate::system::role::model::SysRole;
 #[derive(Debug,Serialize)]
 pub struct RoleResponse {
     pub id: u64,//主键
-    pub uuid: Option<String>,//uuid
+    pub uuid: String,//uuid
     pub name: Option<String>,//角色名
     pub remark: Option<String>,//备注
     pub creator: Option<String>,//创建人

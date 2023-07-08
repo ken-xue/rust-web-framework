@@ -15,7 +15,7 @@ diesel::table! {
     sys_config (id) {
         id -> Unsigned<Bigint>,
         #[max_length = 32]
-        uuid -> Nullable<Varchar>,
+        uuid -> Varchar,
         #[max_length = 64]
         name -> Nullable<Varchar>,
         config -> Nullable<Text>,
@@ -68,7 +68,7 @@ diesel::table! {
     sys_menu (id) {
         id -> Unsigned<Bigint>,
         #[max_length = 32]
-        uuid -> Nullable<Varchar>,
+        uuid -> Varchar,
         #[max_length = 32]
         parent_uuid -> Nullable<Varchar>,
         #[max_length = 64]
@@ -98,7 +98,7 @@ diesel::table! {
     sys_role (id) {
         id -> Unsigned<Bigint>,
         #[max_length = 32]
-        uuid -> Nullable<Varchar>,
+        uuid -> Varchar,
         #[max_length = 64]
         name -> Nullable<Varchar>,
         #[max_length = 64]
@@ -117,11 +117,11 @@ diesel::table! {
     sys_role_of_menu (id) {
         id -> Unsigned<Bigint>,
         #[max_length = 32]
-        uuid -> Nullable<Varchar>,
+        uuid -> Varchar,
         #[max_length = 32]
-        role_uuid -> Nullable<Varchar>,
+        role_uuid -> Varchar,
         #[max_length = 32]
-        menu_uuid -> Nullable<Varchar>,
+        menu_uuid -> Varchar,
         #[max_length = 64]
         creator -> Nullable<Varchar>,
         #[max_length = 64]
@@ -162,11 +162,11 @@ diesel::table! {
     sys_user_of_role (id) {
         id -> Unsigned<Bigint>,
         #[max_length = 32]
-        uuid -> Nullable<Varchar>,
+        uuid -> Varchar,
         #[max_length = 32]
-        user_uuid -> Nullable<Varchar>,
+        user_uuid -> Varchar,
         #[max_length = 32]
-        role_uuid -> Nullable<Varchar>,
+        role_uuid -> Varchar,
         #[max_length = 64]
         creator -> Nullable<Varchar>,
         #[max_length = 64]

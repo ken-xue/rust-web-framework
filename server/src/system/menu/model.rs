@@ -11,7 +11,7 @@ use serde::{Serialize};
 //菜单表 //2023-07-01T02:59:49
 pub struct SysMenu {
     pub id: u64,//主键
-    pub uuid: Option<String>,//uuid
+    pub uuid: String,//uuid
     pub parent_uuid: Option<String>,//父菜单uuid
     pub name: Option<String>,//菜单名
     pub url: Option<String>,//菜单url

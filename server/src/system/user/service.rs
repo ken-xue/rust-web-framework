@@ -3,6 +3,7 @@ use anyhow::bail;
 use base64::decode;
 use bcrypt::{DEFAULT_COST, hash, verify};
 use crate::common::{request, response};
+use crate::system::role;
 use crate::system::user::model::SysUser;
 use crate::system::user::repo::{UserRepo};
 use crate::system::user::request::{CreateUser, UpdateUser};
@@ -28,10 +29,15 @@ impl UserService {
         Ok(resp.into())
     }
 
-    pub fn get_by_username(&mut self, i: String) -> Result<UserResponse, anyhow::Error> {
-        let resp = self.repo.get_by_username(i.as_str())?;
-        //TODO:查询角色和菜单
-        Ok(resp.into())
+    pub fn get_by_username(&mut self, username: String) -> Result<UserResponse, anyhow::Error> {
+        let user = self.repo.get_by_username(&username)?;
+        let user_uuid = user.uuid.clone();
+        let mut ret = UserResponse::from(user);
+        // 查询角色和菜单
+        let roles = role::service::RoleService::default().get_by_user_uuid(user_uuid)?;
+        ret.roles = Some(roles);
+        // 响应
+        Ok(ret)
     }
 
     pub fn authorize(&mut self, username: String, password: String) -> Result<UserResponse, anyhow::Error> {

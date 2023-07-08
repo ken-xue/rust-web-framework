@@ -1,11 +1,8 @@
 use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, Validation};
-use std::ops::Deref;
 use axum::response::IntoResponse;
 use crate::{common, database, system};
-use crate::common::error::AppError;
 use crate::common::validator::Validated;
 use crate::system::auth::{AuthBody, AuthError, AuthPayload, Claims, CURRENT_USER, KEYS};
-
 
 // 登录授权
 pub async fn login(Validated(payload): Validated<AuthPayload>) -> Result<impl IntoResponse,AuthError> {
@@ -28,7 +25,7 @@ pub async fn login(Validated(payload): Validated<AuthPayload>) -> Result<impl In
     // Send the authorized token
     let body = AuthBody::new(token);
     // TODO : find all permission
-
+    
     let permissions: Vec<&str> = Vec::new();
     // save permission to cached
     // database::redis::sadd(user.username, permissions.deref()).map_err(|_| AuthError::InvalidToken)?;

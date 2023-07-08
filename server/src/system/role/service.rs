@@ -60,4 +60,12 @@ impl RoleService {
             Err(e) => bail!("Error delete SysRole by ids: {}", e),
         }
     }
+
+    pub fn get_by_user_uuid(&mut self, uid: String) -> Result<Vec<RoleResponse>, anyhow::Error> {
+        let roles = self.repo.get_by_user_uuid(uid)?;
+        let ret = roles.into_iter().map(|d| RoleResponse::from(d)).collect();
+        //查询权限
+
+        Ok(ret)
+    }
 }

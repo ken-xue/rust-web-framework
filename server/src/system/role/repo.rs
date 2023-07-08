@@ -1,18 +1,20 @@
 use std::ops::DerefMut;
-use diesel::{ExpressionMethods, OptionalExtension, QueryDsl, RunQueryDsl, SelectableHelper};
+use diesel::{allow_tables_to_appear_in_same_query, ExpressionMethods, joinable, JoinOnDsl, OptionalExtension, QueryDsl, RunQueryDsl, SelectableHelper, TextExpressionMethods};
+use diesel::associations::HasTable;
 use diesel::result::Error;
 
 use crate::database;
-use crate::system::role::model::SysRole;
+use crate::system::role::model::{SysRole, SysRoleOfUser};
 use crate::database::schema::sys_role::dsl::*;
-use crate::database::schema::sys_role;
+use crate::database::schema::{sys_menu, sys_role};
+use crate::database::schema::sys_user_of_role::dsl::sys_user_of_role;
+use crate::database::schema::sys_user_of_role::user_uuid;
 
 pub struct RoleRepo {
     conn: database::PoolConnection
 }
 
 impl RoleRepo {
-
     pub fn default() -> Self {
         let conn = database::pool();
         RoleRepo { conn }
@@ -53,5 +55,15 @@ impl RoleRepo {
         let total_count = sys_role.count().first::<i64>(self.conn.deref_mut())?;
         let records: Vec<SysRole> = query_result.into_iter().map(|u| u.into()).collect();
         Ok((records, total_count))
+    }
+
+    pub fn get_by_user_uuid(&mut self,uid: String) -> Result<Vec<SysRole>, anyhow::Error> {
+        use crate::database::schema::sys_user_of_role::role_uuid;
+        let data = sys_user_of_role
+            .filter(user_uuid.eq(uid))
+            .inner_join(sys_role.on(uuid.eq(role_uuid)))
+            .select(SysRole::as_select())
+            .load::<SysRole>(self.conn.deref_mut())?;
+        Ok(data)
     }
 }

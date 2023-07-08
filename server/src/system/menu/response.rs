@@ -4,7 +4,7 @@ use crate::system::menu::model::SysMenu;
 #[derive(Debug,Serialize)]
 pub struct MenuResponse {
     pub id: u64,//主键
-    pub uuid: Option<String>,//uuid
+    pub uuid: String,//uuid
     pub parent_uuid: Option<String>,//父菜单uuid
     pub name: Option<String>,//菜单名
     pub url: Option<String>,//菜单url
