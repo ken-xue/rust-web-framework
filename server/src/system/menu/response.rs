@@ -1,10 +1,11 @@
 use serde::{Serialize};
 use crate::system::menu::model::SysMenu;
 
-#[derive(Debug,Serialize)]
+#[derive(Debug,Serialize,Clone)]
 pub struct MenuResponse {
     pub id: u64,//主键
     pub uuid: String,//uuid
+    pub role_uuid: Option<String>,//角色uuid
     pub parent_uuid: Option<String>,//父菜单uuid
     pub name: Option<String>,//菜单名
     pub url: Option<String>,//菜单url
@@ -20,11 +21,19 @@ pub struct MenuResponse {
     pub deleted: bool,//逻辑删除
 }
 
+impl MenuResponse {
+    pub(crate) fn set_menu_uuid(mut self, role_uuid: String) -> Self {
+        self.role_uuid = Some(role_uuid);
+        self
+    }
+}
+
 impl From<SysMenu> for MenuResponse {
     fn from(req: SysMenu) -> MenuResponse {
         MenuResponse {
             id: req.id,//主键
             uuid: req.uuid,//uuid
+            role_uuid: None,//角色uuid
             parent_uuid: req.parent_uuid,//父菜单uuid
             name: req.name,//菜单名
             url: req.url,//菜单url

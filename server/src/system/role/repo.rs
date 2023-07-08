@@ -1,12 +1,11 @@
 use std::ops::DerefMut;
 use diesel::{allow_tables_to_appear_in_same_query, ExpressionMethods, joinable, JoinOnDsl, OptionalExtension, QueryDsl, RunQueryDsl, SelectableHelper, TextExpressionMethods};
-use diesel::associations::HasTable;
 use diesel::result::Error;
 
 use crate::database;
-use crate::system::role::model::{SysRole, SysRoleOfUser};
+use crate::system::role::model::{SysRole};
 use crate::database::schema::sys_role::dsl::*;
-use crate::database::schema::{sys_menu, sys_role};
+use crate::database::schema::{sys_role};
 use crate::database::schema::sys_user_of_role::dsl::sys_user_of_role;
 use crate::database::schema::sys_user_of_role::user_uuid;
 

@@ -24,7 +24,7 @@ pub struct SysRole {
 #[derive(Debug,Serialize,Queryable,Identifiable,Selectable,Insertable,AsChangeset)]
 #[table_name = "sys_user_of_role"]
 //角色表 //2023-07-01T02:59:49
-pub struct SysRoleOfUser {
+pub struct SysUserOfRole {
     pub id: u64,//主键
     pub uuid: String,//uuid
     pub role_uuid: String,//uuid

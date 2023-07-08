@@ -1,5 +1,9 @@
+use std::collections::HashMap;
 use anyhow::bail;
 use crate::common::{request, response};
+use crate::system;
+use crate::system::menu;
+use crate::system::menu::response::MenuResponse;
 use crate::system::role::response::RoleResponse;
 use crate::system::role::model::SysRole;
 use crate::system::role::repo::RoleRepo;
@@ -62,10 +66,23 @@ impl RoleService {
     }
 
     pub fn get_by_user_uuid(&mut self, uid: String) -> Result<Vec<RoleResponse>, anyhow::Error> {
+        //查询所属角色
         let roles = self.repo.get_by_user_uuid(uid)?;
-        let ret = roles.into_iter().map(|d| RoleResponse::from(d)).collect();
+        let role_ids: Vec<String> = roles.iter().map(|role| role.uuid.clone()).collect();
+        let ret: Vec<RoleResponse> = roles.into_iter().map(|d| RoleResponse::from(d)).collect();
         //查询权限
-
+        let menus = menu::service::MenuService::default().get_by_role_uuids(role_ids)?;
+        //根据menus的role_uuid赋值给每个roles的menus字段vec
+        let mut menu_map: HashMap<String, Vec<MenuResponse>> = HashMap::new();
+        for menu in menus {
+            let menu_uuids: &mut Vec<MenuResponse> = menu_map.entry(menu.role_uuid.unwrap()).or_insert(Vec::new());
+            menu_uuids.push(menu);
+        }
+        //赋值给roles
+        for mut role_response in ret.into_iter() {
+            let menus = menu_map.get(&role_response.uuid).map_or(Vec::new(), |v:&Vec<MenuResponse>| v.clone());
+            role_response.menus = Option::from(menus)
+        }
         Ok(ret)
     }
 }

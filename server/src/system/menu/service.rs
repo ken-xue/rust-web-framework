@@ -1,5 +1,10 @@
+use std::process::id;
 use anyhow::bail;
+use diesel::{ExpressionMethods, JoinOnDsl, QueryDsl, SelectableHelper};
 use crate::common::{request, response};
+use crate::database::schema::sys_menu::dsl::sys_menu;
+use crate::database::schema::sys_menu::uuid;
+use crate::database::schema::sys_role_of_menu::dsl::sys_role_of_menu;
 use crate::system::menu::response::MenuResponse;
 use crate::system::menu::model::SysMenu;
 use crate::system::menu::repo::MenuRepo;
@@ -59,5 +64,11 @@ impl MenuService {
             Ok(_) => bail!("No SysMenu was deleted"),
             Err(e) => bail!("Error delete SysMenu by ids: {}", e),
         }
+    }
+
+    pub fn get_by_role_uuids(&mut self, ids: Vec<String>) -> Result<Vec<MenuResponse>,anyhow::Error> {
+        let menus = self.repo.get_by_role_uuids(ids)?;
+        let ret: Vec<MenuResponse> = menus.into_iter().map(|(k,v)| <SysMenu as Into<MenuResponse>>::into(v).set_menu_uuid(k)).collect();
+        Ok(ret)
     }
 }
