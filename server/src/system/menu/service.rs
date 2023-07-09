@@ -1,3 +1,4 @@
+use std::collections::HashSet;
 use std::process::id;
 use anyhow::bail;
 use diesel::{ExpressionMethods, JoinOnDsl, QueryDsl, SelectableHelper};
@@ -6,7 +7,7 @@ use crate::common::request::Page;
 use crate::database::schema::sys_menu::dsl::sys_menu;
 use crate::database::schema::sys_menu::uuid;
 use crate::database::schema::sys_role_of_menu::dsl::sys_role_of_menu;
-use crate::system::auth;
+use crate::system::{auth, role, user};
 use crate::system::menu::response::MenuResponse;
 use crate::system::menu::model::SysMenu;
 use crate::system::menu::repo::MenuRepo;
@@ -74,11 +75,35 @@ impl MenuService {
         Ok(ret)
     }
 
-    pub fn list(&mut self) -> Result<MenuResponse, anyhow::Error> {
+    pub fn list(&mut self) -> Result<Vec<MenuResponse>, anyhow::Error> {
         let username = auth::CURRENT_USER.with(|cell| {
             cell.borrow().clone()
         });
-        let resp = self.repo.get_by_id(1)?;
-        Ok(resp.into())
+        //查询角色和菜单
+        let user = user::service::UserService::default().get_by_username(username.unwrap())?;
+        // distinct all permission
+        let mut menu_set: HashSet<MenuResponse> = HashSet::new();
+        // 遍历user.roles，中的每一个 menus 的 perms字段加入permissions
+        if let Some(roles) = &user.roles {
+            for role in roles.iter() {
+                if let Some(menus) = &role.menus {
+                    for menu in menus {
+                        menu_set.insert(menu);
+                    }
+                }
+            }
+        }
+        let menus: Vec<&str> = menu_set.iter().map(|s| s.as_str()).collect();
+        //构建成菜单树
+        let tree_menus = self.tree(menus)?;
+        //
+        Ok(tree_menus)
+    }
+
+    // 构建菜单树：uuid->parent_uuid
+    pub fn tree(&mut self, menus: Vec<SysMenu>) -> Result<Vec<MenuResponse>, anyhow::Error> {
+        //TOOD
+        let list:Vec<MenuResponse> = Vec::new();
+        Ok(list)
     }
 }

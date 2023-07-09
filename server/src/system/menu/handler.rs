@@ -40,11 +40,11 @@ pub async fn delete(Json(r): Json<request::Delete>)  -> Result<impl IntoResponse
 
 // list 获取当前用户的菜单权限
 pub async fn list() -> Result<impl IntoResponse, AppError> {
-    // let response = service::MenuService::default().list()?;
+    let menus = service::MenuService::default().list()?;
     // Ok(response::success(response))
+    
+    
     let response: Vec<Menu> = serde_json::from_str(JSON_DATA).unwrap();
-    // let json_value = json!(JSON_DATA);
-    // let response = abc::get();
     Ok(response::success(response))
 }
 
