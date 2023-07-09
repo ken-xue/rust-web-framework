@@ -1,3 +1,5 @@
+import { Menu } from "@/router/types";
+
 /**
  * @description: Login interface parameters
  */
@@ -9,6 +11,9 @@ export interface LoginParams {
 export interface RoleInfo {
   roleName: string;
   value: string;
+  name: string;
+  uuid: string;
+  menus: Menu[];
 }
 
 /**

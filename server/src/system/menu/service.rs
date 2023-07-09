@@ -2,9 +2,11 @@ use std::process::id;
 use anyhow::bail;
 use diesel::{ExpressionMethods, JoinOnDsl, QueryDsl, SelectableHelper};
 use crate::common::{request, response};
+use crate::common::request::Page;
 use crate::database::schema::sys_menu::dsl::sys_menu;
 use crate::database::schema::sys_menu::uuid;
 use crate::database::schema::sys_role_of_menu::dsl::sys_role_of_menu;
+use crate::system::auth;
 use crate::system::menu::response::MenuResponse;
 use crate::system::menu::model::SysMenu;
 use crate::system::menu::repo::MenuRepo;
@@ -70,5 +72,13 @@ impl MenuService {
         let menus = self.repo.get_by_role_uuids(ids)?;
         let ret: Vec<MenuResponse> = menus.into_iter().map(|(k,v)| <SysMenu as Into<MenuResponse>>::into(v).set_menu_uuid(k)).collect();
         Ok(ret)
+    }
+
+    pub fn list(&mut self) -> Result<MenuResponse, anyhow::Error> {
+        let username = auth::CURRENT_USER.with(|cell| {
+            cell.borrow().clone()
+        });
+        let resp = self.repo.get_by_id(1)?;
+        Ok(resp.into())
     }
 }

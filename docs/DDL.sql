@@ -1,12 +1,33 @@
+-- MySQL dump 10.13  Distrib 5.7.28, for macos10.14 (x86_64)
+--
+-- Host: 127.0.0.1    Database: rwf
+-- ------------------------------------------------------
+-- Server version	5.7.28
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `sys_captcha`
+--
+
 DROP TABLE IF EXISTS `sys_captcha`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `sys_captcha` (
-                               `uuid` char(36) NOT NULL COMMENT 'uuid',
-                               `code` varchar(6) NOT NULL COMMENT '验证码',
-                               `expire_time` datetime DEFAULT NULL COMMENT '过期时间',
-                               `id` bigint(20) NOT NULL AUTO_INCREMENT,
-                               PRIMARY KEY (`id`)
+  `uuid` char(36) NOT NULL COMMENT 'uuid',
+  `code` varchar(6) NOT NULL COMMENT '验证码',
+  `expire_time` datetime DEFAULT NULL COMMENT '过期时间',
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='系统验证码';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -27,11 +48,11 @@ DROP TABLE IF EXISTS `sys_dictionary`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `sys_dictionary` (
-                                  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-                                  `key` varchar(200) DEFAULT NULL COMMENT '查询的key',
-                                  `value` text COMMENT '字典值',
-                                  `fixed` tinyint(1) DEFAULT '1' COMMENT '是否可更改',
-                                  PRIMARY KEY (`id`)
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `key` varchar(200) DEFAULT NULL COMMENT '查询的key',
+  `value` text COMMENT '字典值',
+  `fixed` tinyint(1) DEFAULT '1' COMMENT '是否可更改',
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -52,15 +73,15 @@ DROP TABLE IF EXISTS `sys_log`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `sys_log` (
-                           `id` bigint(20) NOT NULL AUTO_INCREMENT,
-                           `username` varchar(50) DEFAULT NULL COMMENT '用户名',
-                           `operation` varchar(50) DEFAULT NULL COMMENT '用户操作',
-                           `method` varchar(200) DEFAULT NULL COMMENT '请求方法',
-                           `params` varchar(5000) DEFAULT NULL COMMENT '请求参数',
-                           `execute_time` bigint(20) NOT NULL COMMENT '执行时长(毫秒)',
-                           `ip` varchar(64) DEFAULT NULL COMMENT 'IP地址',
-                           `occur_time` timestamp NULL DEFAULT NULL COMMENT '发生时间',
-                           PRIMARY KEY (`id`)
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `username` varchar(50) DEFAULT NULL COMMENT '用户名',
+  `operation` varchar(50) DEFAULT NULL COMMENT '用户操作',
+  `method` varchar(200) DEFAULT NULL COMMENT '请求方法',
+  `params` varchar(5000) DEFAULT NULL COMMENT '请求参数',
+  `execute_time` bigint(20) NOT NULL COMMENT '执行时长(毫秒)',
+  `ip` varchar(64) DEFAULT NULL COMMENT 'IP地址',
+  `occur_time` timestamp NULL DEFAULT NULL COMMENT '发生时间',
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COMMENT='系统日志';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -70,7 +91,7 @@ CREATE TABLE `sys_log` (
 
 LOCK TABLES `sys_log` WRITE;
 /*!40000 ALTER TABLE `sys_log` DISABLE KEYS */;
-INSERT INTO `sys_log` VALUES (1,'mikey','修改菜单','io.dev.admin.adapter.rest.sys.MenuController.update()','[{\"menuCO\":{\"creator\":\"admin\",\"deleted\":false,\"gmtCreate\":1638345181000,\"gmtModified\":1638345181000,\"id\":50,\"menuIcon\":\"excel\",\"menuName\":\"表单生成\",\"menuOrder\":0,\"menuParentName\":\"开发工具\",\"menuParentUuid\":\"93f101be493d11ecb7c2543344556776\",\"menuPerms\":\"aaaaa\",\"menuType\":1,\"menuUrl\":\"dev/form\",\"modifier\":\"admin\",\"uuid\":\"4a6ddb331d464050ac87f8c13f57facc\"},\"needsOperator\":false}]',76,'127.0.0.1','2021-12-09 06:42:39'),(2,'mikey','修改菜单','io.dev.admin.adapter.rest.sys.MenuController.update()','[{\"menuCO\":{\"deleted\":false,\"gmtCreate\":1637357736000,\"gmtModified\":1637357736000,\"id\":23,\"menuIcon\":\"list\",\"menuName\":\"菜单管理\",\"menuOrder\":1,\"menuParentName\":\"系统管理\",\"menuParentUuid\":\"93f101be493d11ecb7c254334455677\",\"menuType\":1,\"menuUrl\":\"sys/menu\",\"uuid\":\"93ebbcb2493d11ecb7c254e1ad134d77\"},\"needsOperator\":false}]',26,'127.0.0.1','2021-12-09 06:42:41'),(3,'mikey','修改菜单','io.dev.admin.adapter.rest.sys.MenuController.update()','[{\"menuCO\":{\"deleted\":false,\"gmtCreate\":1638316144000,\"gmtModified\":1638316144000,\"id\":45,\"menuIcon\":\"user\",\"menuName\":\"用户管理\",\"menuOrder\":6,\"menuParentName\":\"系统管理\",\"menuParentUuid\":\"93f101be493d11ecb7c254334455677\",\"menuType\":1,\"menuUrl\":\"sys/user\",\"uuid\":\"0bb9b97e51f511eca3306106f8cc1608\"},\"needsOperator\":false}]',8,'127.0.0.1','2021-12-09 06:42:43'),(4,'mikey','修改菜单','io.dev.admin.adapter.rest.sys.MenuController.update()','[{\"menuCO\":{\"deleted\":false,\"gmtCreate\":1638374380000,\"gmtModified\":1638374380000,\"id\":51,\"menuIcon\":\"documentation\",\"menuName\":\"系统日志\",\"menuOrder\":10,\"menuParentName\":\"系统管理\",\"menuParentUuid\":\"93f101be493d11ecb7c254334455677\",\"menuType\":1,\"menuUrl\":\"sys/log\",\"uuid\":\"a2fd81e4527c11ecb2ccd76ea2e07fd8\"},\"needsOperator\":false}]',15,'127.0.0.1','2021-12-09 06:42:44'),(5,'mikey','修改菜单','io.dev.admin.adapter.rest.sys.MenuController.update()','[{\"menuCO\":{\"deleted\":false,\"gmtCreate\":1637357729000,\"gmtModified\":1637357729000,\"id\":18,\"menuIcon\":\"peoples\",\"menuName\":\"角色管理\",\"menuOrder\":0,\"menuParentName\":\"系统管理\",\"menuParentUuid\":\"93f101be493d11ecb7c254334455677\",\"menuType\":1,\"menuUrl\":\"sys/role\",\"uuid\":\"8fc52771493d11ecb7c254e1ad134d77\"},\"needsOperator\":false}]',9,'127.0.0.1','2021-12-09 06:42:46'),(6,'admin','添加菜单','io.dev.admin.adapter.rest.sys.MenuController.add()','[{\"menuDTO\":{\"menuIcon\":\"skill\",\"menuName\":\"代码生成\",\"menuOrder\":0,\"menuParentName\":\"开发工具\",\"menuParentUuid\":\"93f101be493d11ecb7c2543344556776\",\"menuPerms\":\"\",\"menuType\":1,\"menuUrl\":\"dev/code\",\"uuid\":\"\"},\"needsOperator\":false}]',7,'127.0.0.1','2021-12-09 06:42:48'),(7,'admin','添加菜单','io.ddd.framework.adapter.rest.sys.MenuController.add()','[{\"menuDTO\":{\"menuIcon\":\"money\",\"menuName\":\"目录1\",\"menuOrder\":0,\"menuParentName\":\"一级菜单\",\"menuParentUuid\":\"0\",\"menuPerms\":\"\",\"menuType\":0,\"menuUrl\":\"\",\"uuid\":\"\"},\"needsOperator\":false}]',5,'127.0.0.1','2021-12-12 01:07:30'),(8,'admin','添加菜单','io.ddd.framework.adapter.rest.sys.MenuController.add()','[{\"menuDTO\":{\"menuIcon\":\"bug\",\"menuName\":\"菜单1\",\"menuOrder\":1,\"menuParentName\":\"目录1\",\"menuParentUuid\":\"adf97607dbcc4de8b258ea17fc5af5ea\",\"menuPerms\":\"大的\",\"menuType\":1,\"menuUrl\":\"sys/helo\",\"uuid\":\"\"},\"needsOperator\":false}]',13,'127.0.0.1','2021-12-12 01:08:52'),(9,'admin','添加菜单','io.ddd.framework.adapter.rest.sys.MenuController.add()','[{\"menuDTO\":{\"menuIcon\":\"nested\",\"menuName\":\"目录2\",\"menuOrder\":3,\"menuParentName\":\"一级菜单\",\"menuParentUuid\":\"0\",\"menuPerms\":\"\",\"menuType\":0,\"menuUrl\":\"\",\"uuid\":\"\"},\"needsOperator\":false}]',7,'127.0.0.1','2021-12-12 01:30:14'),(10,'admin','添加菜单','io.ddd.framework.adapter.rest.sys.MenuController.add()','[{\"menuDTO\":{\"menuIcon\":\"excel\",\"menuName\":\"菜单2\",\"menuOrder\":0,\"menuParentName\":\"目录2\",\"menuParentUuid\":\"43061d67000e47de85346d3cc0b0a5b7\",\"menuPerms\":\"asdfa\",\"menuType\":1,\"menuUrl\":\"/hello\",\"uuid\":\"\"},\"needsOperator\":false}]',5,'127.0.0.1','2021-12-12 01:30:48');
+INSERT INTO `sys_log` VALUES (1,'mikey','修改菜单','io.dev.admin.adapter.rest.sys.MenuController.update()','[{\"menuCO\":{\"creator\":\"admin\",\"deleted\":false,\"gmtCreate\":1638345181000,\"gmtModified\":1638345181000,\"id\":50,\"menuIcon\":\"excel\",\"menuName\":\"表单生成\",\"menuOrder\":0,\"menuParentName\":\"开发工具\",\"menuParentUuid\":\"93f101be493d11ecb7c2543344556776\",\"menuPerms\":\"aaaaa\",\"menuType\":1,\"menuUrl\":\"dev/form\",\"modifier\":\"admin\",\"uuid\":\"4a6ddb331d464050ac87f8c13f57facc\"},\"needsOperator\":false}]',76,'127.0.0.1','2021-12-08 22:42:39'),(2,'mikey','修改菜单','io.dev.admin.adapter.rest.sys.MenuController.update()','[{\"menuCO\":{\"deleted\":false,\"gmtCreate\":1637357736000,\"gmtModified\":1637357736000,\"id\":23,\"menuIcon\":\"list\",\"menuName\":\"菜单管理\",\"menuOrder\":1,\"menuParentName\":\"系统管理\",\"menuParentUuid\":\"93f101be493d11ecb7c254334455677\",\"menuType\":1,\"menuUrl\":\"sys/menu\",\"uuid\":\"93ebbcb2493d11ecb7c254e1ad134d77\"},\"needsOperator\":false}]',26,'127.0.0.1','2021-12-08 22:42:41'),(3,'mikey','修改菜单','io.dev.admin.adapter.rest.sys.MenuController.update()','[{\"menuCO\":{\"deleted\":false,\"gmtCreate\":1638316144000,\"gmtModified\":1638316144000,\"id\":45,\"menuIcon\":\"user\",\"menuName\":\"用户管理\",\"menuOrder\":6,\"menuParentName\":\"系统管理\",\"menuParentUuid\":\"93f101be493d11ecb7c254334455677\",\"menuType\":1,\"menuUrl\":\"sys/user\",\"uuid\":\"0bb9b97e51f511eca3306106f8cc1608\"},\"needsOperator\":false}]',8,'127.0.0.1','2021-12-08 22:42:43'),(4,'mikey','修改菜单','io.dev.admin.adapter.rest.sys.MenuController.update()','[{\"menuCO\":{\"deleted\":false,\"gmtCreate\":1638374380000,\"gmtModified\":1638374380000,\"id\":51,\"menuIcon\":\"documentation\",\"menuName\":\"系统日志\",\"menuOrder\":10,\"menuParentName\":\"系统管理\",\"menuParentUuid\":\"93f101be493d11ecb7c254334455677\",\"menuType\":1,\"menuUrl\":\"sys/log\",\"uuid\":\"a2fd81e4527c11ecb2ccd76ea2e07fd8\"},\"needsOperator\":false}]',15,'127.0.0.1','2021-12-08 22:42:44'),(5,'mikey','修改菜单','io.dev.admin.adapter.rest.sys.MenuController.update()','[{\"menuCO\":{\"deleted\":false,\"gmtCreate\":1637357729000,\"gmtModified\":1637357729000,\"id\":18,\"menuIcon\":\"peoples\",\"menuName\":\"角色管理\",\"menuOrder\":0,\"menuParentName\":\"系统管理\",\"menuParentUuid\":\"93f101be493d11ecb7c254334455677\",\"menuType\":1,\"menuUrl\":\"sys/role\",\"uuid\":\"8fc52771493d11ecb7c254e1ad134d77\"},\"needsOperator\":false}]',9,'127.0.0.1','2021-12-08 22:42:46'),(6,'admin','添加菜单','io.dev.admin.adapter.rest.sys.MenuController.add()','[{\"menuDTO\":{\"menuIcon\":\"skill\",\"menuName\":\"代码生成\",\"menuOrder\":0,\"menuParentName\":\"开发工具\",\"menuParentUuid\":\"93f101be493d11ecb7c2543344556776\",\"menuPerms\":\"\",\"menuType\":1,\"menuUrl\":\"dev/code\",\"uuid\":\"\"},\"needsOperator\":false}]',7,'127.0.0.1','2021-12-08 22:42:48'),(7,'admin','添加菜单','io.ddd.framework.adapter.rest.sys.MenuController.add()','[{\"menuDTO\":{\"menuIcon\":\"money\",\"menuName\":\"目录1\",\"menuOrder\":0,\"menuParentName\":\"一级菜单\",\"menuParentUuid\":\"0\",\"menuPerms\":\"\",\"menuType\":0,\"menuUrl\":\"\",\"uuid\":\"\"},\"needsOperator\":false}]',5,'127.0.0.1','2021-12-11 17:07:30'),(8,'admin','添加菜单','io.ddd.framework.adapter.rest.sys.MenuController.add()','[{\"menuDTO\":{\"menuIcon\":\"bug\",\"menuName\":\"菜单1\",\"menuOrder\":1,\"menuParentName\":\"目录1\",\"menuParentUuid\":\"adf97607dbcc4de8b258ea17fc5af5ea\",\"menuPerms\":\"大的\",\"menuType\":1,\"menuUrl\":\"sys/helo\",\"uuid\":\"\"},\"needsOperator\":false}]',13,'127.0.0.1','2021-12-11 17:08:52'),(9,'admin','添加菜单','io.ddd.framework.adapter.rest.sys.MenuController.add()','[{\"menuDTO\":{\"menuIcon\":\"nested\",\"menuName\":\"目录2\",\"menuOrder\":3,\"menuParentName\":\"一级菜单\",\"menuParentUuid\":\"0\",\"menuPerms\":\"\",\"menuType\":0,\"menuUrl\":\"\",\"uuid\":\"\"},\"needsOperator\":false}]',7,'127.0.0.1','2021-12-11 17:30:14'),(10,'admin','添加菜单','io.ddd.framework.adapter.rest.sys.MenuController.add()','[{\"menuDTO\":{\"menuIcon\":\"excel\",\"menuName\":\"菜单2\",\"menuOrder\":0,\"menuParentName\":\"目录2\",\"menuParentUuid\":\"43061d67000e47de85346d3cc0b0a5b7\",\"menuPerms\":\"asdfa\",\"menuType\":1,\"menuUrl\":\"/hello\",\"uuid\":\"\"},\"needsOperator\":false}]',5,'127.0.0.1','2021-12-11 17:30:48');
 /*!40000 ALTER TABLE `sys_log` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -82,23 +103,24 @@ DROP TABLE IF EXISTS `sys_menu`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `sys_menu` (
-                            `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
-                            `uuid` varchar(32) DEFAULT NULL COMMENT 'uuid',
-                            `parent_uuid` varchar(32) DEFAULT NULL COMMENT '父菜单uuid',
-                            `name` varchar(64) DEFAULT NULL COMMENT '菜单名',
-                            `url` varchar(200) DEFAULT NULL COMMENT '菜单url',
-                            `perms` varchar(200) DEFAULT NULL COMMENT '授权标识',
-                            `menu_type` varchar(1) DEFAULT NULL COMMENT '0:目录 1:菜单 2:按钮',
-                            `icon` varchar(20) DEFAULT NULL COMMENT '图标',
-                            `order` int(11) DEFAULT NULL COMMENT '排序',
-                            `remark` varchar(64) DEFAULT NULL COMMENT '备注',
-                            `creator` varchar(64) DEFAULT NULL COMMENT '创建人',
-                            `modifier` varchar(64) DEFAULT NULL COMMENT '修改人',
-                            `gmt_create` datetime NOT NULL COMMENT '创建时间',
-                            `gmt_modified` datetime NOT NULL COMMENT '修改时间',
-                            `deleted` tinyint(1) NOT NULL DEFAULT '0' COMMENT '逻辑删除',
-                            PRIMARY KEY (`id`),
-                            KEY `idx_menu_id` (`id`)
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `uuid` varchar(32) NOT NULL COMMENT 'uuid',
+  `parent_uuid` varchar(32) DEFAULT NULL COMMENT '父菜单uuid',
+  `name` varchar(64) DEFAULT NULL COMMENT '菜单名',
+  `path` varchar(200) DEFAULT NULL COMMENT '前端路由路径',
+  `api` varchar(200) DEFAULT NULL COMMENT '后端接口api',
+  `method` varchar(50) DEFAULT NULL COMMENT 'api方法',
+  `menu_type` varchar(1) DEFAULT NULL COMMENT '0:目录 1:菜单 2:按钮',
+  `icon` varchar(20) DEFAULT NULL COMMENT '图标',
+  `order` int(11) DEFAULT NULL COMMENT '排序',
+  `remark` varchar(64) DEFAULT NULL COMMENT '备注',
+  `creator` varchar(64) DEFAULT NULL COMMENT '创建人',
+  `modifier` varchar(64) DEFAULT NULL COMMENT '修改人',
+  `gmt_create` datetime NOT NULL COMMENT '创建时间',
+  `gmt_modified` datetime NOT NULL COMMENT '修改时间',
+  `deleted` tinyint(1) NOT NULL DEFAULT '0' COMMENT '逻辑删除',
+  PRIMARY KEY (`id`),
+  KEY `idx_menu_id` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=61 DEFAULT CHARSET=utf8mb4 COMMENT='菜单表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -108,7 +130,7 @@ CREATE TABLE `sys_menu` (
 
 LOCK TABLES `sys_menu` WRITE;
 /*!40000 ALTER TABLE `sys_menu` DISABLE KEYS */;
-INSERT INTO `sys_menu` VALUES (8,'87351d5e493d11ecb7c254e1ad134d77','93f101be493d11ecb7c254334455677','用户关联角色','sys/userofrole',NULL,'1','icon',6,NULL,NULL,'admin','2021-11-19 21:35:15','2021-11-19 21:35:15',1),(9,'87362493493d11ecb7c254e1ad134d77','87351d5e493d11ecb7c254e1ad134d77','查看',NULL,'sys:userofrole:info,sys:userofrole:page','2',NULL,6,NULL,NULL,NULL,'2021-11-19 21:35:15','2021-11-19 21:35:15',1),(10,'87383f93493d11ecb7c254e1ad134d77','87351d5e493d11ecb7c254e1ad134d77','新增',NULL,'sys:userofrole:add','2',NULL,6,NULL,NULL,NULL,'2021-11-19 21:35:15','2021-11-19 21:35:15',1),(11,'87393320493d11ecb7c254e1ad134d77','87351d5e493d11ecb7c254e1ad134d77','修改',NULL,'sys:userofrole:update','2',NULL,6,NULL,NULL,NULL,'2021-11-19 21:35:15','2021-11-19 21:35:15',1),(12,'873a1d50493d11ecb7c254e1ad134d77','87351d5e493d11ecb7c254e1ad134d77','删除',NULL,'sys:userofrole:delete','2',NULL,6,NULL,NULL,NULL,'2021-11-19 21:35:15','2021-11-19 21:35:15',1),(13,'8b916d0f493d11ecb7c254e1ad134d77','93f101be493d11ecb7c254334455677','角色关联菜单','sys/roleofmenu',NULL,'1','icon',6,NULL,NULL,'admin','2021-11-19 21:35:22','2021-11-19 21:35:22',1),(14,'8b93f7dc493d11ecb7c254e1ad134d77','8b916d0f493d11ecb7c254e1ad134d77','查看',NULL,'sys:roleofmenu:info,sys:roleofmenu:page','2',NULL,6,NULL,NULL,NULL,'2021-11-19 21:35:22','2021-11-19 21:35:22',1),(15,'8b94d734493d11ecb7c254e1ad134d77','8b916d0f493d11ecb7c254e1ad134d77','新增',NULL,'sys:roleofmenu:add','2',NULL,6,NULL,NULL,NULL,'2021-11-19 21:35:22','2021-11-19 21:35:22',1),(16,'8b95bc40493d11ecb7c254e1ad134d77','8b916d0f493d11ecb7c254e1ad134d77','修改',NULL,'sys:roleofmenu:update','2',NULL,6,NULL,NULL,NULL,'2021-11-19 21:35:22','2021-11-19 21:35:22',1),(17,'8b96995a493d11ecb7c254e1ad134d77','8b916d0f493d11ecb7c254e1ad134d77','删除',NULL,'sys:roleofmenu:delete','2',NULL,6,NULL,NULL,NULL,'2021-11-19 21:35:22','2021-11-19 21:35:22',1),(18,'8fc52771493d11ecb7c254e1ad134d77','93f101be493d11ecb7c254334455677','角色管理','sys/role',NULL,'1','peoples',0,NULL,NULL,NULL,'2021-11-19 21:35:29','2021-11-19 21:35:29',0),(19,'8fc6eb1a493d11ecb7c254e1ad134d77','8fc52771493d11ecb7c254e1ad134d77','查看',NULL,'sys:role:info,sys:role:page,sys:role:list','2',NULL,6,NULL,NULL,NULL,'2021-11-19 21:35:29','2021-11-19 21:35:29',0),(20,'8fc89835493d11ecb7c254e1ad134d77','8fc52771493d11ecb7c254e1ad134d77','新增',NULL,'sys:role:add','2',NULL,6,NULL,NULL,NULL,'2021-11-19 21:35:29','2021-11-19 21:35:29',0),(21,'8fc99a2d493d11ecb7c254e1ad134d77','8fc52771493d11ecb7c254e1ad134d77','修改',NULL,'sys:role:update','2',NULL,6,NULL,NULL,NULL,'2021-11-19 21:35:29','2021-11-19 21:35:29',0),(22,'8fcaa825493d11ecb7c254e1ad134d77','8fc52771493d11ecb7c254e1ad134d77','删除',NULL,'sys:role:delete','2',NULL,6,NULL,NULL,NULL,'2021-11-19 21:35:29','2021-11-19 21:35:29',0),(23,'93ebbcb2493d11ecb7c254e1ad134d77','93f101be493d11ecb7c254334455677','菜单管理','sys/menu',NULL,'1','list',1,NULL,NULL,NULL,'2021-11-19 21:35:36','2021-11-19 21:35:36',0),(24,'93ed48f8493d11ecb7c254e1ad134d77','93ebbcb2493d11ecb7c254e1ad134d77','查看',NULL,'sys:menu:info,sys:menu:page,sys:menu:list,sys:menu:select','2',NULL,6,NULL,NULL,NULL,'2021-11-19 21:35:36','2021-11-19 21:35:36',0),(25,'93ee29b6493d11ecb7c254e1ad134d77','93ebbcb2493d11ecb7c254e1ad134d77','新增',NULL,'sys:menu:add','2',NULL,6,NULL,NULL,NULL,'2021-11-19 21:35:36','2021-11-19 21:35:36',0),(26,'93f00a10493d11ecb7c254e1ad134d77','93ebbcb2493d11ecb7c254e1ad134d77','修改',NULL,'sys:menu:update','2',NULL,6,NULL,NULL,NULL,'2021-11-19 21:35:36','2021-11-19 21:35:36',0),(27,'93f101be493d11ecb7c254e1ad134d77','93ebbcb2493d11ecb7c254e1ad134d77','删除',NULL,'sys:menu:delete','2',NULL,6,NULL,NULL,NULL,'2021-11-19 21:35:36','2021-11-19 21:35:36',0),(28,'93f101be493d11ecb7c254334455677','0','系统管理',NULL,NULL,'0','example',1,NULL,NULL,NULL,'2021-11-19 21:35:36','2021-11-19 21:35:36',0),(29,'93f101be493d11ecb7c2543344556776','0','开发工具',NULL,NULL,'0','bug',2,NULL,NULL,NULL,'2021-11-19 21:35:36','2021-11-19 21:35:36',0),(45,'0bb9b97e51f511eca3306106f8cc1608','93f101be493d11ecb7c254334455677','用户管理','sys/user',NULL,'1','user',6,NULL,NULL,NULL,'2021-11-30 23:49:04','2021-11-30 23:49:04',0),(46,'0bbe311651f511eca3306106f8cc1608','0bb9b97e51f511eca3306106f8cc1608','查看',NULL,'sys:user:page,sys:user:info','2',NULL,6,NULL,NULL,NULL,'2021-11-30 23:49:04','2021-11-30 23:49:04',0),(47,'0bbf3e9e51f511eca3306106f8cc1608','0bb9b97e51f511eca3306106f8cc1608','新增',NULL,'sys:user:add','2',NULL,6,NULL,NULL,NULL,'2021-11-30 23:49:04','2021-11-30 23:49:04',0),(48,'0bc18ab451f511eca3306106f8cc1608','0bb9b97e51f511eca3306106f8cc1608','修改',NULL,'sys:user:update','2',NULL,6,NULL,NULL,NULL,'2021-11-30 23:49:04','2021-11-30 23:49:04',0),(49,'0bc60ce251f511eca3306106f8cc1608','0bb9b97e51f511eca3306106f8cc1608','删除',NULL,'sys:user:delete','2',NULL,6,NULL,NULL,NULL,'2021-11-30 23:49:04','2021-11-30 23:49:04',0),(50,'4a6ddb331d464050ac87f8c13f57facc','93f101be493d11ecb7c2543344556776','表单生成','dev/form','aaaaa','1','excel',0,NULL,'admin','admin','2021-12-01 07:53:01','2021-12-01 07:53:01',0),(51,'a2fd81e4527c11ecb2ccd76ea2e07fd8','93f101be493d11ecb7c254334455677','系统日志','sys/log',NULL,'1','documentation',10,NULL,NULL,NULL,'2021-12-01 15:59:40','2021-12-01 15:59:40',0),(52,'a329b368527c11ecb2ccd76ea2e07fd8','a2fd81e4527c11ecb2ccd76ea2e07fd8','查看',NULL,'sys:log:page,sys:log:info','2',NULL,6,NULL,NULL,NULL,'2021-12-01 15:59:40','2021-12-01 15:59:40',0),(53,'a32e88ca527c11ecb2ccd76ea2e07fd8','a2fd81e4527c11ecb2ccd76ea2e07fd8','新增',NULL,'sys:log:save','2',NULL,6,NULL,NULL,NULL,'2021-12-01 15:59:40','2021-12-01 15:59:40',0),(54,'a330ec3c527c11ecb2ccd76ea2e07fd8','a2fd81e4527c11ecb2ccd76ea2e07fd8','修改',NULL,'sys:log:update','2',NULL,6,NULL,NULL,NULL,'2021-12-01 15:59:40','2021-12-01 15:59:40',0),(55,'a3332a60527c11ecb2ccd76ea2e07fd8','a2fd81e4527c11ecb2ccd76ea2e07fd8','删除',NULL,'sys:log:delete','2',NULL,6,NULL,NULL,NULL,'2021-12-01 15:59:40','2021-12-01 15:59:40',0),(56,'8331d5f0900444109edc6cd83e54032e','93f101be493d11ecb7c2543344556776','代码生成','dev/code','','1','skill',0,NULL,'admin','admin','2021-12-09 06:21:28','2021-12-09 06:21:28',0),(57,'adf97607dbcc4de8b258ea17fc5af5ea','0','目录1','','','0','money',0,NULL,'admin','admin','2021-12-12 09:07:30','2021-12-12 09:07:30',0),(58,'d8c39450c345451cae92ff6fd82b5637','adf97607dbcc4de8b258ea17fc5af5ea','菜单1','sys/helo','大的','1','bug',1,NULL,'admin','admin','2021-12-12 09:08:52','2021-12-12 09:08:52',0),(59,'43061d67000e47de85346d3cc0b0a5b7','0','目录2','','','0','nested',3,NULL,'admin','admin','2021-12-12 09:30:14','2021-12-12 09:30:14',0),(60,'914552cf998c4624a3bb980169c2d015','43061d67000e47de85346d3cc0b0a5b7','菜单2','hello','asdfa','1','excel',0,NULL,'admin','admin','2021-12-12 09:30:48','2021-12-12 09:30:48',0);
+INSERT INTO `sys_menu` VALUES (8,'87351d5e493d11ecb7c254e1ad134d77','93f101be493d11ecb7c254334455677','用户关联角色','sys/userofrole',NULL,NULL,'1','icon',6,NULL,NULL,'admin','2021-11-19 21:35:15','2021-11-19 21:35:15',1),(9,'87362493493d11ecb7c254e1ad134d77','87351d5e493d11ecb7c254e1ad134d77','查看',NULL,'sys:userofrole:info,sys:userofrole:page',NULL,'2',NULL,6,NULL,NULL,NULL,'2021-11-19 21:35:15','2021-11-19 21:35:15',1),(10,'87383f93493d11ecb7c254e1ad134d77','87351d5e493d11ecb7c254e1ad134d77','新增',NULL,'sys:userofrole:add',NULL,'2',NULL,6,NULL,NULL,NULL,'2021-11-19 21:35:15','2021-11-19 21:35:15',1),(11,'87393320493d11ecb7c254e1ad134d77','87351d5e493d11ecb7c254e1ad134d77','修改',NULL,'sys:userofrole:update',NULL,'2',NULL,6,NULL,NULL,NULL,'2021-11-19 21:35:15','2021-11-19 21:35:15',1),(12,'873a1d50493d11ecb7c254e1ad134d77','87351d5e493d11ecb7c254e1ad134d77','删除',NULL,'sys:userofrole:delete',NULL,'2',NULL,6,NULL,NULL,NULL,'2021-11-19 21:35:15','2021-11-19 21:35:15',1),(13,'8b916d0f493d11ecb7c254e1ad134d77','93f101be493d11ecb7c254334455677','角色关联菜单','sys/roleofmenu',NULL,NULL,'1','icon',6,NULL,NULL,'admin','2021-11-19 21:35:22','2021-11-19 21:35:22',1),(14,'8b93f7dc493d11ecb7c254e1ad134d77','8b916d0f493d11ecb7c254e1ad134d77','查看',NULL,'sys:roleofmenu:info,sys:roleofmenu:page',NULL,'2',NULL,6,NULL,NULL,NULL,'2021-11-19 21:35:22','2021-11-19 21:35:22',1),(15,'8b94d734493d11ecb7c254e1ad134d77','8b916d0f493d11ecb7c254e1ad134d77','新增',NULL,'sys:roleofmenu:add',NULL,'2',NULL,6,NULL,NULL,NULL,'2021-11-19 21:35:22','2021-11-19 21:35:22',1),(16,'8b95bc40493d11ecb7c254e1ad134d77','8b916d0f493d11ecb7c254e1ad134d77','修改',NULL,'sys:roleofmenu:update',NULL,'2',NULL,6,NULL,NULL,NULL,'2021-11-19 21:35:22','2021-11-19 21:35:22',1),(17,'8b96995a493d11ecb7c254e1ad134d77','8b916d0f493d11ecb7c254e1ad134d77','删除',NULL,'sys:roleofmenu:delete',NULL,'2',NULL,6,NULL,NULL,NULL,'2021-11-19 21:35:22','2021-11-19 21:35:22',1),(18,'8fc52771493d11ecb7c254e1ad134d77','93f101be493d11ecb7c254334455677','角色管理','sys/role',NULL,NULL,'1','peoples',0,NULL,NULL,NULL,'2021-11-19 21:35:29','2021-11-19 21:35:29',0),(19,'8fc6eb1a493d11ecb7c254e1ad134d77','8fc52771493d11ecb7c254e1ad134d77','查看',NULL,'sys:role:info,sys:role:page,sys:role:list',NULL,'2',NULL,6,NULL,NULL,NULL,'2021-11-19 21:35:29','2021-11-19 21:35:29',0),(20,'8fc89835493d11ecb7c254e1ad134d77','8fc52771493d11ecb7c254e1ad134d77','新增',NULL,'sys:role:add',NULL,'2',NULL,6,NULL,NULL,NULL,'2021-11-19 21:35:29','2021-11-19 21:35:29',0),(21,'8fc99a2d493d11ecb7c254e1ad134d77','8fc52771493d11ecb7c254e1ad134d77','修改',NULL,'sys:role:update',NULL,'2',NULL,6,NULL,NULL,NULL,'2021-11-19 21:35:29','2021-11-19 21:35:29',0),(22,'8fcaa825493d11ecb7c254e1ad134d77','8fc52771493d11ecb7c254e1ad134d77','删除',NULL,'sys:role:delete',NULL,'2',NULL,6,NULL,NULL,NULL,'2021-11-19 21:35:29','2021-11-19 21:35:29',0),(23,'93ebbcb2493d11ecb7c254e1ad134d77','93f101be493d11ecb7c254334455677','菜单管理','sys/menu',NULL,NULL,'1','list',1,NULL,NULL,NULL,'2021-11-19 21:35:36','2021-11-19 21:35:36',0),(24,'93ed48f8493d11ecb7c254e1ad134d77','93ebbcb2493d11ecb7c254e1ad134d77','查看',NULL,'sys:menu:info,sys:menu:page,sys:menu:list,sys:menu:select',NULL,'2',NULL,6,NULL,NULL,NULL,'2021-11-19 21:35:36','2021-11-19 21:35:36',0),(25,'93ee29b6493d11ecb7c254e1ad134d77','93ebbcb2493d11ecb7c254e1ad134d77','新增',NULL,'sys:menu:add',NULL,'2',NULL,6,NULL,NULL,NULL,'2021-11-19 21:35:36','2021-11-19 21:35:36',0),(26,'93f00a10493d11ecb7c254e1ad134d77','93ebbcb2493d11ecb7c254e1ad134d77','修改',NULL,'sys:menu:update',NULL,'2',NULL,6,NULL,NULL,NULL,'2021-11-19 21:35:36','2021-11-19 21:35:36',0),(27,'93f101be493d11ecb7c254e1ad134d77','93ebbcb2493d11ecb7c254e1ad134d77','删除',NULL,'sys:menu:delete',NULL,'2',NULL,6,NULL,NULL,NULL,'2021-11-19 21:35:36','2021-11-19 21:35:36',0),(28,'93f101be493d11ecb7c254334455677','0','系统管理',NULL,NULL,NULL,'0','example',1,NULL,NULL,NULL,'2021-11-19 21:35:36','2021-11-19 21:35:36',0),(29,'93f101be493d11ecb7c2543344556776','0','开发工具',NULL,NULL,NULL,'0','bug',2,NULL,NULL,NULL,'2021-11-19 21:35:36','2021-11-19 21:35:36',0),(45,'0bb9b97e51f511eca3306106f8cc1608','93f101be493d11ecb7c254334455677','用户管理','sys/user',NULL,NULL,'1','user',6,NULL,NULL,NULL,'2021-11-30 23:49:04','2021-11-30 23:49:04',0),(46,'0bbe311651f511eca3306106f8cc1608','0bb9b97e51f511eca3306106f8cc1608','查看',NULL,'/api/v1/system/user/info','GET','2',NULL,6,NULL,NULL,NULL,'2021-11-30 23:49:04','2021-11-30 23:49:04',0),(47,'0bbf3e9e51f511eca3306106f8cc1608','0bb9b97e51f511eca3306106f8cc1608','新增',NULL,'sys:user:add',NULL,'2',NULL,6,NULL,NULL,NULL,'2021-11-30 23:49:04','2021-11-30 23:49:04',0),(48,'0bc18ab451f511eca3306106f8cc1608','0bb9b97e51f511eca3306106f8cc1608','修改',NULL,'sys:user:update',NULL,'2',NULL,6,NULL,NULL,NULL,'2021-11-30 23:49:04','2021-11-30 23:49:04',0),(49,'0bc60ce251f511eca3306106f8cc1608','0bb9b97e51f511eca3306106f8cc1608','删除',NULL,'sys:user:delete',NULL,'2',NULL,6,NULL,NULL,NULL,'2021-11-30 23:49:04','2021-11-30 23:49:04',0),(50,'4a6ddb331d464050ac87f8c13f57facc','93f101be493d11ecb7c2543344556776','表单生成','dev/form','aaaaa',NULL,'1','excel',0,NULL,'admin','admin','2021-12-01 07:53:01','2021-12-01 07:53:01',0),(51,'a2fd81e4527c11ecb2ccd76ea2e07fd8','93f101be493d11ecb7c254334455677','系统日志','sys/log',NULL,NULL,'1','documentation',10,NULL,NULL,NULL,'2021-12-01 15:59:40','2021-12-01 15:59:40',0),(52,'a329b368527c11ecb2ccd76ea2e07fd8','a2fd81e4527c11ecb2ccd76ea2e07fd8','查看',NULL,'sys:log:page,sys:log:info','GET','2',NULL,6,NULL,NULL,NULL,'2021-12-01 15:59:40','2021-12-01 15:59:40',0),(53,'a32e88ca527c11ecb2ccd76ea2e07fd8','a2fd81e4527c11ecb2ccd76ea2e07fd8','新增',NULL,'sys:log:save',NULL,'2',NULL,6,NULL,NULL,NULL,'2021-12-01 15:59:40','2021-12-01 15:59:40',0),(54,'a330ec3c527c11ecb2ccd76ea2e07fd8','a2fd81e4527c11ecb2ccd76ea2e07fd8','修改',NULL,'sys:log:update',NULL,'2',NULL,6,NULL,NULL,NULL,'2021-12-01 15:59:40','2021-12-01 15:59:40',0),(55,'a3332a60527c11ecb2ccd76ea2e07fd8','a2fd81e4527c11ecb2ccd76ea2e07fd8','删除',NULL,'sys:log:delete',NULL,'2',NULL,6,NULL,NULL,NULL,'2021-12-01 15:59:40','2021-12-01 15:59:40',0),(56,'8331d5f0900444109edc6cd83e54032e','93f101be493d11ecb7c2543344556776','代码生成','dev/code','',NULL,'1','skill',0,NULL,'admin','admin','2021-12-09 06:21:28','2021-12-09 06:21:28',0),(57,'adf97607dbcc4de8b258ea17fc5af5ea','0','目录1','','',NULL,'0','money',0,NULL,'admin','admin','2021-12-12 09:07:30','2021-12-12 09:07:30',0),(58,'d8c39450c345451cae92ff6fd82b5637','adf97607dbcc4de8b258ea17fc5af5ea','菜单1','sys/helo','大的',NULL,'1','bug',1,NULL,'admin','admin','2021-12-12 09:08:52','2021-12-12 09:08:52',0),(59,'43061d67000e47de85346d3cc0b0a5b7','0','目录2','','',NULL,'0','nested',3,NULL,'admin','admin','2021-12-12 09:30:14','2021-12-12 09:30:14',0),(60,'914552cf998c4624a3bb980169c2d015','43061d67000e47de85346d3cc0b0a5b7','菜单2','hello','asdfa',NULL,'1','excel',0,NULL,'admin','admin','2021-12-12 09:30:48','2021-12-12 09:30:48',0);
 /*!40000 ALTER TABLE `sys_menu` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -120,17 +142,17 @@ DROP TABLE IF EXISTS `sys_role`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `sys_role` (
-                            `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
-                            `uuid` varchar(32) DEFAULT NULL COMMENT 'uuid',
-                            `name` varchar(64) DEFAULT NULL COMMENT '角色名',
-                            `remark` varchar(64) DEFAULT NULL COMMENT '备注',
-                            `creator` varchar(64) DEFAULT NULL COMMENT '创建人',
-                            `modifier` varchar(64) DEFAULT NULL COMMENT '修改人',
-                            `gmt_create` datetime NOT NULL COMMENT '创建时间',
-                            `gmt_modified` datetime NOT NULL COMMENT '修改时间',
-                            `deleted` tinyint(1) NOT NULL DEFAULT '0' COMMENT '逻辑删除',
-                            PRIMARY KEY (`id`),
-                            KEY `idx_role_id` (`id`)
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `uuid` varchar(32) NOT NULL COMMENT 'uuid',
+  `name` varchar(64) DEFAULT NULL COMMENT '角色名',
+  `remark` varchar(64) DEFAULT NULL COMMENT '备注',
+  `creator` varchar(64) DEFAULT NULL COMMENT '创建人',
+  `modifier` varchar(64) DEFAULT NULL COMMENT '修改人',
+  `gmt_create` datetime NOT NULL COMMENT '创建时间',
+  `gmt_modified` datetime NOT NULL COMMENT '修改时间',
+  `deleted` tinyint(1) NOT NULL DEFAULT '0' COMMENT '逻辑删除',
+  PRIMARY KEY (`id`),
+  KEY `idx_role_id` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COMMENT='角色表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -152,16 +174,16 @@ DROP TABLE IF EXISTS `sys_role_of_menu`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `sys_role_of_menu` (
-                                    `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
-                                    `uuid` varchar(32) DEFAULT NULL COMMENT '唯一标示做关联',
-                                    `role_uuid` varchar(32) DEFAULT NULL COMMENT '角色UUID',
-                                    `menu_uuid` varchar(32) DEFAULT NULL COMMENT '菜单UUID',
-                                    `creator` varchar(64) DEFAULT NULL COMMENT '创建人',
-                                    `modifier` varchar(64) DEFAULT NULL COMMENT '修改人',
-                                    `gmt_create` datetime NOT NULL COMMENT '创建时间',
-                                    `gmt_modified` datetime NOT NULL COMMENT '修改时间',
-                                    `deleted` tinyint(1) NOT NULL DEFAULT '0' COMMENT '逻辑删除',
-                                    PRIMARY KEY (`id`)
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `uuid` varchar(32) NOT NULL COMMENT 'uuid',
+  `role_uuid` varchar(32) NOT NULL COMMENT '角色UUID',
+  `menu_uuid` varchar(32) NOT NULL COMMENT '菜单UUID',
+  `creator` varchar(64) DEFAULT NULL COMMENT '创建人',
+  `modifier` varchar(64) DEFAULT NULL COMMENT '修改人',
+  `gmt_create` datetime NOT NULL COMMENT '创建时间',
+  `gmt_modified` datetime NOT NULL COMMENT '修改时间',
+  `deleted` tinyint(1) NOT NULL DEFAULT '0' COMMENT '逻辑删除',
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=191 DEFAULT CHARSET=utf8mb4 COMMENT='角色关联菜单表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -183,21 +205,22 @@ DROP TABLE IF EXISTS `sys_user`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `sys_user` (
-                            `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
-                            `uuid` varchar(32) DEFAULT NULL COMMENT '唯一标示做关联',
-                            `username` varchar(64) DEFAULT NULL COMMENT '账号',
-                            `password` varchar(64) DEFAULT NULL COMMENT '密码',
-                            `name` varchar(64) DEFAULT NULL COMMENT '名字',
-                            `email` varchar(128) DEFAULT NULL COMMENT '邮箱',
-                            `status` int(1) DEFAULT '0' COMMENT '角色',
-                            `creator` varchar(64) DEFAULT NULL COMMENT '创建人',
-                            `modifier` varchar(64) DEFAULT NULL COMMENT '修改人',
-                            `gmt_create` datetime NOT NULL COMMENT '创建时间',
-                            `gmt_modified` datetime NOT NULL COMMENT '修改时间',
-                            `deleted` tinyint(1) NOT NULL DEFAULT '0' COMMENT '逻辑删除',
-                            `avatar` varchar(100) DEFAULT NULL COMMENT '头像',
-                            PRIMARY KEY (`id`),
-                            UNIQUE KEY `sys_user_user_id_uindex` (`username`)
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `uuid` varchar(32) NOT NULL COMMENT 'uuid',
+  `username` varchar(64) NOT NULL COMMENT '账号',
+  `password` varchar(64) DEFAULT NULL COMMENT '密码',
+  `name` varchar(64) DEFAULT NULL COMMENT '名字',
+  `email` varchar(128) DEFAULT NULL COMMENT '邮箱',
+  `status` int(1) DEFAULT '0' COMMENT '角色',
+  `creator` varchar(64) DEFAULT NULL COMMENT '创建人',
+  `modifier` varchar(64) DEFAULT NULL COMMENT '修改人',
+  `gmt_create` datetime NOT NULL COMMENT '创建时间',
+  `gmt_modified` datetime NOT NULL COMMENT '修改时间',
+  `deleted` tinyint(1) NOT NULL DEFAULT '0' COMMENT '逻辑删除',
+  `avatar` varchar(100) DEFAULT NULL COMMENT '头像',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `sys_user_user_id_uindex` (`username`),
+  UNIQUE KEY `sys_user_pk` (`username`)
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COMMENT='用户表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -207,7 +230,7 @@ CREATE TABLE `sys_user` (
 
 LOCK TABLES `sys_user` WRITE;
 /*!40000 ALTER TABLE `sys_user` DISABLE KEYS */;
-INSERT INTO `sys_user` VALUES (1,'9df9de08354f456c97fae0cdb3df214f','admin','$2a$10$7CQ/9w8BucRDnS3/cG2lXOA3y.9eEJUY6pidZGiNFQCU5Vu2q6ZwO','admin','devcloudadmin@qq.com',0,NULL,'admin','2021-11-12 22:48:15','2021-11-12 22:48:15',0,NULL),(2,'26220d63bfd345dabb2f114287965313','mikey','$2a$10$ZnuPGCEusk5tiKxAB/1lreynJxuvh4mqu8So6vUok/PCBCYP34.gi','mikey','mikey',0,NULL,NULL,'2021-12-01 09:39:53','2021-12-01 09:39:53',0,NULL),(3,'b8c1e673060c437ba0925f119538bdb6','fasf','$2a$10$ILTzdnK9HtI4BiTXneTWOOgiLid.QHTuDK0iV42EvH142xhuSheqy','fasdf','asfd@qq.com',0,'mikey','admin','2021-12-01 09:46:07','2021-12-01 09:46:07',1,NULL),(6,'841bf88b99ac45c4ba6a1189abe6bea8','adsfasdf','xxxxxxx','hhhh','dasfa@qq.com',0,NULL,NULL,'1970-01-01 00:00:00','1970-01-01 00:00:00',0,NULL),(9,'e4ea0c9574e1477091577c29a4a149a2','adsfafsdf','xxxxxxx','hhfhh','dafsfa@qq.com',0,NULL,NULL,'1970-01-01 00:00:00','1970-01-01 00:00:00',0,NULL);
+INSERT INTO `sys_user` VALUES (1,'9df9de08354f456c97fae0cdb3df214f','admin','$2b$12$bRzARfFsrM1wAdNmJJP6ROpmCttzEH66AC9lapR9j4Hx//PMP9auW','admin','devcloudadmin@qq.com',0,NULL,'admin','2021-11-12 22:48:15','2021-11-12 22:48:15',0,NULL),(2,'26220d63bfd345dabb2f114287965313','mikey','$2a$10$ZnuPGCEusk5tiKxAB/1lreynJxuvh4mqu8So6vUok/PCBCYP34.gi','mikey','mikey',0,NULL,NULL,'2021-12-01 09:39:53','2021-12-01 09:39:53',0,NULL),(3,'b8c1e673060c437ba0925f119538bdb6','fasf','$2a$10$ILTzdnK9HtI4BiTXneTWOOgiLid.QHTuDK0iV42EvH142xhuSheqy','fasdf','asfd@qq.com',0,'mikey','admin','2021-12-01 09:46:07','2021-12-01 09:46:07',1,NULL),(6,'841bf88b99ac45c4ba6a1189abe6bea8','adsfasdf','xxxxxxx','hhhh','dasfa@qq.com',0,NULL,NULL,'1970-01-01 00:00:00','1970-01-01 00:00:00',0,NULL),(9,'e4ea0c9574e1477091577c29a4a149a2','adsfafsdf','xxxxxxx','hhfhh','dafsfa@qq.com',0,NULL,NULL,'1970-01-01 00:00:00','1970-01-01 00:00:00',0,NULL),(10,'9ae284e537494f1088a342d380624614','adminkk','$2b$12$bRzARfFsrM1wAdNmJJP6ROpmCttzEH66AC9lapR9j4Hx//PMP9auW','hhhadsffffddah','dasfffd@qq.com',0,NULL,NULL,'1970-01-01 00:00:00','1970-01-01 00:00:00',0,NULL);
 /*!40000 ALTER TABLE `sys_user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -219,16 +242,16 @@ DROP TABLE IF EXISTS `sys_user_of_role`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `sys_user_of_role` (
-                                    `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
-                                    `uuid` varchar(32) DEFAULT NULL COMMENT '唯一标示做关联',
-                                    `user_uuid` varchar(32) DEFAULT NULL COMMENT '用户UUID',
-                                    `role_uuid` varchar(32) DEFAULT NULL COMMENT '角色UUID',
-                                    `creator` varchar(64) DEFAULT NULL COMMENT '创建人',
-                                    `modifier` varchar(64) DEFAULT NULL COMMENT '修改人',
-                                    `gmt_create` datetime NOT NULL COMMENT '创建时间',
-                                    `gmt_modified` datetime NOT NULL COMMENT '修改时间',
-                                    `deleted` tinyint(1) NOT NULL DEFAULT '0' COMMENT '逻辑删除',
-                                    PRIMARY KEY (`id`)
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `uuid` varchar(32) NOT NULL COMMENT 'uuid',
+  `user_uuid` varchar(32) NOT NULL COMMENT '用户UUID',
+  `role_uuid` varchar(32) NOT NULL COMMENT '角色UUID',
+  `creator` varchar(64) DEFAULT NULL COMMENT '创建人',
+  `modifier` varchar(64) DEFAULT NULL COMMENT '修改人',
+  `gmt_create` datetime NOT NULL COMMENT '创建时间',
+  `gmt_modified` datetime NOT NULL COMMENT '修改时间',
+  `deleted` tinyint(1) NOT NULL DEFAULT '0' COMMENT '逻辑删除',
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COMMENT='用户关联角色表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -251,4 +274,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-06-21 22:43:07
+-- Dump completed on 2023-07-09 21:33:42

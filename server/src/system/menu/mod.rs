@@ -12,6 +12,7 @@ pub fn menu_router() -> Router {
     Router::new()
     .route("/:id",  get(handler::info))
     .route("/page",  post(handler::page))
+    .route("/list",  get(handler::list))
     .route("/",  put(handler::update))
     .route("/",  post(handler::create))
     .route("/",  delete(handler::delete))

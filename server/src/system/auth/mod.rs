@@ -1,6 +1,7 @@
 mod handler;
 
-use axum::{ Router, extract::TypedHeader, http::StatusCode, headers::authorization::{Authorization, Bearer}, http::Request, middleware::{Next}, response::Response, RequestPartsExt, Json, middleware};
+use std::collections::HashSet;
+use axum::{Router, extract::TypedHeader, http::StatusCode, headers::authorization::{Authorization, Bearer}, http::Request, middleware::{Next}, response::Response, RequestPartsExt, Json, middleware};
 use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, Validation};
 use once_cell::sync::Lazy;
 use serde::{Deserialize, Serialize};
@@ -8,6 +9,7 @@ use std::fmt::Display;
 use axum::http::header::HeaderValue;
 use axum::response::IntoResponse;
 use axum::routing::{get, post};
+use lazy_static::lazy_static;
 use thiserror::Error;
 use validator::{Validate};
 use crate::database;
@@ -18,6 +20,16 @@ pub const TOKEN_EXPIRATION_BUFFER: i64 = 60 * 10; // JWT令牌过期缓冲时间
 
 thread_local! {
     pub static CURRENT_USER: std::cell::RefCell<Option<String>> = std::cell::RefCell::new(None);
+}
+
+
+lazy_static! {
+    static ref BLACKLIST: HashSet<&'static str> = {
+        let mut set = HashSet::new();
+        set.insert("/api/logout:GET");//接口授权白名单
+        set.insert("/api/v1/system/menu/list:GET");//获取菜单列表
+        set
+    };
 }
 
 pub async fn auth<B>(
@@ -32,10 +44,10 @@ pub async fn auth<B>(
     //检查是否有该接口的访问权限
     let path = request.uri().path();
     let method = request.method().to_string();
-    let key = format!("{}:{}",path,method);
+    let key = format!("{}:{}", path, method);
     //没有权限直接响应
-    if !database::redis::exist(username.clone(),key.clone().to_string()) {
-        return Err(AuthError::MissingPermission(key))
+    if !BLACKLIST.contains(key.clone().as_str()) && !database::redis::exist(username.clone(), key.clone().to_string()) {
+        return Err(AuthError::MissingPermission(key));
     }
     //当前线程存入用户信息,方便在更新数据时写入当前操作者是谁
     CURRENT_USER.with(|cell| {
