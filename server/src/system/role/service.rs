@@ -69,17 +69,17 @@ impl RoleService {
         //查询所属角色
         let roles = self.repo.get_by_user_uuid(uid)?;
         let role_ids: Vec<String> = roles.iter().map(|role| role.uuid.clone()).collect();
-        let ret: Vec<RoleResponse> = roles.into_iter().map(|d| RoleResponse::from(d)).collect();
+        let mut ret: Vec<RoleResponse> = roles.into_iter().map(|d| RoleResponse::from(d)).collect();
         //查询权限
         let menus = menu::service::MenuService::default().get_by_role_uuids(role_ids)?;
         //根据menus的role_uuid赋值给每个roles的menus字段vec
         let mut menu_map: HashMap<String, Vec<MenuResponse>> = HashMap::new();
         for menu in menus {
-            let menu_uuids: &mut Vec<MenuResponse> = menu_map.entry(menu.role_uuid.unwrap()).or_insert(Vec::new());
+            let menu_uuids: &mut Vec<MenuResponse> = menu_map.entry(menu.role_uuid.clone().unwrap()).or_insert(Vec::new());
             menu_uuids.push(menu);
         }
         //赋值给roles
-        for mut role_response in ret.into_iter() {
+        for mut role_response in &mut ret  {
             let menus = menu_map.get(&role_response.uuid).map_or(Vec::new(), |v:&Vec<MenuResponse>| v.clone());
             role_response.menus = Option::from(menus)
         }

@@ -74,9 +74,11 @@ diesel::table! {
         #[max_length = 64]
         name -> Nullable<Varchar>,
         #[max_length = 200]
-        url -> Nullable<Varchar>,
+        path -> Nullable<Varchar>,
         #[max_length = 200]
-        perms -> Nullable<Varchar>,
+        api -> Nullable<Varchar>,
+        #[max_length = 50]
+        method -> Nullable<Varchar>,
         #[max_length = 1]
         menu_type -> Nullable<Varchar>,
         #[max_length = 20]

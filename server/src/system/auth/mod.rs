@@ -10,6 +10,7 @@ use axum::response::IntoResponse;
 use axum::routing::{get, post};
 use thiserror::Error;
 use validator::{Validate};
+use crate::database;
 
 pub const X_REFRESH_TOKEN: &str = "x-refresh-token";
 pub const TOKEN_TYPE: &str = "Bearer";
@@ -28,6 +29,14 @@ pub async fn auth<B>(
         .map_err(|_| AuthError::InvalidToken)?;
     let claims = token_data.claims;
     let username = claims.sub.clone();
+    //检查是否有该接口的访问权限
+    let path = request.uri().path();
+    let method = request.method().to_string();
+    let key = format!("{}:{}",path,method);
+    //没有权限直接响应
+    if !database::redis::exist(username.clone(),key) {
+        return Err(AuthError::MissingPermission)//TODO:add path
+    }
     //当前线程存入用户信息,方便在更新数据时写入当前操作者是谁
     CURRENT_USER.with(|cell| {
         *cell.borrow_mut() = Some(username);
@@ -84,6 +93,7 @@ impl IntoResponse for AuthError {
             AuthError::MissingCredentials => (StatusCode::BAD_REQUEST, "Missing credentials"),
             AuthError::TokenCreation => (StatusCode::INTERNAL_SERVER_ERROR, "Token creation error"),
             AuthError::InvalidToken => (StatusCode::BAD_REQUEST, "Invalid token"),
+            AuthError::MissingPermission => (StatusCode::BAD_REQUEST, "Missing Permission"),
         };
         let bd: Resp = Resp {
             code: status.as_u16(),
@@ -143,4 +153,6 @@ pub enum AuthError {
     TokenCreation,
     #[error("InvalidToken")]
     InvalidToken,
+    #[error("MissingPermission")]
+    MissingPermission,
 }

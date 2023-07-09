@@ -8,8 +8,9 @@ pub struct MenuResponse {
     pub role_uuid: Option<String>,//角色uuid
     pub parent_uuid: Option<String>,//父菜单uuid
     pub name: Option<String>,//菜单名
-    pub url: Option<String>,//菜单url
-    pub perms: Option<String>,//授权标识
+    pub path: Option<String>,//菜单url
+    pub api: Option<String>,//授权标识
+    pub method: Option<String>,//授权标识
     pub menu_type: Option<String>,//0:目录 1:菜单 2:按钮
     pub icon: Option<String>,//图标
     pub order: Option<i32>,//排序
@@ -36,8 +37,9 @@ impl From<SysMenu> for MenuResponse {
             role_uuid: None,//角色uuid
             parent_uuid: req.parent_uuid,//父菜单uuid
             name: req.name,//菜单名
-            url: req.url,//菜单url
-            perms: req.perms,//授权标识
+            path: req.path,//菜单url
+            api: req.api,//授权标识
+            method: req.method,//授权标识
             menu_type: req.menu_type,//0:目录 1:菜单 2:按钮
             icon: req.icon,//图标
             order: req.order,//排序

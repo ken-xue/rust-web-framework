@@ -14,8 +14,9 @@ pub struct SysMenu {
     pub uuid: String,//uuid
     pub parent_uuid: Option<String>,//父菜单uuid
     pub name: Option<String>,//菜单名
-    pub url: Option<String>,//菜单url
-    pub perms: Option<String>,//授权标识
+    pub path: Option<String>,//菜单url
+    pub api: Option<String>,//授权标识
+    pub method: Option<String>,//授权标识
     pub menu_type: Option<String>,//0:目录 1:菜单 2:按钮
     pub icon: Option<String>,//图标
     pub order: Option<i32>,//排序

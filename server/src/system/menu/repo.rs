@@ -61,8 +61,8 @@ impl MenuRepo {
         use crate::database::schema::sys_role_of_menu::role_uuid;
         let menus = sys_role_of_menu
             .filter(role_uuid.eq_any(ids))
-            .inner_join(sys_menu.on(uuid.eq(role_uuid)))
-            .select((menu_uuid, SysMenu::as_select()))//需要将role_id也带出来
+            .inner_join(sys_menu.on(uuid.eq(menu_uuid)))
+            .select((role_uuid, SysMenu::as_select()))//需要将role_id也带出来
             .load::<(String, SysMenu)>(self.conn.deref_mut())?;
         Ok(menus)
 
@@ -71,11 +71,11 @@ impl MenuRepo {
         // let mut conn = LoggingConnection::new(connection);
         // let menus = sys_role_of_menu
         //     .filter(role_uuid.eq_any(ids))
-        //     .inner_join(sys_menu).on(uuid.eq(role_uuid))
+        //     .inner_join(sys_menu.on(uuid.eq(menu_uuid)))
         //     .select((role_uuid, SysMenu::as_select()))//需要将role_id也带出来
         //     .load::<(String, SysMenu)>(&mut conn)?;
         // // Ok(menus)
-        // let ret: Vec<SysMenu> = Vec::new();
+        // let ret: Vec<(String,SysMenu)> = Vec::new();
         // Ok(ret)
     }
 }

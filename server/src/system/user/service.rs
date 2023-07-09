@@ -42,15 +42,20 @@ impl UserService {
 
     pub fn authorize(&mut self, username: String, password: String) -> Result<UserResponse, anyhow::Error> {
         // Check the user credentials from a database
-        // let user = self.repo.get_by_username(username.as_str())?;
         let user = self.repo.get_by_username(username.as_str())?;
+        // let user = self.get_by_username(username.to_string())?;
         // Decrypt the password first
         let decode_base64_password = decode(password)?;
         // 解密密码
         let decoded_password = util::encrypt::default_decrypt(&decode_base64_password)?;
         // 验证密码
         if verify(&decoded_password, &user.password)? {
-            return Ok(user.into());
+            let user_uuid = user.uuid.clone();
+            let mut ret = UserResponse::from(user);
+            // 查询角色和菜单
+            let roles = role::service::RoleService::default().get_by_user_uuid(user_uuid)?;
+            ret.roles = Some(roles);
+            return Ok(ret);
         }
         bail!("Incorrect password.")
     }
