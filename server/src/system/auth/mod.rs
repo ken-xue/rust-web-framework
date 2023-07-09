@@ -34,8 +34,8 @@ pub async fn auth<B>(
     let method = request.method().to_string();
     let key = format!("{}:{}",path,method);
     //没有权限直接响应
-    if !database::redis::exist(username.clone(),key) {
-        return Err(AuthError::MissingPermission)//TODO:add path
+    if !database::redis::exist(username.clone(),key.clone().to_string()) {
+        return Err(AuthError::MissingPermission(key))
     }
     //当前线程存入用户信息,方便在更新数据时写入当前操作者是谁
     CURRENT_USER.with(|cell| {
@@ -89,11 +89,14 @@ impl AuthBody {
 impl IntoResponse for AuthError {
     fn into_response(self) -> Response {
         let (status, error_message) = match self {
-            AuthError::WrongCredentials => (StatusCode::UNAUTHORIZED, "Wrong credentials"),
-            AuthError::MissingCredentials => (StatusCode::BAD_REQUEST, "Missing credentials"),
-            AuthError::TokenCreation => (StatusCode::INTERNAL_SERVER_ERROR, "Token creation error"),
-            AuthError::InvalidToken => (StatusCode::BAD_REQUEST, "Invalid token"),
-            AuthError::MissingPermission => (StatusCode::BAD_REQUEST, "Missing Permission"),
+            AuthError::WrongCredentials => (StatusCode::UNAUTHORIZED, String::from("Wrong credentials")),
+            AuthError::MissingCredentials => (StatusCode::BAD_REQUEST, String::from("Missing credentials")),
+            AuthError::TokenCreation => (StatusCode::INTERNAL_SERVER_ERROR, String::from("Token creation error")),
+            AuthError::InvalidToken => (StatusCode::BAD_REQUEST, String::from("Invalid token")),
+            AuthError::MissingPermission(m) => {
+                let message = format!("Missing Permission : {}", m);
+                (StatusCode::BAD_REQUEST, String::from(message))
+            }
         };
         let bd: Resp = Resp {
             code: status.as_u16(),
@@ -153,6 +156,6 @@ pub enum AuthError {
     TokenCreation,
     #[error("InvalidToken")]
     InvalidToken,
-    #[error("MissingPermission")]
-    MissingPermission,
+    #[error("Missing Permission Path: {0}")]
+    MissingPermission(String),
 }
