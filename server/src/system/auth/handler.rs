@@ -42,7 +42,7 @@ pub async fn login(Validated(payload): Validated<AuthPayload>) -> Result<impl In
     }
     let permissions: Vec<&str> = permissions_set.iter().map(|s| s.as_str()).collect();
     // save permission to cached
-    database::redis::sadd(user.username, permissions.as_slice()).map_err(|_| AuthError::InvalidToken)?;
+    database::redis::sadd(user.username, permissions.as_slice()).map_err(|_| AuthError::Unknown)?;
     // response
     Ok(common::response::success(body))
 }

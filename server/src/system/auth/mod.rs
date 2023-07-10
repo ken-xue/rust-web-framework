@@ -105,6 +105,7 @@ impl IntoResponse for AuthError {
             AuthError::MissingCredentials => (StatusCode::BAD_REQUEST, String::from("Missing credentials")),
             AuthError::TokenCreation => (StatusCode::INTERNAL_SERVER_ERROR, String::from("Token creation error")),
             AuthError::InvalidToken => (StatusCode::BAD_REQUEST, String::from("Invalid token")),
+            AuthError::Unknown => (StatusCode::BAD_REQUEST, String::from("Unknown")),
             AuthError::MissingPermission(m) => {
                 let message = format!("Missing Permission : {}", m);
                 (StatusCode::BAD_REQUEST, String::from(message))
@@ -170,4 +171,6 @@ pub enum AuthError {
     InvalidToken,
     #[error("Missing Permission Path: {0}")]
     MissingPermission(String),
+    #[error("Auth unknown")]
+    Unknown,
 }
