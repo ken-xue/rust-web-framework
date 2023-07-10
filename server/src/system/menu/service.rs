@@ -1,4 +1,5 @@
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
+use std::ops::Deref;
 use std::process::id;
 use anyhow::bail;
 use diesel::{ExpressionMethods, JoinOnDsl, QueryDsl, SelectableHelper};
@@ -81,29 +82,42 @@ impl MenuService {
         });
         //查询角色和菜单
         let user = user::service::UserService::default().get_by_username(username.unwrap())?;
-        // distinct all permission
         let mut menu_set: HashSet<MenuResponse> = HashSet::new();
-        // 遍历user.roles，中的每一个 menus 的 perms字段加入permissions
         if let Some(roles) = &user.roles {
             for role in roles.iter() {
                 if let Some(menus) = &role.menus {
-                    for menu in menus {
-                        menu_set.insert(menu);
-                    }
+                    menu_set.extend(menus.iter().cloned());
                 }
             }
         }
-        let menus: Vec<&str> = menu_set.iter().map(|s| s.as_str()).collect();
+        let menus: Vec<MenuResponse> = menu_set.into_iter().collect();
         //构建成菜单树
         let tree_menus = self.tree(menus)?;
         //
         Ok(tree_menus)
     }
 
-    // 构建菜单树：uuid->parent_uuid
-    pub fn tree(&mut self, menus: Vec<SysMenu>) -> Result<Vec<MenuResponse>, anyhow::Error> {
-        //TOOD
-        let list:Vec<MenuResponse> = Vec::new();
+    // 构建菜单树:uuid->parent_uuid
+    pub fn tree(&mut self,menus: Vec<MenuResponse>) -> Result<Vec<MenuResponse>, anyhow::Error> {
+        let mut map: HashMap<String, MenuResponse> = HashMap::new();
+        for menu in menus.iter() {
+            map.insert(menu.uuid.clone(), menu.clone());
+        }
+        let mut list: Vec<MenuResponse> = Vec::new();
+        for menu in menus.iter() {
+            if menu.parent_uuid.is_none() || menu.parent_uuid.clone().unwrap().eq("0"){
+                list.push(menu.clone());
+            } else {
+                let parent_uuid = menu.parent_uuid.as_ref().unwrap();
+                if let Some(parent) = map.get_mut(parent_uuid) {
+                    if parent.children.is_none() {
+                        // 如果parent.children没有初始化则进行初始化
+                        parent.children = Some(Vec::new());
+                    }
+                    parent.children.as_mut().unwrap().push(menu.clone());
+                }
+            }
+        }
         Ok(list)
     }
 }

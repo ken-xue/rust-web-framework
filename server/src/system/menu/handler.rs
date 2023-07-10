@@ -6,7 +6,7 @@ use serde_json::json;
 use crate::{database};
 use crate::common::error::AppError;
 use crate::common::{request, response};
-use crate::system::menu::{service, repo, abc};
+use crate::system::menu::{service, repo};
 use validator::{Validate};
 use crate::common::validator::Validated;
 use crate::system::menu::request::{CreateMenu, UpdateMenu};
@@ -41,11 +41,11 @@ pub async fn delete(Json(r): Json<request::Delete>)  -> Result<impl IntoResponse
 // list 获取当前用户的菜单权限
 pub async fn list() -> Result<impl IntoResponse, AppError> {
     let menus = service::MenuService::default().list()?;
+    Ok(response::success(menus))
+    
+    
+    // let response: Vec<Menu> = serde_json::from_str(JSON_DATA).unwrap();
     // Ok(response::success(response))
-    
-    
-    let response: Vec<Menu> = serde_json::from_str(JSON_DATA).unwrap();
-    Ok(response::success(response))
 }
 
 #[cfg(test)]
