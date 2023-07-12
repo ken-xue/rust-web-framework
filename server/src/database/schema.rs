@@ -81,7 +81,7 @@ diesel::table! {
         method -> Nullable<Varchar>,
         #[max_length = 1]
         menu_type -> Nullable<Varchar>,
-        #[max_length = 20]
+        #[max_length = 50]
         icon -> Nullable<Varchar>,
         order -> Nullable<Integer>,
         #[max_length = 64]
@@ -93,6 +93,12 @@ diesel::table! {
         gmt_create -> Datetime,
         gmt_modified -> Datetime,
         deleted -> Bool,
+        #[max_length = 255]
+        component -> Nullable<Varchar>,
+        #[max_length = 255]
+        redirect -> Nullable<Varchar>,
+        #[max_length = 255]
+        title -> Nullable<Varchar>,
     }
 }
 

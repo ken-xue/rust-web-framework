@@ -23,6 +23,9 @@ pub struct SysMenu {
     pub remark: Option<String>,//备注
     pub creator: Option<String>,//创建人
     pub modifier: Option<String>,//修改人
+    pub component: Option<String>,//修改人
+    pub redirect: Option<String>,//修改人
+    pub title: Option<String>,//修改人
     pub gmt_create: chrono::NaiveDateTime,//创建时间
     pub gmt_modified: chrono::NaiveDateTime,//修改时间
     pub deleted: bool,//逻辑删除

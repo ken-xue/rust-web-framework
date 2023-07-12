@@ -100,53 +100,32 @@ impl MenuService {
         Ok(tree_menus)
     }
 
-    // // 构建菜单树:uuid->parent_uuid
-    // pub fn tree(&mut self,menus: Vec<MenuResponse>) -> Result<Vec<MenuResponse>, anyhow::Error> {
-    //     let mut map: HashMap<String, MenuResponse> = HashMap::new();
-    //     for menu in menus.iter() {
-    //         map.insert(menu.uuid.clone(), menu.clone());
-    //     }
-    //     let mut list: Vec<MenuResponse> = Vec::new();
-    //     for menu in menus.iter() {
-    //         if menu.parent_uuid.is_none() || menu.parent_uuid.clone().unwrap().eq("0"){
-    //             list.push(menu.clone());
-    //         } else {
-    //             let parent_uuid = menu.parent_uuid.as_ref().unwrap();
-    //             if let Some(parent) = map.get_mut(parent_uuid) {
-    //                 if parent.children.is_none() {
-    //                     parent.children = Some(Vec::new());
-    //                 }
-    //                 parent.children.as_mut().unwrap().push(menu.clone());
-    //             }
-    //         }
-    //     }
-    //     Ok(list)
-    // }
-
-
-        // 构建菜单树:uuid->parent_uuid
-        pub fn tree(&mut self,menus: Vec<MenuResponse>) -> Result<Vec<MenuResponse>, anyhow::Error> {
-            let mut map: HashMap<String, Arc<RefCell<MenuResponse>>> = HashMap::new();
-            for menu in menus.iter() {
-                map.insert(menu.uuid.clone(), Arc::new(RefCell::new(menu.clone())));
-            }
-            let mut list: Vec<MenuResponse> = Vec::new();
-            for menu in menus.iter() {
-                if menu.parent_uuid.is_none() || menu.parent_uuid.clone().unwrap().eq("0") {
-                    list.push(menu.clone());
-                } else {
-                    let parent_uuid = menu.parent_uuid.as_ref().unwrap();
-                    if let Some(parent) = map.get(parent_uuid) {
-                        let mut parent = parent.borrow_mut();
-                        if parent.children.is_none() {
-                            parent.children = Some(Vec::new());
-                        }
-                        parent.children.as_mut().unwrap().push(menu.clone());
-                        println!("{}", parent.children.clone().unwrap().len())
+    // 构建菜单树
+    pub fn tree(&mut self, mut menus: Vec<MenuResponse>) -> Result<Vec<MenuResponse>, anyhow::Error> {
+        let mut map: HashMap<String, MenuResponse> = HashMap::new();
+        for menu in menus.iter() {
+            map.insert(menu.uuid.clone(), menu.clone());
+        }
+        let mut list: Vec<&MenuResponse> = Vec::new();
+        for menu in menus.iter_mut() {
+            if menu.parent_uuid.is_none() || menu.parent_uuid.clone().unwrap().eq("0"){
+                list.push(menu);
+            } else {
+                let parent_uuid = menu.parent_uuid.as_ref().unwrap();
+                if let Some(parent) = map.get_mut(parent_uuid) {
+                    if parent.children.is_none() {
+                        parent.children = Some(Vec::new());
                     }
+                    parent.children.as_mut().unwrap().push(menu.clone());
                 }
             }
-            Ok(list)
         }
-
+        let mut result: Vec<MenuResponse> = Vec::new();
+        for menu in map.values() {
+            if menu.parent_uuid.is_none() || menu.parent_uuid.as_ref().unwrap() == "0" {
+                result.push(menu.clone());
+            }
+        }
+        Ok(result)
+    }
 }
