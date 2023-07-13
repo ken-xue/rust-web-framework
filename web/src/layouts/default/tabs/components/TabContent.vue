@@ -27,6 +27,7 @@
   import { useDesign } from '/@/hooks/web/useDesign';
   import { useI18n } from '/@/hooks/web/useI18n';
   import { useTabDropdown } from '../useTabDropdown';
+  import {string} from "vue-types";
 
   export default defineComponent({
     name: 'TabContent',
@@ -37,14 +38,19 @@
         default: null,
       },
       isExtra: Boolean,
+      title: string,
     },
     setup(props) {
       const { prefixCls } = useDesign('multiple-tabs-content');
       const { t } = useI18n();
 
       const getTitle = computed(() => {
-        const { tabItem: { meta } = {} } = props;
-        return meta && t(meta.title as string);
+        // const { tabItem: { meta } = {} } = props;
+        // return meta && t(meta.title as string);
+        const { tabItem: { name } = {} } = props;
+        return name
+        // const { title } = props;
+        // return title
       });
 
       const getIsTabs = computed(() => !props.isExtra);

@@ -142,7 +142,8 @@
       }
 
       function getIcon(route) {
-        return route.icon || route.meta?.icon;
+        // return route.icon || route.meta?.icon;
+        return route.icon;
       }
 
       return { routes, t, prefixCls, getIcon, getShowBreadCrumbIcon, handleClick, hasRedirect };

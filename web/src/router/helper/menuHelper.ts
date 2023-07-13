@@ -49,25 +49,25 @@ export function transformRouteToMenu(routeModList: AppRouteModule[], routerMappi
 
   // 对路由项进行修改
   cloneRouteModList.forEach((item) => {
-    if (routerMapping && item.meta.hideChildrenInMenu && typeof item.redirect === 'string') {
+    // if (routerMapping && item.meta.hideChildrenInMenu && typeof item.redirect === 'string') {
+    if (routerMapping && typeof item.redirect === 'string') {
       item.path = item.redirect;
     }
-
-    if (item.meta?.single) {
-      const realItem = item?.children?.[0];
-      realItem && routeList.push(realItem);
-    } else {
+    // if (item.meta?.single) {
+    //   const realItem = item?.children?.[0];
+    //   realItem && routeList.push(realItem);
+    // } else {
       routeList.push(item);
-    }
+    // }
   });
   // 提取树指定结构
   const list = treeMap(routeList, {
     conversion: (node: AppRouteRecordRaw) => {
-      const { meta: { title, hideMenu = false } = {} } = node;
-
+      // const { meta: { title, hideMenu = false } = {} } = node;
+      const {  title, hideMenu } = node;
       return {
-        ...(node.meta || {}),
-        meta: node.meta,
+        // ...(node.meta || {}),
+        // meta: node.meta,
         name: title,
         hideMenu,
         path: node.path,

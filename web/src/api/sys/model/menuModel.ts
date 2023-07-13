@@ -3,7 +3,10 @@ import type { RouteMeta } from 'vue-router';
 export interface RouteItem {
   path: string;
   component: any;
-  meta: RouteMeta;
+  // meta: RouteMeta;
+  title?: string,
+  hideChildrenInMenu?: boolean,
+  icon?: string
   name?: string;
   alias?: string | string[];
   redirect?: string;

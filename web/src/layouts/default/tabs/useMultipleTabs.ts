@@ -35,6 +35,7 @@ export function initAffixTabs(): string[] {
     for (const tab of affixTabs) {
       tabStore.addTab({
         meta: tab.meta,
+        title: tab.title,
         name: tab.name,
         path: tab.path,
       } as unknown as RouteLocationNormalized);

@@ -194,7 +194,7 @@ export const usePermissionStore = defineStore({
           routes = routes.filter(routeRemoveIgnoreFilter);
           // 对菜单进行排序
           menuList.sort((a, b) => {
-            return (a.meta?.orderNo || 0) - (b.meta?.orderNo || 0);
+            return (a.order || 0) - (b.order || 0);
           });
 
           // 设置菜单列表
