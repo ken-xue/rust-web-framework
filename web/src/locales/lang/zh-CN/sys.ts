@@ -67,9 +67,8 @@ export default {
     signUpFormTitle: '注册',
     forgetFormTitle: '重置密码',
 
-    signInTitle: '企业级一站式研发协同平台',
-    signInDesc:
-      '通过云原生新技术和研发新模式，助力创新创业和数字化转型企业快速实现研发敏捷和组织敏捷，打造“双敏”组织，实现多倍效能提升。',
+    signInTitle: '开箱即用的中后台管理系统',
+    signInDesc: '一个免费开源的中后台模版。使用了最新的vue3,vite4,TypeScript等主流技术开发',
     policy: '我同意xxx隐私政策',
     scanSign: `扫码后点击"确认"，即可完成登录`,
 
