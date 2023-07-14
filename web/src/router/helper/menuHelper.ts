@@ -64,11 +64,12 @@ export function transformRouteToMenu(routeModList: AppRouteModule[], routerMappi
   const list = treeMap(routeList, {
     conversion: (node: AppRouteRecordRaw) => {
       // const { meta: { title, hideMenu = false } = {} } = node;
-      const {  title, hideMenu } = node;
+      const {  title, hideMenu, icon } = node;
       return {
         // ...(node.meta || {}),
         // meta: node.meta,
         name: title,
+        icon: icon,
         hideMenu,
         path: node.path,
         ...(node.redirect ? { redirect: node.redirect } : {}),

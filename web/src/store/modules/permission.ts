@@ -48,7 +48,7 @@ export const usePermissionStore = defineStore({
     permCodeList: [],
     // Whether the route has been dynamically added
     // 路由是否动态添加
-    isDynamicAddedRoute: true,
+    isDynamicAddedRoute: false,
     // To trigger a menu update
     // 触发菜单更新
     lastBuildMenuTime: 0,

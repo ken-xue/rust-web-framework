@@ -126,6 +126,7 @@ impl MenuService {
                 result.push(menu.clone());
             }
         }
+        result.sort_by(|a, b| a.order.unwrap_or(1000).cmp(&b.order.unwrap_or(1000)));
         Ok(result)
     }
 }
