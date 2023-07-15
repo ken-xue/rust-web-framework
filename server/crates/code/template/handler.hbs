@@ -35,3 +35,8 @@ pub async fn delete(Json(r): Json<request::Delete>)  -> Result<impl IntoResponse
     let response = service::{{table.remove_prefix_entity_name}}Service::default().delete(r)?;
     Ok(response::success(response))
 }
+// list
+pub async fn list(Json(r): Json<request::Page>) -> Result<impl IntoResponse, AppError> {
+    let response = service::{{table.remove_prefix_entity_name}}Service::default().list(r)?;
+    Ok(response::success(response))
+}

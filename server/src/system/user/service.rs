@@ -34,7 +34,10 @@ impl UserService {
         let user_uuid = user.uuid.clone();
         let mut ret = UserResponse::from(user);
         // 查询角色和菜单
-        let roles = role::service::RoleService::default().get_by_user_uuid(user_uuid)?;
+        let mut srv = role::service::RoleService::default();
+        let roles = srv.get_by_user_uuid(user_uuid)?;
+        // 填充角色包含的菜单
+        let roles = srv.fill_menus_for_roles(roles)?;
         ret.roles = Some(roles);
         // 响应
         Ok(ret)
@@ -53,7 +56,10 @@ impl UserService {
             let user_uuid = user.uuid.clone();
             let mut ret = UserResponse::from(user);
             // 查询角色和菜单
-            let roles = role::service::RoleService::default().get_by_user_uuid(user_uuid)?;
+            let mut srv = role::service::RoleService::default();
+            let roles = srv.get_by_user_uuid(user_uuid)?;
+            // 填充角色包含的菜单
+            let roles = srv.fill_menus_for_roles(roles)?;
             ret.roles = Some(roles);
             return Ok(ret);
         }
@@ -61,10 +67,10 @@ impl UserService {
     }
 
     pub fn page(&mut self, r: request::Page) -> Result<response::PageResponse<UserResponse>, anyhow::Error> {
-        match self.repo.page(r.page, r.size) {
+        match self.repo.page(r.page, r.page_size) {
             Ok((records, total)) => {
                 let users = records.into_iter().map(|user| UserResponse::from(user)).collect();
-                let response = response::PageResponse::new(users, r.page, r.size, total);
+                let response = response::PageResponse::new(users, r.page, r.page_size, total);
                 Ok(response)
             }
             Err(e) => bail!(e),

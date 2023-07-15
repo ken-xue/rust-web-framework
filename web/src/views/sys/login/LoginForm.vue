@@ -100,7 +100,7 @@
   import { useUserStore } from '/@/store/modules/user';
   import { LoginStateEnum, useLoginState, useFormRules, useFormValid } from './useLogin';
   import { useDesign } from '/@/hooks/web/useDesign';
-  import {encrypt} from "@/utils/encrypt";
+  import { encrypt } from '@/utils/encrypt';
   //import { onKeyStroke } from '@vueuse/core';
 
   const ACol = Col;

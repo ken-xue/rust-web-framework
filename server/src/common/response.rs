@@ -61,19 +61,20 @@ pub fn success<T: Serialize>(data: T) -> impl IntoResponse {
 
 
 #[derive(Debug,Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct PageResponse<T> {
     pub list: Vec<T>,
     pub page: i64,
-    pub size: i64,
+    pub page_size: i64,
     pub total: i64,
 }
 
 impl<T> PageResponse<T> {
-    pub fn new(list: Vec<T>, page: i64, size: i64, total: i64) -> Self {
+    pub fn new(list: Vec<T>, page: i64, page_size: i64, total: i64) -> Self {
         Self {
             list,
             page,
-            size,
+            page_size,
             total,
         }
     }

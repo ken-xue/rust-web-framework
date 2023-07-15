@@ -26,14 +26,20 @@ impl {{table.remove_prefix_entity_name}}Service {
     }
 
     pub fn page(&mut self, r: request::Page) -> Result<response::PageResponse<{{table.remove_prefix_entity_name}}Response>, anyhow::Error> {
-        match self.repo.page(r.page, r.size) {
+        match self.repo.page(r.page, r.page_size) {
             Ok((records, total)) => {
                 let list = records.into_iter().map(|d| {{table.remove_prefix_entity_name}}Response::from(d)).collect();
-                let response = response::PageResponse::new(list, r.page, r.size, total);
+                let response = response::PageResponse::new(list, r.page, r.page_size, total);
                 Ok(response)
             }
             Err(e) => bail!(e),
         }
+    }
+
+    pub fn list(&mut self) -> Result<Vec<{{table.remove_prefix_entity_name}}Response>, anyhow::Error> {
+        let list = self.repo.list()?;
+        let ret = list.into_iter().map(|d| {{table.remove_prefix_entity_name}}Response::from(d)).collect();
+        Ok(ret)
     }
 
     pub fn create(&mut self, u: Create{{table.remove_prefix_entity_name}}) -> Result<{{table.remove_prefix_entity_name}}Response,anyhow::Error> {

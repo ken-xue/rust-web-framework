@@ -5,6 +5,7 @@ use crate::system::user::response::UserResponse;
 use crate::util;
 
 #[derive(Debug, Validate, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct UpdateUser {
     pub id: u64,
     pub name: String,
@@ -14,6 +15,7 @@ pub struct UpdateUser {
 }
 
 #[derive(Debug, Validate, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct CreateUser {
     #[validate(length(min = 1, message = "Can not be empty"))]
     pub name: String,

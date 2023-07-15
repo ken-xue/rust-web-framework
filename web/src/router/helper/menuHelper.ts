@@ -57,14 +57,14 @@ export function transformRouteToMenu(routeModList: AppRouteModule[], routerMappi
     //   const realItem = item?.children?.[0];
     //   realItem && routeList.push(realItem);
     // } else {
-      routeList.push(item);
+    routeList.push(item);
     // }
   });
   // 提取树指定结构
   const list = treeMap(routeList, {
     conversion: (node: AppRouteRecordRaw) => {
       // const { meta: { title, hideMenu = false } = {} } = node;
-      const {  title, hideMenu, icon } = node;
+      const { title, hideMenu, icon } = node;
       return {
         // ...(node.meta || {}),
         // meta: node.meta,

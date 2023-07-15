@@ -26,8 +26,8 @@ thread_local! {
 lazy_static! {
     static ref BLACKLIST: HashSet<&'static str> = {
         let mut set = HashSet::new();
-        set.insert("/api/logout:GET");//接口授权白名单
-        set.insert("/api/v1/system/menu/list:GET");//获取菜单列表
+        set.insert("/api/auth/logout:GET");//接口授权白名单
+        set.insert("/api/auth/menus:GET");//获取菜单列表
         set
     };
 }
@@ -76,10 +76,11 @@ static KEYS: Lazy<Keys> = Lazy::new(|| {
 pub fn auth_router() -> Router {
     Router::new()
         //退出登录需要取token里面的用户名所以必须加上中间件
-        .route("/api/logout", get(handler::logout))
+        .route("/api/auth/logout", get(handler::logout))
+        .route("/api/auth/menus", get(handler::menus))
         //token验证中间件
         .route_layer(middleware::from_fn(auth))
-        .route("/api/login", post(handler::login))
+        .route("/api/auth/login", post(handler::login))
 }
 
 impl Display for Claims {

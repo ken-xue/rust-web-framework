@@ -6,7 +6,7 @@ import Icon from '@/components/Icon/Icon.vue';
 export const columns: BasicColumn[] = [
   {
     title: '菜单名称',
-    dataIndex: 'menuName',
+    dataIndex: 'name',
     width: 200,
     align: 'left',
   },
@@ -19,17 +19,20 @@ export const columns: BasicColumn[] = [
     },
   },
   {
-    title: '权限标识',
-    dataIndex: 'permission',
-    width: 180,
-  },
-  {
     title: '组件',
     dataIndex: 'component',
   },
   {
+    title: '权限标识',
+    dataIndex: 'api',
+    width: 180,
+    customRender: ({ record }) => {
+      return record.api +':'+ record.method;
+    },
+  },
+  {
     title: '排序',
-    dataIndex: 'orderNo',
+    dataIndex: 'order',
     width: 50,
   },
   {
@@ -46,7 +49,7 @@ export const columns: BasicColumn[] = [
   },
   {
     title: '创建时间',
-    dataIndex: 'createTime',
+    dataIndex: 'gmtCreate',
     width: 180,
   },
 ];

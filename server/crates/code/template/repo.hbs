@@ -54,4 +54,9 @@ impl {{table.remove_prefix_entity_name}}Repo {
         let records: Vec<{{table.entity_name}}> = query_result.into_iter().map(|u| u.into()).collect();
         Ok((records, total_count))
     }
+
+    pub fn list(&mut self) -> Result<Vec<{{table.entity_name}}>, anyhow::Error> {
+        let list = {{table.table_info.table_name}}.select({{table.entity_name}}::as_select()).load::<{{table.entity_name}}>(self.conn.deref_mut())?;
+        Ok(list)
+    }
 }

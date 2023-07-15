@@ -3,6 +3,7 @@ use validator::{Validate};
 use crate::{{table.module_name}}::{{table.remove_prefix_table_name}}::model::{{table.entity_name}};
 
 #[derive(Debug, Validate, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct Update{{table.remove_prefix_entity_name}} {
 {{#each table.table_columns as |t| }}
     pub {{t.column_name}}: {{{t.column_mapping_type}}},//{{column_comment}}
@@ -10,6 +11,7 @@ pub struct Update{{table.remove_prefix_entity_name}} {
 }
 
 #[derive(Debug, Validate, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct Create{{table.remove_prefix_entity_name}} {
     //#[validate(length(min = 1, message = "Can not be empty"))]
 {{#each table.table_columns as |t| }}

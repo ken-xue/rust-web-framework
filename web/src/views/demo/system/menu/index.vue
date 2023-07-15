@@ -33,7 +33,7 @@
   import { defineComponent, nextTick } from 'vue';
 
   import { BasicTable, useTable, TableAction } from '/@/components/Table';
-  import { getMenuPage } from '/@/api/demo/system';
+  import { getMenuList } from '/@/api/demo/system';
 
   import { useDrawer } from '/@/components/Drawer';
   import MenuDrawer from './MenuDrawer.vue';
@@ -50,7 +50,7 @@
         pagination: {
           pageSize: 20,
         },
-        api: getMenuPage,
+        api: getMenuList,
         columns,
         formConfig: {
           labelWidth: 120,
@@ -63,6 +63,9 @@
         bordered: true,
         showIndexColumn: false,
         canResize: false,
+        fetchSetting: {
+          listField: 'list',
+        },
         actionColumn: {
           width: 80,
           title: '操作',

@@ -1,4 +1,4 @@
-import { Menu } from "@/router/types";
+import { Menu } from '@/router/types';
 
 /**
  * @description: Login interface parameters

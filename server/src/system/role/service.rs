@@ -7,14 +7,13 @@ use crate::system::menu::response::MenuResponse;
 use crate::system::role::response::RoleResponse;
 use crate::system::role::model::SysRole;
 use crate::system::role::repo::RoleRepo;
-use crate::system::role::request::{CreateRole, UpdateRole };
+use crate::system::role::request::{CreateRole, UpdateRole};
 
 pub struct RoleService {
     repo: RoleRepo,
 }
 
 impl RoleService {
-
     pub fn default() -> Self {
         let repo = RoleRepo::default();
         RoleService { repo }
@@ -30,17 +29,17 @@ impl RoleService {
     }
 
     pub fn page(&mut self, r: request::Page) -> Result<response::PageResponse<RoleResponse>, anyhow::Error> {
-        match self.repo.page(r.page, r.size) {
+        match self.repo.page(r.page, r.page_size) {
             Ok((records, total)) => {
                 let list = records.into_iter().map(|d| RoleResponse::from(d)).collect();
-                let response = response::PageResponse::new(list, r.page, r.size, total);
+                let response = response::PageResponse::new(list, r.page, r.page_size, total);
                 Ok(response)
             }
             Err(e) => bail!(e),
         }
     }
 
-    pub fn create(&mut self, u: CreateRole) -> Result<RoleResponse,anyhow::Error> {
+    pub fn create(&mut self, u: CreateRole) -> Result<RoleResponse, anyhow::Error> {
         let d: SysRole = u.into();
         match self.repo.create(d) {
             Ok(d) => Ok(d.into()),
@@ -48,7 +47,7 @@ impl RoleService {
         }
     }
 
-    pub fn update(&mut self, u: UpdateRole) -> Result<(),anyhow::Error> {
+    pub fn update(&mut self, u: UpdateRole) -> Result<(), anyhow::Error> {
         let d: SysRole = u.into();
         match self.repo.update(d) {
             Ok(Some(update)) if update > 0 => Ok(()),
@@ -57,7 +56,7 @@ impl RoleService {
         }
     }
 
-    pub fn delete(&mut self, d: request::Delete) -> Result<(),anyhow::Error> {
+    pub fn delete(&mut self, d: request::Delete) -> Result<(), anyhow::Error> {
         match self.repo.delete_by_ids(d.ids) {
             Ok(Some(deleted)) if deleted > 0 => Ok(()),
             Ok(_) => bail!("No SysRole was deleted"),
@@ -65,12 +64,10 @@ impl RoleService {
         }
     }
 
-    pub fn get_by_user_uuid(&mut self, uid: String) -> Result<Vec<RoleResponse>, anyhow::Error> {
-        //查询所属角色
-        let roles = self.repo.get_by_user_uuid(uid)?;
+    //给角色的menus字段查询对应的值，填充到roles中
+    pub fn fill_menus_for_roles(&mut self, mut roles: Vec<RoleResponse>) -> Result<Vec<RoleResponse>, anyhow::Error> {
+        //是否需要查询角色对应的权限
         let role_ids: Vec<String> = roles.iter().map(|role| role.uuid.clone()).collect();
-        let mut ret: Vec<RoleResponse> = roles.into_iter().map(|d| RoleResponse::from(d)).collect();
-        //查询权限
         let menus = menu::service::MenuService::default().get_by_role_uuids(role_ids)?;
         //根据menus的role_uuid赋值给每个roles的menus字段vec
         let mut menu_map: HashMap<String, Vec<MenuResponse>> = HashMap::new();
@@ -79,10 +76,17 @@ impl RoleService {
             menu_uuids.push(menu);
         }
         //赋值给roles
-        for mut role_response in &mut ret  {
-            let menus = menu_map.get(&role_response.uuid).map_or(Vec::new(), |v:&Vec<MenuResponse>| v.clone());
+        for mut role_response in &mut roles {
+            let menus = menu_map.get(&role_response.uuid).map_or(Vec::new(), |v: &Vec<MenuResponse>| v.clone());
             role_response.menus = Option::from(menus)
         }
+        Ok(roles)
+    }
+
+    pub fn get_by_user_uuid(&mut self, uid: String) -> Result<Vec<RoleResponse>, anyhow::Error> {
+        //查询所属角色
+        let roles = self.repo.get_by_user_uuid(uid)?;
+        let mut ret: Vec<RoleResponse> = roles.into_iter().map(|d| RoleResponse::from(d)).collect();
         Ok(ret)
     }
 }

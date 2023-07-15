@@ -2,6 +2,7 @@ use serde::{Serialize,Deserialize};
 use crate::system::menu::model::SysMenu;
 
 #[derive(Debug,Serialize,Clone,Eq, Hash, PartialEq)]
+#[serde(rename_all = "camelCase")]
 pub struct MenuResponse {
     pub id: u64,//主键
     pub uuid: String,//uuid
@@ -60,23 +61,3 @@ impl From<SysMenu> for MenuResponse {
         }
     }
 }
-
-
-#[derive(Serialize, Deserialize)]
-pub struct Menu {
-    pub path: String,
-    pub name: String,
-    pub component: Option<String>,
-    pub meta: Option<MenuMeta>,
-    pub redirect: Option<String>,
-    pub children: Option<Vec<Menu>>,
-}
-
-#[derive(Serialize, Deserialize)]
-pub struct MenuMeta {
-    pub title: Option<String>,
-    pub icon: Option<String>,
-    pub hideChildrenInMenu: Option<bool>,
-    pub ignoreKeepAlive: Option<bool>,
-}
-

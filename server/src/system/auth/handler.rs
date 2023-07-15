@@ -1,9 +1,13 @@
-use std::collections::{HashMap, HashSet};
+use std::collections::{HashSet};
 use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, Validation};
 use axum::response::IntoResponse;
-use crate::{common, database, system};
+use crate::{database, system};
+use crate::common::error::AppError;
+use crate::common::response;
 use crate::common::validator::Validated;
 use crate::system::auth::{AuthBody, AuthError, AuthPayload, Claims, CURRENT_USER, KEYS};
+use crate::system::menu::response::MenuResponse;
+use crate::system::{menu, user};
 
 // 登录授权
 pub async fn login(Validated(payload): Validated<AuthPayload>) -> Result<impl IntoResponse, AuthError> {
@@ -44,9 +48,8 @@ pub async fn login(Validated(payload): Validated<AuthPayload>) -> Result<impl In
     // save permission to cached
     database::redis::sadd(user.username, permissions.as_slice()).map_err(|_| AuthError::Unknown)?;
     // response
-    Ok(common::response::success(body))
+    Ok(response::success(body))
 }
-
 
 // 退出登录
 pub async fn logout() -> Result<impl IntoResponse, AuthError> {
@@ -55,5 +58,27 @@ pub async fn logout() -> Result<impl IntoResponse, AuthError> {
     });
     //清理缓存
     database::redis::del(username.unwrap()).map_err(|_| AuthError::InvalidToken)?;
-    Ok(common::response::success(""))
+    Ok(response::success(""))
+}
+
+// 获取当前用户的菜单权限
+pub async fn menus() -> Result<impl IntoResponse, AppError> {
+    let username = CURRENT_USER.with(|cell| {
+        cell.borrow().clone()
+    });
+    // 查询角色和菜单
+    let user = user::service::UserService::default().get_by_username(username.unwrap())?;
+    let mut menu_set: HashSet<MenuResponse> = HashSet::new();
+    if let Some(roles) = &user.roles {
+        for role in roles.iter() {
+            if let Some(menus) = &role.menus {
+                menu_set.extend(menus.iter().cloned());
+            }
+        }
+    }
+    let menus: Vec<MenuResponse> = menu_set.into_iter().collect();
+    // 构建成菜单树
+    let tree_menus = menu::service::MenuService::default().tree(menus)?;
+    // 响应
+    Ok(response::success(tree_menus))
 }

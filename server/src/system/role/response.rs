@@ -3,6 +3,7 @@ use crate::system::menu::response::MenuResponse;
 use crate::system::role::model::SysRole;
 
 #[derive(Debug,Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct RoleResponse {
     pub id: u64,//主键
     pub uuid: String,//uuid

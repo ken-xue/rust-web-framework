@@ -3,6 +3,7 @@ use validator::{Validate};
 use crate::system::role::model::SysRole;
 
 #[derive(Debug, Validate, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct UpdateRole {
     pub id: u64,//主键
     pub uuid: String,//uuid
@@ -16,6 +17,7 @@ pub struct UpdateRole {
 }
 
 #[derive(Debug, Validate, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct CreateRole {
     //#[validate(length(min = 1, message = "Can not be empty"))]
     pub id: u64,//主键

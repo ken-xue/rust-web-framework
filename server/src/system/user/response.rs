@@ -3,6 +3,7 @@ use crate::system::role::response::RoleResponse;
 use crate::system::user::model::SysUser;
 
 #[derive(Debug,Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct UserResponse {
     pub id: u64,//主键
     pub uuid: String,//唯一标示做关联

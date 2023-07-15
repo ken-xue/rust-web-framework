@@ -37,11 +37,11 @@ impl MenuService {
         Ok(resp.into())
     }
 
-    pub fn page(&mut self, r: request::Page) -> Result<response::PageResponse<MenuResponse>, anyhow::Error> {
-        match self.repo.page(r.page, r.size) {
+    pub fn page(&mut self, r: Page) -> Result<response::PageResponse<MenuResponse>, anyhow::Error> {
+        match self.repo.page(r.page, r.page_size) {
             Ok((records, total)) => {
                 let list = records.into_iter().map(|d| MenuResponse::from(d)).collect();
-                let response = response::PageResponse::new(list, r.page, r.size, total);
+                let response = response::PageResponse::new(list, r.page, r.page_size, total);
                 Ok(response)
             }
             Err(e) => bail!(e),
@@ -80,24 +80,10 @@ impl MenuService {
     }
 
     pub fn list(&mut self) -> Result<Vec<MenuResponse>, anyhow::Error> {
-        let username = auth::CURRENT_USER.with(|cell| {
-            cell.borrow().clone()
-        });
-        //查询角色和菜单
-        let user = user::service::UserService::default().get_by_username(username.unwrap())?;
-        let mut menu_set: HashSet<MenuResponse> = HashSet::new();
-        if let Some(roles) = &user.roles {
-            for role in roles.iter() {
-                if let Some(menus) = &role.menus {
-                    menu_set.extend(menus.iter().cloned());
-                }
-            }
-        }
-        let menus: Vec<MenuResponse> = menu_set.into_iter().collect();
-        //构建成菜单树
-        let tree_menus = self.tree(menus)?;
-        //
-        Ok(tree_menus)
+        let menus = self.repo.list()?;
+        let ret = menus.into_iter().map(|d| MenuResponse::from(d)).collect();
+        let ret = self.tree(ret)?;
+        Ok(ret)
     }
 
     // 构建菜单树

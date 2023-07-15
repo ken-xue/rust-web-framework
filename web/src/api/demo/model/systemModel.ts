@@ -18,7 +18,7 @@ export type DeptParams = {
 };
 
 export type MenuParams = {
-  menuName?: string;
+  name?: string;
   status?: string;
 };
 
@@ -43,7 +43,7 @@ export interface DeptListItem {
 
 export interface MenuListItem {
   id: string;
-  orderNo: string;
+  order: string;
   createTime: string;
   status: number;
   icon: string;
@@ -53,11 +53,11 @@ export interface MenuListItem {
 
 export interface RoleListItem {
   id: string;
-  roleName: string;
-  roleValue: string;
-  status: number;
-  orderNo: string;
-  createTime: string;
+  name: string;
+  // roleValue: string;
+  // status: number;
+  // orderNo: string;
+  // createTime: string;
 }
 
 /**

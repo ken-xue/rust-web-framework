@@ -6,7 +6,8 @@ pub struct Delete {
 }
 
 #[derive(Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct Page {
     pub page: i64,
-    pub size: i64,
+    pub page_size: i64,
 }

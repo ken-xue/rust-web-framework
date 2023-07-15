@@ -48,10 +48,16 @@
       const [registerTable, { reload }] = useTable({
         title: '角色列表',
         api: getRoleListByPage,
+        pagination: {
+          pageSize: 20,
+        },
         columns,
         formConfig: {
           labelWidth: 120,
           schemas: searchFormSchema,
+        },
+        fetchSetting: {
+          listField: 'list',
         },
         useSearchForm: true,
         showTableSetting: true,

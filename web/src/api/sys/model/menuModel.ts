@@ -4,9 +4,9 @@ export interface RouteItem {
   path: string;
   component: any;
   // meta: RouteMeta;
-  title?: string,
-  hideChildrenInMenu?: boolean,
-  icon?: string
+  title?: string;
+  hideChildrenInMenu?: boolean;
+  icon?: string;
   name?: string;
   alias?: string | string[];
   redirect?: string;

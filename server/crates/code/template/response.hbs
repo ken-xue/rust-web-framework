@@ -2,6 +2,7 @@ use serde::{Serialize};
 use crate::{{table.module_name}}::{{table.remove_prefix_table_name}}::model::{{table.entity_name}};
 
 #[derive(Debug,Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct {{table.remove_prefix_entity_name}}Response {
 {{#each table.table_columns as |t| }}
     pub {{t.column_name}}: {{{t.column_mapping_type}}},//{{column_comment}}

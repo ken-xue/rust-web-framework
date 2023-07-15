@@ -27,7 +27,7 @@
   import { useDesign } from '/@/hooks/web/useDesign';
   import { useI18n } from '/@/hooks/web/useI18n';
   import { useTabDropdown } from '../useTabDropdown';
-  import {string} from "vue-types";
+  import { string } from 'vue-types';
 
   export default defineComponent({
     name: 'TabContent',
@@ -48,7 +48,7 @@
         // const { tabItem: { meta } = {} } = props;
         // return meta && t(meta.title as string);
         const { tabItem: { name } = {} } = props;
-        return name
+        return name;
         // const { title } = props;
         // return title
       });

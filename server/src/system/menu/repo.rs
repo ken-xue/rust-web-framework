@@ -57,6 +57,11 @@ impl MenuRepo {
         Ok((records, total_count))
     }
 
+    pub fn list(&mut self) -> Result<Vec<SysMenu>, anyhow::Error> {
+        let list = sys_menu.select(SysMenu::as_select()).load::<SysMenu>(self.conn.deref_mut())?;
+        Ok(list)
+    }
+
     pub fn get_by_role_uuids(&mut self, ids: Vec<String>) -> Result<Vec<(String,SysMenu)>, anyhow::Error> {
         use crate::database::schema::sys_role_of_menu::role_uuid;
         let menus = sys_role_of_menu
