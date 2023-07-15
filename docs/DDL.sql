@@ -1,8 +1,8 @@
 -- MySQL dump 10.13  Distrib 5.7.28, for macos10.14 (x86_64)
 --
--- Host: 127.0.0.1    Database: rwf
+-- Host: mysql-sz.makeblock.com    Database: rwf
 -- ------------------------------------------------------
--- Server version	5.7.28
+-- Server version	5.7.36-log
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -14,43 +14,6 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
-
---
--- Table structure for table `menu`
---
-
-DROP TABLE IF EXISTS `menu`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `menu` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `parent_id` int(11) DEFAULT NULL,
-  `path` varchar(255) DEFAULT NULL,
-  `name` varchar(255) DEFAULT NULL,
-  `component` varchar(255) DEFAULT NULL,
-  `redirect` varchar(255) DEFAULT NULL,
-  `title` varchar(255) DEFAULT NULL,
-  `hideChildrenInMenu` tinyint(1) DEFAULT NULL,
-  `icon` varchar(255) DEFAULT NULL,
-  `hideMenu` tinyint(1) DEFAULT NULL,
-  `hideBreadcrumb` tinyint(1) DEFAULT NULL,
-  `currentActiveMenu` varchar(255) DEFAULT NULL,
-  `ignoreKeepAlive` tinyint(1) DEFAULT NULL,
-  `showMenu` tinyint(1) DEFAULT NULL,
-  `frameSrc` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `menu`
---
-
-LOCK TABLES `menu` WRITE;
-/*!40000 ALTER TABLE `menu` DISABLE KEYS */;
-INSERT INTO `menu` VALUES (1,NULL,' /dashboard           ',' Dashboard           ',' LAYOUT                     ',' /dashboard/analysis    ',' routes.dashboard.dashboard       ',NULL,' bx:bx-home      	   ',NULL,NULL,'                   ',NULL,NULL,'                    '),(2,1,' analysis             ',' Analysis            ',' /dashboard/analysis/index  ','                        ',' routes.dashboard.analysis        ',NULL,' bx:bx-home      	   ',NULL,NULL,' /dashboard        ',NULL,NULL,'                    '),(3,1,' workbench            ',' Workbench           ',' /dashboard/workbench/index ','                        ',' routes.dashboard.workbench       ',NULL,' bx:bx-home      	   ',NULL,NULL,' /dashboard        ',NULL,NULL,'                    '),(4,NULL,' /back                ',' PermissionBackDemo  ','                            ','                        ',' routes.demo.permission.back      ',NULL,'                 	   ',NULL,NULL,'                   ',NULL,NULL,'                    '),(5,4,' page                 ',' BackAuthPage        ',' /demo/permission/back/index','                        ',' routes.demo.permission.backPage  ',NULL,'                 	   ',NULL,NULL,'                   ',NULL,NULL,'                    '),(6,4,' btn                  ',' BackAuthBtn         ',' /demo/permission/back/Btn  ','                        ',' routes.demo.permission.backBtn   ',NULL,'                 	   ',NULL,NULL,'                   ',NULL,NULL,'                    '),(7,NULL,' /permission          ',' Permission          ',' LAYOUT                     ',' /permission/front/page ',' routes.demo.permission.permission',NULL,' carbon:user-role	   ',NULL,NULL,'                   ',NULL,NULL,'                    '),(8,7,' back                 ',' PermissionBackDemo  ','                            ','                        ',' routes.demo.permission.back  	  ',NULL,'                 	   ',NULL,NULL,'                   ',NULL,NULL,'                    '),(9,8,' page                 ',' BackAuthPage        ',' /demo/permission/back/index','                        ',' routes.demo.permission.backPage  ',NULL,'                 	   ',NULL,NULL,'                   ',NULL,NULL,'                    '),(10,8,' btn                  ',' BackAuthBtn         ',' /demo/permission/back/Btn  ','                        ',' routes.demo.permission.backBtn   ',NULL,'                 	   ',NULL,NULL,'                   ',NULL,NULL,'                    '),(11,NULL,' /level               ',' Level               ',' LAYOUT                     ',' /level/menu1/menu1-1   ',' routes.demo.level.level          ',NULL,' carbon:user-role	   ',NULL,NULL,'                   ',NULL,NULL,'                    '),(12,11,' menu1                ',' Menu1Demo           ','                            ','                        ',' Menu1                            ',NULL,'                 	   ',NULL,NULL,'                   ',NULL,NULL,'                    '),(13,12,' menu1-1              ',' Menu11Demo          ','                            ','                        ',' Menu1-1                          ',NULL,'                 	   ',NULL,NULL,'                   ',NULL,NULL,'                    '),(14,13,' menu1-1-1            ',' Menu111Demo         ',' /demo/level/Menu111        ','                        ',' Menu111                          ',NULL,'                 	   ',NULL,NULL,'                   ',NULL,NULL,'                    '),(15,12,' menu1-2              ',' Menu12Demo          ',' /demo/level/Menu12         ','                        ',' Menu1-2                          ',NULL,'                       ',NULL,NULL,'                   ',NULL,NULL,'                    '),(16,11,' menu2                ',' Menu2Demo           ',' /demo/level/Menu2          ','                        ',' Menu2                            ',NULL,'                 	   ',NULL,NULL,'                   ',NULL,NULL,'                    '),(17,NULL,' /system              ',' System              ',' LAYOUT                     ',' /system/account        ',' routes.demo.system.moduleName    ',NULL,' ion:settings-outline  ',NULL,NULL,'                   ',NULL,NULL,'                    '),(18,17,' account              ',' AccountManagement   ',' /demo/system/account/index ','                        ',' routes.demo.system.account       ',NULL,'               		   ',NULL,NULL,'                   ',NULL,NULL,'                    '),(19,17,' role                 ',' RoleManagement      ',' /demo/system/role/index    ','                        ',' routes.demo.system.role          ',NULL,'               		   ',NULL,NULL,'                   ',NULL,NULL,'                    '),(20,17,' menu                 ',' MenuManagement      ',' /demo/system/menu/index    ','                        ',' routes.demo.system.menu          ',NULL,'               		   ',NULL,NULL,'                   ',NULL,NULL,'                    '),(21,17,' dept                 ',' DeptManagement      ',' /demo/system/dept/index    ','                        ',' routes.demo.system.dept          ',NULL,'               		   ',NULL,NULL,'                   ',NULL,NULL,'                    ');
-/*!40000 ALTER TABLE `menu` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `sys_captcha`
@@ -75,6 +38,41 @@ CREATE TABLE `sys_captcha` (
 LOCK TABLES `sys_captcha` WRITE;
 /*!40000 ALTER TABLE `sys_captcha` DISABLE KEYS */;
 /*!40000 ALTER TABLE `sys_captcha` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `sys_config`
+--
+
+DROP TABLE IF EXISTS `sys_config`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `sys_config` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `uuid` varchar(32) DEFAULT NULL COMMENT '唯一标示做关联',
+  `name` varchar(64) DEFAULT NULL COMMENT '名字',
+  `config` text COMMENT '配置信息',
+  `remark` varchar(128) DEFAULT NULL COMMENT '备注',
+  `creator` varchar(64) DEFAULT NULL COMMENT '创建人',
+  `modifier` varchar(64) DEFAULT NULL COMMENT '修改人',
+  `gmt_create` datetime NOT NULL COMMENT '创建时间',
+  `gmt_modified` datetime NOT NULL COMMENT '修改时间',
+  `deleted` char(1) NOT NULL DEFAULT '0' COMMENT '逻辑删除',
+  `deletable` char(1) NOT NULL DEFAULT '1' COMMENT '是否可删除',
+  `editable` char(1) DEFAULT '1' COMMENT '是否可编辑',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name` (`name`)
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COMMENT='系统配置表';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `sys_config`
+--
+
+LOCK TABLES `sys_config` WRITE;
+/*!40000 ALTER TABLE `sys_config` DISABLE KEYS */;
+INSERT INTO `sys_config` VALUES (1,'b8c1e673060c437ba0925f119538bdb6','DEFAULT_OBS','{\"type\":\"minio\",\"url\":\"http://192.168.100.22:30001\",\"username\":\"minioadmin\",\"password\":\"minioadmin\"}','缺省OBS实例配置',NULL,NULL,'2022-12-08 19:31:22','2022-12-08 19:31:20','0','0','1'),(2,'94d48125e9f246d3a5e999a277985270','BUILD_SERVER','{\n  \"hostname\":\"192.168.100.21\",\n  \"port\":\"22\",\n  \"username\":\"root\",\n  \"password\":\"123456\"\n}','构建服务器','','','2022-12-08 16:24:05','2022-12-08 16:24:05','0','0','1');
+/*!40000 ALTER TABLE `sys_config` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -145,10 +143,13 @@ CREATE TABLE `sys_menu` (
   `parent_uuid` varchar(32) DEFAULT NULL COMMENT '父菜单uuid',
   `name` varchar(64) DEFAULT NULL COMMENT '菜单名',
   `path` varchar(200) DEFAULT NULL COMMENT '前端路由路径',
+  `component` varchar(255) DEFAULT NULL,
+  `redirect` varchar(255) DEFAULT NULL,
+  `title` varchar(255) DEFAULT NULL,
+  `icon` varchar(50) DEFAULT NULL COMMENT '图标',
   `api` varchar(200) DEFAULT NULL COMMENT '后端接口api',
   `method` varchar(50) DEFAULT NULL COMMENT 'api方法',
   `menu_type` varchar(1) DEFAULT NULL COMMENT '0:目录 1:菜单 2:按钮',
-  `icon` varchar(50) DEFAULT NULL COMMENT '图标',
   `order` int(11) DEFAULT NULL COMMENT '排序',
   `remark` varchar(64) DEFAULT NULL COMMENT '备注',
   `creator` varchar(64) DEFAULT NULL COMMENT '创建人',
@@ -156,12 +157,9 @@ CREATE TABLE `sys_menu` (
   `gmt_create` datetime NOT NULL COMMENT '创建时间',
   `gmt_modified` datetime NOT NULL COMMENT '修改时间',
   `deleted` tinyint(1) NOT NULL DEFAULT '0' COMMENT '逻辑删除',
-  `component` varchar(255) DEFAULT NULL,
-  `redirect` varchar(255) DEFAULT NULL,
-  `title` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `idx_menu_id` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COMMENT='菜单表';
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COMMENT='菜单表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -170,7 +168,7 @@ CREATE TABLE `sys_menu` (
 
 LOCK TABLES `sys_menu` WRITE;
 /*!40000 ALTER TABLE `sys_menu` DISABLE KEYS */;
-INSERT INTO `sys_menu` VALUES (1,'87383f93493d11ecb7c254e1ad134d71',NULL,'Dashboard','/dashboard','/api/login','POST',NULL,' bx:bx-home      	  ',NULL,NULL,NULL,NULL,'2023-07-10 15:27:49','2023-07-10 15:27:49',0,'LAYOUT','/dashboard/analysis','routes.dashboard.dashboard'),(2,'7A8590DB23A44159B4266F4E76C609E9','7A8590DB23A44159B4266F4E76C609E8','BackAuthPage','page','/api/v1/system/user/info','GET',NULL,' bx:bx-home      	  ',NULL,NULL,NULL,NULL,'2023-07-10 15:27:52','2023-07-10 15:27:52',0,'/dashboard/analysis/index','','routes.dashboard.analysis'),(3,'7A8590DB23A44159B4266F4E76C609E8','7A8590DB23A44159B4266F4E76C609E7','PermissionBackDemo','back','back','POST',NULL,' bx:bx-home      	  ',NULL,NULL,NULL,NULL,'2023-07-10 15:27:52','2023-07-10 15:27:52',0,'/dashboard/workbench/index','','routes.dashboard.workbench'),(4,'7A8590DB23A44159B4266F4E76C609E7',NULL,'Permission','/permission','/permission','POST',NULL,NULL,NULL,NULL,NULL,NULL,'2023-07-10 15:27:52','2023-07-10 15:27:52',0,'','','routes.demo.permission.back'),(5,'7A8590DB23A44159B4266F4E76C609E6','7A8590DB23A44159B4266F4E76C609E4','BackAuthBtn','btn','btn','POST',NULL,NULL,NULL,NULL,NULL,NULL,'2023-07-10 15:27:52','2023-07-10 15:27:52',0,'/demo/permission/back/index','','routes.demo.permission.backPage'),(6,'7A8590DB23A44159B4266F4E76C609E5','7A8590DB23A44159B4266F4E76C609E4','BackAuthPage','page','page','POST',NULL,NULL,NULL,NULL,NULL,NULL,'2023-07-10 15:27:52','2023-07-10 15:27:52',0,'/demo/permission/back/Btn','','routes.demo.permission.backBtn'),(7,'7A8590DB23A44159B4266F4E76C609E4',NULL,'PermissionBackDemo','/back','/back','POST',NULL,' carbon:user-role	  ',NULL,NULL,NULL,NULL,'2023-07-10 15:27:52','2023-07-10 15:27:52',0,'LAYOUT','/permission/front/page','routes.demo.permission.permission'),(8,'7A8590DB23A44159B4266F4E76C609E3','87383f93493d11ecb7c254e1ad134d71','Workbench','workbench','workbench','POST',NULL,NULL,NULL,NULL,NULL,NULL,'2023-07-10 15:27:52','2023-07-10 15:27:52',0,'','','routes.demo.permission.back  	'),(9,'7A8590DB23A44159B4266F4E76C609E2','87383f93493d11ecb7c254e1ad134d71','Analysis','analysis','analysis','POST',NULL,NULL,NULL,NULL,NULL,NULL,'2023-07-10 15:27:52','2023-07-10 15:27:52',0,'/demo/permission/back/index','','routes.demo.permission.backPage'),(10,'7A8590DB23A44159B4266F4E76C60921','7A8590DB23A44159B4266F4E76C60917','DeptManagement','dept','dept','POST',NULL,NULL,NULL,NULL,NULL,NULL,'2023-07-10 15:27:52','2023-07-10 15:27:52',0,'/demo/permission/back/Btn','','routes.demo.permission.backBtn'),(11,'7A8590DB23A44159B4266F4E76C60920','7A8590DB23A44159B4266F4E76C60917','MenuManagement','menu','menu','POST',NULL,' carbon:user-role	   ',NULL,NULL,NULL,NULL,'2023-07-10 15:27:52','2023-07-10 15:27:52',0,'LAYOUT','/level/menu1/menu1-1','routes.demo.level.level'),(12,'7A8590DB23A44159B4266F4E76C60919','7A8590DB23A44159B4266F4E76C60917','RoleManagement','role','role','POST',NULL,NULL,NULL,NULL,NULL,NULL,'2023-07-10 15:27:52','2023-07-10 15:27:52',0,'','','Menu1'),(13,'7A8590DB23A44159B4266F4E76C60918','7A8590DB23A44159B4266F4E76C60917','AccountManagement','account','account','POST',NULL,NULL,NULL,NULL,NULL,NULL,'2023-07-10 15:27:52','2023-07-10 15:27:52',0,'','','Menu1-1'),(14,'7A8590DB23A44159B4266F4E76C60917',NULL,'System','/system','/system','POST',NULL,NULL,NULL,NULL,NULL,NULL,'2023-07-10 15:27:52','2023-07-10 15:27:52',0,'/demo/level/Menu111','','Menu111'),(15,'7A8590DB23A44159B4266F4E76C60916','7A8590DB23A44159B4266F4E76C60911','Menu2Demo','menu2','menu2','POST',NULL,NULL,NULL,NULL,NULL,NULL,'2023-07-10 15:27:52','2023-07-10 15:27:52',0,'/demo/level/Menu12','','Menu1-2'),(16,'7A8590DB23A44159B4266F4E76C60915','7A8590DB23A44159B4266F4E76C60912','Menu12Demo','menu1-2','menu1-2','POST',NULL,NULL,NULL,NULL,NULL,NULL,'2023-07-10 15:27:52','2023-07-10 15:27:52',0,'/demo/level/Menu2','','Menu2'),(17,'7A8590DB23A44159B4266F4E76C60914','7A8590DB23A44159B4266F4E76C60913','Menu111Demo','menu1-1-1','menu1-1-1','POST',NULL,' ion:settings-outline  ',NULL,NULL,NULL,NULL,'2023-07-10 15:27:52','2023-07-10 15:27:52',0,'LAYOUT','/system/account','routes.demo.system.moduleName'),(18,'7A8590DB23A44159B4266F4E76C60913','7A8590DB23A44159B4266F4E76C60912','Menu11Demo','menu1-1','menu1-1','POST',NULL,NULL,NULL,NULL,NULL,NULL,'2023-07-10 15:27:52','2023-07-10 15:27:52',0,'/demo/system/account/index','','routes.demo.system.account'),(19,'7A8590DB23A44159B4266F4E76C60912','7A8590DB23A44159B4266F4E76C60911','Menu1Demo','menu1','menu1','POST',NULL,NULL,NULL,NULL,NULL,NULL,'2023-07-10 15:27:52','2023-07-10 15:27:52',0,'/demo/system/role/index','','routes.demo.system.role'),(20,'7A8590DB23A44159B4266F4E76C60911',NULL,'Level','/level','/level','POST',NULL,NULL,NULL,NULL,NULL,NULL,'2023-07-10 15:27:52','2023-07-10 15:27:52',0,'/demo/system/menu/index','','routes.demo.system.menu'),(21,'7A8590DB23A44159B4266F4E76C60910','7A8590DB23A44159B4266F4E76C609E8','BackAuthBtn','btn','btn','POST',NULL,NULL,NULL,NULL,NULL,NULL,'2023-07-10 15:27:52','2023-07-10 15:27:52',0,'/demo/system/dept/index','','routes.demo.system.dept');
+INSERT INTO `sys_menu` VALUES (1,'87383f93493d11ecb7c254e1ad134d71',NULL,'Dashboard','/dashboard','LAYOUT','/dashboard/analysis','routes.dashboard.dashboard','bx:bx-home','/api/login','POST',NULL,1,NULL,NULL,NULL,'2023-07-10 15:27:49','2023-07-10 15:27:49',0),(4,'7A8590DB23A44159B4266F4E76C609E7',NULL,'Permission','/permission','LAYOUT','/permission/front/page','routes.demo.permission.permission','ion:tv-outline','/permission','POST',NULL,NULL,NULL,NULL,NULL,'2023-07-10 15:27:52','2023-07-10 15:27:52',0),(5,'7A8590DB23A44159B4266F4E76C609E6','7A8590DB23A44159B4266F4E76C609E4','BackAuthBtn','btn','/demo/permission/back/index','','routes.demo.permission.backPage',NULL,'btn','POST',NULL,NULL,NULL,NULL,NULL,'2023-07-10 15:27:52','2023-07-10 15:27:52',0),(6,'7A8590DB23A44159B4266F4E76C609E5','7A8590DB23A44159B4266F4E76C609E4','BackAuthPage','page','/demo/permission/back/Btn','','routes.demo.permission.backBtn',NULL,'page','POST',NULL,NULL,NULL,NULL,NULL,'2023-07-10 15:27:52','2023-07-10 15:27:52',0),(7,'7A8590DB23A44159B4266F4E76C609E4','7A8590DB23A44159B4266F4E76C609E7','PermissionBackDemo','back','','/permission/front/page','routes.demo.permission.back','','/api/v1/system/user/info','GET',NULL,NULL,NULL,NULL,NULL,'2023-07-10 15:27:52','2023-07-10 15:27:52',0),(8,'7A8590DB23A44159B4266F4E76C609E3','87383f93493d11ecb7c254e1ad134d71','Workbench','workbench','/dashboard/workbench/index','','routes.dashboard.workbench','','workbench','POST',NULL,NULL,NULL,NULL,NULL,'2023-07-10 15:27:52','2023-07-10 15:27:52',0),(9,'7A8590DB23A44159B4266F4E76C609E2','87383f93493d11ecb7c254e1ad134d71','Analysis','analysis','/dashboard/analysis/index','','routes.dashboard.analysis','','analysis','POST',NULL,NULL,NULL,NULL,NULL,'2023-07-10 15:27:52','2023-07-10 15:27:52',0),(10,'7A8590DB23A44159B4266F4E76C60921','7A8590DB23A44159B4266F4E76C60917','DeptManagement','dept','/demo/system/dept/index','','routes.demo.system.dept',NULL,'dept','POST',NULL,NULL,NULL,NULL,NULL,'2023-07-10 15:27:52','2023-07-10 15:27:52',0),(11,'7A8590DB23A44159B4266F4E76C60920','7A8590DB23A44159B4266F4E76C60917','MenuManagement','menu','/demo/system/menu/index','/level/menu1/menu1-1','routes.demo.system.menu','','menu','POST',NULL,NULL,NULL,NULL,NULL,'2023-07-10 15:27:52','2023-07-10 15:27:52',0),(12,'7A8590DB23A44159B4266F4E76C60919','7A8590DB23A44159B4266F4E76C60917','RoleManagement','role','/demo/system/role/index','','routes.demo.system.role',NULL,'role','POST',NULL,NULL,NULL,NULL,NULL,'2023-07-10 15:27:52','2023-07-10 15:27:52',0),(13,'7A8590DB23A44159B4266F4E76C60918','7A8590DB23A44159B4266F4E76C60917','AccountManagement','account','/demo/system/account/index','','routes.demo.system.account',NULL,'account','POST',NULL,NULL,NULL,NULL,NULL,'2023-07-10 15:27:52','2023-07-10 15:27:52',0),(14,'7A8590DB23A44159B4266F4E76C60917',NULL,'System','/system','LAYOUT','/system/account','routes.demo.system.moduleName','ion:settings-outline','/system','POST',NULL,NULL,NULL,NULL,NULL,'2023-07-10 15:27:52','2023-07-10 15:27:52',0),(15,'7A8590DB23A44159B4266F4E76C60916','7A8590DB23A44159B4266F4E76C60911','Menu2Demo','menu2','/demo/level/Menu2','','Menu2',NULL,'menu2','POST',NULL,NULL,NULL,NULL,NULL,'2023-07-10 15:27:52','2023-07-10 15:27:52',0),(16,'7A8590DB23A44159B4266F4E76C60915','7A8590DB23A44159B4266F4E76C60912','Menu12Demo','menu1-2','/demo/level/Menu12','','Menu1-2',NULL,'menu1-2','POST',NULL,NULL,NULL,NULL,NULL,'2023-07-10 15:27:52','2023-07-10 15:27:52',0),(17,'7A8590DB23A44159B4266F4E76C60914','7A8590DB23A44159B4266F4E76C60913','Menu111Demo','menu1-1-1','/demo/level/Menu111','','Menu111','','menu1-1-1','POST',NULL,NULL,NULL,NULL,NULL,'2023-07-10 15:27:52','2023-07-10 15:27:52',0),(18,'7A8590DB23A44159B4266F4E76C60913','7A8590DB23A44159B4266F4E76C60912','Menu11Demo','menu1-1','/demo/system/account/index','','Menu1-1',NULL,'menu1-1','POST',NULL,NULL,NULL,NULL,NULL,'2023-07-10 15:27:52','2023-07-10 15:27:52',0),(19,'7A8590DB23A44159B4266F4E76C60912','7A8590DB23A44159B4266F4E76C60911','Menu1Demo','menu1','/demo/system/role/index','','menu1',NULL,'menu1','POST',NULL,NULL,NULL,NULL,NULL,'2023-07-10 15:27:52','2023-07-10 15:27:52',0),(20,'7A8590DB23A44159B4266F4E76C60911',NULL,'Level','/level','LAYOUT','','routes.demo.level.level','carbon:user-role','/level','POST',NULL,NULL,NULL,NULL,NULL,'2023-07-10 15:27:52','2023-07-10 15:27:52',0),(22,'7A8590DB23A44159B4266F4E76C60922',NULL,'Link','/link','LAYOUT',NULL,'routes.demo.iframe.frame','ion:tv-outline',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2023-07-14 10:54:49','2023-07-14 10:54:51',0),(23,'7A8590DB23A44159B4266F4E76C60923','7A8590DB23A44159B4266F4E76C60922','Doc','doc','',NULL,'routes.demo.iframe.doc','',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2023-07-14 10:54:49','2023-07-14 10:54:51',0),(24,'7A8590DB23A44159B4266F4E76C60924','7A8590DB23A44159B4266F4E76C60922','DocExternal','https://doc.vvbin.cn/','LAYOUT',NULL,'routes.demo.iframe.docExternal','',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2023-07-14 10:54:49','2023-07-14 10:54:51',0);
 /*!40000 ALTER TABLE `sys_menu` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -202,7 +200,7 @@ CREATE TABLE `sys_role` (
 
 LOCK TABLES `sys_role` WRITE;
 /*!40000 ALTER TABLE `sys_role` DISABLE KEYS */;
-INSERT INTO `sys_role` VALUES (1,'93f101be493d11ecb7c254e1ad134d77','管理员','管理员','SYS','SYS','2021-11-19 13:51:37','2021-11-19 13:51:39',0),(2,'0caadea8ae91427eb3d869df43d0fe41','开发人员','开发人员','admin','admin','2021-12-01 08:57:50','2021-12-01 08:57:50',0);
+INSERT INTO `sys_role` VALUES (1,'93f101be493d11ecb7c254e1ad134d77','管理员','管理员','SYS','admin','2021-11-19 13:51:37','2021-11-19 13:51:39',0),(2,'0caadea8ae91427eb3d869df43d0fe41','开发人员','开发人员','admin','admin','2021-12-01 08:57:50','2021-12-01 08:57:50',0);
 /*!40000 ALTER TABLE `sys_role` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -224,7 +222,7 @@ CREATE TABLE `sys_role_of_menu` (
   `gmt_modified` datetime NOT NULL COMMENT '修改时间',
   `deleted` tinyint(1) NOT NULL DEFAULT '0' COMMENT '逻辑删除',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=212 DEFAULT CHARSET=utf8mb4 COMMENT='角色关联菜单表';
+) ENGINE=InnoDB AUTO_INCREMENT=215 DEFAULT CHARSET=utf8mb4 COMMENT='角色关联菜单表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -233,7 +231,7 @@ CREATE TABLE `sys_role_of_menu` (
 
 LOCK TABLES `sys_role_of_menu` WRITE;
 /*!40000 ALTER TABLE `sys_role_of_menu` DISABLE KEYS */;
-INSERT INTO `sys_role_of_menu` VALUES (191,'87383f93493d11ecb7c254e1ad134d71','93f101be493d11ecb7c254e1ad134d77','87383f93493d11ecb7c254e1ad134d71',NULL,NULL,'2023-07-10 21:54:28','2023-07-10 21:54:28',0),(192,'7A8590DB23A44159B4266F4E76C609E9','93f101be493d11ecb7c254e1ad134d77','7A8590DB23A44159B4266F4E76C609E9',NULL,NULL,'2023-07-10 21:54:28','2023-07-10 21:54:28',0),(193,'7A8590DB23A44159B4266F4E76C609E8','93f101be493d11ecb7c254e1ad134d77','7A8590DB23A44159B4266F4E76C609E8',NULL,NULL,'2023-07-10 21:54:28','2023-07-10 21:54:28',0),(194,'7A8590DB23A44159B4266F4E76C609E7','93f101be493d11ecb7c254e1ad134d77','7A8590DB23A44159B4266F4E76C609E7',NULL,NULL,'2023-07-10 21:54:28','2023-07-10 21:54:28',0),(195,'7A8590DB23A44159B4266F4E76C609E6','93f101be493d11ecb7c254e1ad134d77','7A8590DB23A44159B4266F4E76C609E6',NULL,NULL,'2023-07-10 21:54:28','2023-07-10 21:54:28',0),(196,'7A8590DB23A44159B4266F4E76C609E5','93f101be493d11ecb7c254e1ad134d77','7A8590DB23A44159B4266F4E76C609E5',NULL,NULL,'2023-07-10 21:54:28','2023-07-10 21:54:28',0),(197,'7A8590DB23A44159B4266F4E76C609E4','93f101be493d11ecb7c254e1ad134d77','7A8590DB23A44159B4266F4E76C609E4',NULL,NULL,'2023-07-10 21:54:28','2023-07-10 21:54:28',0),(198,'7A8590DB23A44159B4266F4E76C609E3','93f101be493d11ecb7c254e1ad134d77','7A8590DB23A44159B4266F4E76C609E3',NULL,NULL,'2023-07-10 21:54:28','2023-07-10 21:54:28',0),(199,'7A8590DB23A44159B4266F4E76C609E2','93f101be493d11ecb7c254e1ad134d77','7A8590DB23A44159B4266F4E76C609E2',NULL,NULL,'2023-07-10 21:54:28','2023-07-10 21:54:28',0),(200,'7A8590DB23A44159B4266F4E76C60921','93f101be493d11ecb7c254e1ad134d77','7A8590DB23A44159B4266F4E76C60921',NULL,NULL,'2023-07-10 21:54:28','2023-07-10 21:54:28',0),(201,'7A8590DB23A44159B4266F4E76C60920','93f101be493d11ecb7c254e1ad134d77','7A8590DB23A44159B4266F4E76C60920',NULL,NULL,'2023-07-10 21:54:28','2023-07-10 21:54:28',0),(202,'7A8590DB23A44159B4266F4E76C60919','93f101be493d11ecb7c254e1ad134d77','7A8590DB23A44159B4266F4E76C60919',NULL,NULL,'2023-07-10 21:54:28','2023-07-10 21:54:28',0),(203,'7A8590DB23A44159B4266F4E76C60918','93f101be493d11ecb7c254e1ad134d77','7A8590DB23A44159B4266F4E76C60918',NULL,NULL,'2023-07-10 21:54:28','2023-07-10 21:54:28',0),(204,'7A8590DB23A44159B4266F4E76C60917','93f101be493d11ecb7c254e1ad134d77','7A8590DB23A44159B4266F4E76C60917',NULL,NULL,'2023-07-10 21:54:28','2023-07-10 21:54:28',0),(205,'7A8590DB23A44159B4266F4E76C60916','93f101be493d11ecb7c254e1ad134d77','7A8590DB23A44159B4266F4E76C60916',NULL,NULL,'2023-07-10 21:54:28','2023-07-10 21:54:28',0),(206,'7A8590DB23A44159B4266F4E76C60915','93f101be493d11ecb7c254e1ad134d77','7A8590DB23A44159B4266F4E76C60915',NULL,NULL,'2023-07-10 21:54:28','2023-07-10 21:54:28',0),(207,'7A8590DB23A44159B4266F4E76C60914','93f101be493d11ecb7c254e1ad134d77','7A8590DB23A44159B4266F4E76C60914',NULL,NULL,'2023-07-10 21:54:28','2023-07-10 21:54:28',0),(208,'7A8590DB23A44159B4266F4E76C60913','93f101be493d11ecb7c254e1ad134d77','7A8590DB23A44159B4266F4E76C60913',NULL,NULL,'2023-07-10 21:54:28','2023-07-10 21:54:28',0),(209,'7A8590DB23A44159B4266F4E76C60912','93f101be493d11ecb7c254e1ad134d77','7A8590DB23A44159B4266F4E76C60912',NULL,NULL,'2023-07-10 21:54:28','2023-07-10 21:54:28',0),(210,'7A8590DB23A44159B4266F4E76C60911','93f101be493d11ecb7c254e1ad134d77','7A8590DB23A44159B4266F4E76C60911',NULL,NULL,'2023-07-10 21:54:28','2023-07-10 21:54:28',0),(211,'7A8590DB23A44159B4266F4E76C60910','93f101be493d11ecb7c254e1ad134d77','7A8590DB23A44159B4266F4E76C60910',NULL,NULL,'2023-07-10 21:54:28','2023-07-10 21:54:28',0);
+INSERT INTO `sys_role_of_menu` VALUES (191,'87383f93493d11ecb7c254e1ad134d71','93f101be493d11ecb7c254e1ad134d77','87383f93493d11ecb7c254e1ad134d71',NULL,NULL,'2023-07-10 21:54:28','2023-07-10 21:54:28',0),(192,'7A8590DB23A44159B4266F4E76C609E9','93f101be493d11ecb7c254e1ad134d77','7A8590DB23A44159B4266F4E76C609E9',NULL,NULL,'2023-07-10 21:54:28','2023-07-10 21:54:28',0),(193,'7A8590DB23A44159B4266F4E76C609E8','93f101be493d11ecb7c254e1ad134d77','7A8590DB23A44159B4266F4E76C609E8',NULL,NULL,'2023-07-10 21:54:28','2023-07-10 21:54:28',0),(194,'7A8590DB23A44159B4266F4E76C609E7','93f101be493d11ecb7c254e1ad134d77','7A8590DB23A44159B4266F4E76C609E7',NULL,NULL,'2023-07-10 21:54:28','2023-07-10 21:54:28',0),(195,'7A8590DB23A44159B4266F4E76C609E6','93f101be493d11ecb7c254e1ad134d77','7A8590DB23A44159B4266F4E76C609E6',NULL,NULL,'2023-07-10 21:54:28','2023-07-10 21:54:28',0),(196,'7A8590DB23A44159B4266F4E76C609E5','93f101be493d11ecb7c254e1ad134d77','7A8590DB23A44159B4266F4E76C609E5',NULL,NULL,'2023-07-10 21:54:28','2023-07-10 21:54:28',0),(197,'7A8590DB23A44159B4266F4E76C609E4','93f101be493d11ecb7c254e1ad134d77','7A8590DB23A44159B4266F4E76C609E4',NULL,NULL,'2023-07-10 21:54:28','2023-07-10 21:54:28',0),(198,'7A8590DB23A44159B4266F4E76C609E3','93f101be493d11ecb7c254e1ad134d77','7A8590DB23A44159B4266F4E76C609E3',NULL,NULL,'2023-07-10 21:54:28','2023-07-10 21:54:28',0),(199,'7A8590DB23A44159B4266F4E76C609E2','93f101be493d11ecb7c254e1ad134d77','7A8590DB23A44159B4266F4E76C609E2',NULL,NULL,'2023-07-10 21:54:28','2023-07-10 21:54:28',0),(200,'7A8590DB23A44159B4266F4E76C60921','93f101be493d11ecb7c254e1ad134d77','7A8590DB23A44159B4266F4E76C60921',NULL,NULL,'2023-07-10 21:54:28','2023-07-10 21:54:28',0),(201,'7A8590DB23A44159B4266F4E76C60920','93f101be493d11ecb7c254e1ad134d77','7A8590DB23A44159B4266F4E76C60920',NULL,NULL,'2023-07-10 21:54:28','2023-07-10 21:54:28',0),(202,'7A8590DB23A44159B4266F4E76C60919','93f101be493d11ecb7c254e1ad134d77','7A8590DB23A44159B4266F4E76C60919',NULL,NULL,'2023-07-10 21:54:28','2023-07-10 21:54:28',0),(203,'7A8590DB23A44159B4266F4E76C60918','93f101be493d11ecb7c254e1ad134d77','7A8590DB23A44159B4266F4E76C60918',NULL,NULL,'2023-07-10 21:54:28','2023-07-10 21:54:28',0),(204,'7A8590DB23A44159B4266F4E76C60917','93f101be493d11ecb7c254e1ad134d77','7A8590DB23A44159B4266F4E76C60917',NULL,NULL,'2023-07-10 21:54:28','2023-07-10 21:54:28',0),(205,'7A8590DB23A44159B4266F4E76C60916','93f101be493d11ecb7c254e1ad134d77','7A8590DB23A44159B4266F4E76C60916',NULL,NULL,'2023-07-10 21:54:28','2023-07-10 21:54:28',0),(206,'7A8590DB23A44159B4266F4E76C60915','93f101be493d11ecb7c254e1ad134d77','7A8590DB23A44159B4266F4E76C60915',NULL,NULL,'2023-07-10 21:54:28','2023-07-10 21:54:28',0),(207,'7A8590DB23A44159B4266F4E76C60914','93f101be493d11ecb7c254e1ad134d77','7A8590DB23A44159B4266F4E76C60914',NULL,NULL,'2023-07-10 21:54:28','2023-07-10 21:54:28',0),(208,'7A8590DB23A44159B4266F4E76C60913','93f101be493d11ecb7c254e1ad134d77','7A8590DB23A44159B4266F4E76C60913',NULL,NULL,'2023-07-10 21:54:28','2023-07-10 21:54:28',0),(209,'7A8590DB23A44159B4266F4E76C60912','93f101be493d11ecb7c254e1ad134d77','7A8590DB23A44159B4266F4E76C60912',NULL,NULL,'2023-07-10 21:54:28','2023-07-10 21:54:28',0),(210,'7A8590DB23A44159B4266F4E76C60911','93f101be493d11ecb7c254e1ad134d77','7A8590DB23A44159B4266F4E76C60911',NULL,NULL,'2023-07-10 21:54:28','2023-07-10 21:54:28',0),(211,'7A8590DB23A44159B4266F4E76C60910','93f101be493d11ecb7c254e1ad134d77','7A8590DB23A44159B4266F4E76C60910',NULL,NULL,'2023-07-10 21:54:28','2023-07-10 21:54:28',0),(212,'7A8590DB23A44159B4266F4E76C60922','93f101be493d11ecb7c254e1ad134d77','7A8590DB23A44159B4266F4E76C60922',NULL,NULL,'2023-07-10 21:54:28','2023-07-10 21:54:28',0),(213,'7A8590DB23A44159B4266F4E76C60923','93f101be493d11ecb7c254e1ad134d77','7A8590DB23A44159B4266F4E76C60923',NULL,NULL,'2023-07-10 21:54:28','2023-07-10 21:54:28',0),(214,'7A8590DB23A44159B4266F4E76C60924','93f101be493d11ecb7c254e1ad134d77','7A8590DB23A44159B4266F4E76C60924',NULL,NULL,'2023-07-10 21:54:28','2023-07-10 21:54:28',0);
 /*!40000 ALTER TABLE `sys_role_of_menu` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -314,4 +312,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-07-12 23:55:33
+-- Dump completed on 2023-07-14 21:54:22

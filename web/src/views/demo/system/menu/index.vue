@@ -33,7 +33,7 @@
   import { defineComponent, nextTick } from 'vue';
 
   import { BasicTable, useTable, TableAction } from '/@/components/Table';
-  import { getMenuList } from '/@/api/demo/system';
+  import { getMenuPage } from '/@/api/demo/system';
 
   import { useDrawer } from '/@/components/Drawer';
   import MenuDrawer from './MenuDrawer.vue';
@@ -47,14 +47,16 @@
       const [registerDrawer, { openDrawer }] = useDrawer();
       const [registerTable, { reload, expandAll }] = useTable({
         title: '菜单列表',
-        api: getMenuList,
+        pagination: {
+          pageSize: 20,
+        },
+        api: getMenuPage,
         columns,
         formConfig: {
           labelWidth: 120,
           schemas: searchFormSchema,
         },
         isTreeTable: true,
-        pagination: false,
         striped: false,
         useSearchForm: true,
         showTableSetting: true,
