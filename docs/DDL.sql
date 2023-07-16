@@ -1,8 +1,8 @@
 -- MySQL dump 10.13  Distrib 5.7.28, for macos10.14 (x86_64)
 --
--- Host: mysql-sz.makeblock.com    Database: rwf
+-- Host: 127.0.0.1    Database: rwf
 -- ------------------------------------------------------
--- Server version	5.7.36-log
+-- Server version	5.7.28
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -49,7 +49,7 @@ DROP TABLE IF EXISTS `sys_config`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `sys_config` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `uuid` varchar(32) DEFAULT NULL COMMENT '唯一标示做关联',
+  `uuid` varchar(32) NOT NULL COMMENT '唯一标示做关联',
   `name` varchar(64) DEFAULT NULL COMMENT '名字',
   `config` text COMMENT '配置信息',
   `remark` varchar(128) DEFAULT NULL COMMENT '备注',
@@ -73,6 +73,40 @@ LOCK TABLES `sys_config` WRITE;
 /*!40000 ALTER TABLE `sys_config` DISABLE KEYS */;
 INSERT INTO `sys_config` VALUES (1,'b8c1e673060c437ba0925f119538bdb6','DEFAULT_OBS','{\"type\":\"minio\",\"url\":\"http://192.168.100.22:30001\",\"username\":\"minioadmin\",\"password\":\"minioadmin\"}','缺省OBS实例配置',NULL,NULL,'2022-12-08 19:31:22','2022-12-08 19:31:20','0','0','1'),(2,'94d48125e9f246d3a5e999a277985270','BUILD_SERVER','{\n  \"hostname\":\"192.168.100.21\",\n  \"port\":\"22\",\n  \"username\":\"root\",\n  \"password\":\"123456\"\n}','构建服务器','','','2022-12-08 16:24:05','2022-12-08 16:24:05','0','0','1');
 /*!40000 ALTER TABLE `sys_config` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `sys_dept`
+--
+
+DROP TABLE IF EXISTS `sys_dept`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `sys_dept` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `uuid` varchar(32) NOT NULL COMMENT 'uuid',
+  `parent_uuid` varchar(32) DEFAULT NULL COMMENT '父uuid',
+  `name` varchar(64) NOT NULL COMMENT '名称',
+  `order` int(11) DEFAULT NULL COMMENT '排序',
+  `remark` varchar(64) DEFAULT NULL COMMENT '备注',
+  `status` varchar(64) DEFAULT NULL COMMENT '状态',
+  `creator` varchar(64) DEFAULT NULL COMMENT '创建人',
+  `modifier` varchar(64) DEFAULT NULL COMMENT '修改人',
+  `gmt_create` datetime NOT NULL COMMENT '创建时间',
+  `gmt_modified` datetime NOT NULL COMMENT '修改时间',
+  `deleted` tinyint(1) NOT NULL DEFAULT '0' COMMENT '逻辑删除',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COMMENT='部门表';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `sys_dept`
+--
+
+LOCK TABLES `sys_dept` WRITE;
+/*!40000 ALTER TABLE `sys_dept` DISABLE KEYS */;
+INSERT INTO `sys_dept` VALUES (1,'0',NULL,'华东分部',1,'科离见和三信本复量律亲海感处必强力属月先','1',NULL,NULL,'1978-03-23 00:52:26','1978-03-23 00:52:26',0),(2,'0-0','0','研发部',1,'林具制列步确常百要小么军局照儿','0',NULL,NULL,'1984-09-17 02:13:32','1978-03-23 00:52:26',0),(3,'0-1','0','市场部',2,'到要本区式运小论省状老力长价造选开开道人','0',NULL,NULL,'1994-03-08 06:06:05','1978-03-23 00:52:26',0),(4,'0-2','0','商务部',3,'电战光头运样般除到保一专安局便议值易算适','0',NULL,NULL,'1986-07-31 12:26:54','1978-03-23 00:52:26',0),(5,'0-3','0','财务部',4,'打压过住西政新律什两权立','1',NULL,NULL,'2013-12-10 12:49:35','1978-03-23 00:52:26',0),(6,'1',NULL,'华南分部',2,'及率利油它这运同后些象机','0',NULL,NULL,'1985-07-19 06:11:19','1978-03-23 00:52:26',0),(7,'1-0','1','研发部',1,'细门我他许红采志花运反达','0',NULL,NULL,'1982-11-06 08:31:43','1978-03-23 00:52:26',0),(8,'1-1','1','市场部',2,'京专前根历员派团运程难','0',NULL,NULL,'1997-06-02 09:59:00','1978-03-23 00:52:26',0),(9,'1-2','1','商务部',3,'如构清一白造放她如到去长属得极反称进到特','1',NULL,NULL,'2012-04-11 21:52:32','1978-03-23 00:52:26',0),(10,'1-3','1','财务部',4,'是相里生再九容志命标做管感据千连','0',NULL,NULL,'2005-05-17 18:15:14','1978-03-23 00:52:26',0),(11,'2',NULL,'西北分部',3,'构响月争料全把细办强导特','0',NULL,NULL,'1997-07-10 02:34:02','1978-03-23 00:52:26',0),(12,'2-0','2','研发部',1,'局等相记听命般深准号','1',NULL,NULL,'1987-02-21 07:40:49','1978-03-23 00:52:26',0),(13,'2-1','2','市场部',2,'转老根员容列他前需代见这设民安火积','0',NULL,NULL,'1999-07-18 16:01:31','1978-03-23 00:52:26',0),(14,'2-2','2','商务部',3,'素队道同思听得收新先','0',NULL,NULL,'1974-12-21 14:34:49','1978-03-23 00:52:26',0),(15,'2-3','2','财务部',4,'电清论确查度成进说观分米按土示立眼','1',NULL,NULL,'2007-08-11 22:45:14','1978-03-23 00:52:26',0);
+/*!40000 ALTER TABLE `sys_dept` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -168,7 +202,7 @@ CREATE TABLE `sys_menu` (
 
 LOCK TABLES `sys_menu` WRITE;
 /*!40000 ALTER TABLE `sys_menu` DISABLE KEYS */;
-INSERT INTO `sys_menu` VALUES (1,'87383f93493d11ecb7c254e1ad134d71',NULL,'Dashboard','/dashboard','LAYOUT','/dashboard/analysis','routes.dashboard.dashboard','bx:bx-home','/api/login','POST',NULL,1,NULL,NULL,NULL,'2023-07-10 15:27:49','2023-07-10 15:27:49',0),(4,'7A8590DB23A44159B4266F4E76C609E7',NULL,'Permission','/permission','LAYOUT','/permission/front/page','routes.demo.permission.permission','ion:tv-outline','/permission','POST',NULL,2,NULL,NULL,NULL,'2023-07-10 15:27:52','2023-07-10 15:27:52',0),(5,'7A8590DB23A44159B4266F4E76C609E6','7A8590DB23A44159B4266F4E76C609E4','BackAuthBtn','btn','/demo/permission/back/index','','routes.demo.permission.backPage',NULL,'btn','POST',NULL,1,NULL,NULL,NULL,'2023-07-10 15:27:52','2023-07-10 15:27:52',0),(6,'7A8590DB23A44159B4266F4E76C609E5','7A8590DB23A44159B4266F4E76C609E4','BackAuthPage','page','/demo/permission/back/Btn','','routes.demo.permission.backBtn',NULL,'page','POST',NULL,2,NULL,NULL,NULL,'2023-07-10 15:27:52','2023-07-10 15:27:52',0),(7,'7A8590DB23A44159B4266F4E76C609E4','7A8590DB23A44159B4266F4E76C609E7','PermissionBackDemo','back','','/permission/front/page','routes.demo.permission.back','','/api/v1/system/user/info','GET',NULL,NULL,NULL,NULL,NULL,'2023-07-10 15:27:52','2023-07-10 15:27:52',0),(8,'7A8590DB23A44159B4266F4E76C609E3','87383f93493d11ecb7c254e1ad134d71','Workbench','workbench','/dashboard/workbench/index','','routes.dashboard.workbench','','workbench','POST',NULL,NULL,NULL,NULL,NULL,'2023-07-10 15:27:52','2023-07-10 15:27:52',0),(9,'7A8590DB23A44159B4266F4E76C609E2','87383f93493d11ecb7c254e1ad134d71','Analysis','analysis','/dashboard/analysis/index','','routes.dashboard.analysis','','analysis','POST',NULL,NULL,NULL,NULL,NULL,'2023-07-10 15:27:52','2023-07-10 15:27:52',0),(10,'7A8590DB23A44159B4266F4E76C60921','7A8590DB23A44159B4266F4E76C60917','DeptManagement','dept','/demo/system/dept/index','','routes.demo.system.dept',NULL,'dept','POST',NULL,NULL,NULL,NULL,NULL,'2023-07-10 15:27:52','2023-07-10 15:27:52',0),(11,'7A8590DB23A44159B4266F4E76C60920','7A8590DB23A44159B4266F4E76C60917','MenuManagement','menu','/demo/system/menu/index','','routes.demo.system.menu','','/api/v1/system/menu/page','POST',NULL,NULL,NULL,NULL,NULL,'2023-07-10 15:27:52','2023-07-10 15:27:52',0),(12,'7A8590DB23A44159B4266F4E76C60919','7A8590DB23A44159B4266F4E76C60917','RoleManagement','role','/demo/system/role/index','','routes.demo.system.role',NULL,'/api/v1/system/role/page','POST',NULL,NULL,NULL,NULL,NULL,'2023-07-10 15:27:52','2023-07-10 15:27:52',0),(13,'7A8590DB23A44159B4266F4E76C60918','7A8590DB23A44159B4266F4E76C60917','AccountManagement','account','/demo/system/account/index','','routes.demo.system.account',NULL,'account','POST',NULL,NULL,NULL,NULL,NULL,'2023-07-10 15:27:52','2023-07-10 15:27:52',0),(14,'7A8590DB23A44159B4266F4E76C60917',NULL,'System','/system','LAYOUT','/system/account','routes.demo.system.moduleName','ion:settings-outline','/system','POST',NULL,99999,NULL,NULL,NULL,'2023-07-10 15:27:52','2023-07-10 15:27:52',0),(15,'7A8590DB23A44159B4266F4E76C60916','7A8590DB23A44159B4266F4E76C60911','Menu2Demo','menu2','/demo/level/Menu2','','Menu2',NULL,'menu2','POST',NULL,NULL,NULL,NULL,NULL,'2023-07-10 15:27:52','2023-07-10 15:27:52',0),(16,'7A8590DB23A44159B4266F4E76C60915','7A8590DB23A44159B4266F4E76C60912','Menu12Demo','menu1-2','/demo/level/Menu12','','Menu1-2',NULL,'menu1-2','POST',NULL,NULL,NULL,NULL,NULL,'2023-07-10 15:27:52','2023-07-10 15:27:52',0),(17,'7A8590DB23A44159B4266F4E76C60914','7A8590DB23A44159B4266F4E76C60913','Menu111Demo','menu1-1-1','/demo/level/Menu111','','Menu111','','menu1-1-1','POST',NULL,NULL,NULL,NULL,NULL,'2023-07-10 15:27:52','2023-07-10 15:27:52',0),(18,'7A8590DB23A44159B4266F4E76C60913','7A8590DB23A44159B4266F4E76C60912','Menu11Demo','menu1-1','/demo/system/account/index','','Menu1-1',NULL,'menu1-1','POST',NULL,NULL,NULL,NULL,NULL,'2023-07-10 15:27:52','2023-07-10 15:27:52',0),(19,'7A8590DB23A44159B4266F4E76C60912','7A8590DB23A44159B4266F4E76C60911','Menu1Demo','menu1','/demo/system/role/index','','menu1',NULL,'menu1','POST',NULL,NULL,NULL,NULL,NULL,'2023-07-10 15:27:52','2023-07-10 15:27:52',0),(20,'7A8590DB23A44159B4266F4E76C60911',NULL,'Level','/level','LAYOUT','','routes.demo.level.level','carbon:user-role','/level','POST',NULL,4,NULL,NULL,NULL,'2023-07-10 15:27:52','2023-07-10 15:27:52',0),(22,'7A8590DB23A44159B4266F4E76C60922',NULL,'Link','/link','LAYOUT',NULL,'routes.demo.iframe.frame','ion:tv-outline',NULL,NULL,NULL,5,NULL,NULL,NULL,'2023-07-14 10:54:49','2023-07-14 10:54:51',0),(23,'7A8590DB23A44159B4266F4E76C60923','7A8590DB23A44159B4266F4E76C60922','Doc','doc','',NULL,'routes.demo.iframe.doc','',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2023-07-14 10:54:49','2023-07-14 10:54:51',0),(24,'7A8590DB23A44159B4266F4E76C60924','7A8590DB23A44159B4266F4E76C60922','DocExternal','https://doc.vvbin.cn/','LAYOUT',NULL,'routes.demo.iframe.docExternal','',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2023-07-14 10:54:49','2023-07-14 10:54:51',0);
+INSERT INTO `sys_menu` VALUES (1,'87383f93493d11ecb7c254e1ad134d71',NULL,'Dashboard','/dashboard','LAYOUT','/dashboard/analysis','routes.dashboard.dashboard','bx:bx-home','/api/login','POST',NULL,1,NULL,NULL,NULL,'2023-07-10 15:27:49','2023-07-10 15:27:49',0),(4,'7A8590DB23A44159B4266F4E76C609E7',NULL,'Permission','/permission','LAYOUT','/permission/front/page','routes.demo.permission.permission','ion:tv-outline','/permission','POST',NULL,2,NULL,NULL,NULL,'2023-07-10 15:27:52','2023-07-10 15:27:52',0),(5,'7A8590DB23A44159B4266F4E76C609E6','7A8590DB23A44159B4266F4E76C609E4','BackAuthBtn','btn','/demo/permission/back/index','','routes.demo.permission.backPage',NULL,'btn','POST',NULL,1,NULL,NULL,NULL,'2023-07-10 15:27:52','2023-07-10 15:27:52',0),(6,'7A8590DB23A44159B4266F4E76C609E5','7A8590DB23A44159B4266F4E76C609E4','BackAuthPage','page','/demo/permission/back/Btn','','routes.demo.permission.backBtn',NULL,'page','POST',NULL,2,NULL,NULL,NULL,'2023-07-10 15:27:52','2023-07-10 15:27:52',0),(7,'7A8590DB23A44159B4266F4E76C609E4','7A8590DB23A44159B4266F4E76C609E7','PermissionBackDemo','back','','/permission/front/page','routes.demo.permission.back','','/api/v1/system/user/info','GET',NULL,NULL,NULL,NULL,NULL,'2023-07-10 15:27:52','2023-07-10 15:27:52',0),(8,'7A8590DB23A44159B4266F4E76C609E3','87383f93493d11ecb7c254e1ad134d71','Workbench','workbench','/dashboard/workbench/index','','routes.dashboard.workbench','','workbench','POST',NULL,NULL,NULL,NULL,NULL,'2023-07-10 15:27:52','2023-07-10 15:27:52',0),(9,'7A8590DB23A44159B4266F4E76C609E2','87383f93493d11ecb7c254e1ad134d71','Analysis','analysis','/dashboard/analysis/index','','routes.dashboard.analysis','','analysis','POST',NULL,NULL,NULL,NULL,NULL,'2023-07-10 15:27:52','2023-07-10 15:27:52',0),(10,'7A8590DB23A44159B4266F4E76C60921','7A8590DB23A44159B4266F4E76C60917','DeptManagement','dept','/demo/system/dept/index','','routes.demo.system.dept',NULL,'/api/v1/system/dept/list','POST',NULL,NULL,NULL,NULL,NULL,'2023-07-10 15:27:52','2023-07-10 15:27:52',0),(11,'7A8590DB23A44159B4266F4E76C60920','7A8590DB23A44159B4266F4E76C60917','MenuManagement','menu','/demo/system/menu/index','','routes.demo.system.menu','','/api/v1/system/menu/list','POST',NULL,NULL,NULL,NULL,NULL,'2023-07-10 15:27:52','2023-07-10 15:27:52',0),(12,'7A8590DB23A44159B4266F4E76C60919','7A8590DB23A44159B4266F4E76C60917','RoleManagement','role','/demo/system/role/index','','routes.demo.system.role',NULL,'/api/v1/system/role/page','POST',NULL,NULL,NULL,NULL,NULL,'2023-07-10 15:27:52','2023-07-10 15:27:52',0),(13,'7A8590DB23A44159B4266F4E76C60918','7A8590DB23A44159B4266F4E76C60917','AccountManagement','account','/demo/system/account/index','','routes.demo.system.account',NULL,'/api/v1/system/user/page','POST',NULL,NULL,NULL,NULL,NULL,'2023-07-10 15:27:52','2023-07-10 15:27:52',0),(14,'7A8590DB23A44159B4266F4E76C60917',NULL,'System','/system','LAYOUT','/system/account','routes.demo.system.moduleName','ion:settings-outline','/system','POST',NULL,99999,NULL,NULL,NULL,'2023-07-10 15:27:52','2023-07-10 15:27:52',0),(15,'7A8590DB23A44159B4266F4E76C60916','7A8590DB23A44159B4266F4E76C60911','Menu2Demo','menu2','/demo/level/Menu2','','Menu2',NULL,'menu2','POST',NULL,NULL,NULL,NULL,NULL,'2023-07-10 15:27:52','2023-07-10 15:27:52',0),(16,'7A8590DB23A44159B4266F4E76C60915','7A8590DB23A44159B4266F4E76C60912','Menu12Demo','menu1-2','/demo/level/Menu12','','Menu1-2',NULL,'menu1-2','POST',NULL,NULL,NULL,NULL,NULL,'2023-07-10 15:27:52','2023-07-10 15:27:52',0),(17,'7A8590DB23A44159B4266F4E76C60914','7A8590DB23A44159B4266F4E76C60913','Menu111Demo','menu1-1-1','/demo/level/Menu111','','Menu111','','menu1-1-1','POST',NULL,NULL,NULL,NULL,NULL,'2023-07-10 15:27:52','2023-07-10 15:27:52',0),(18,'7A8590DB23A44159B4266F4E76C60913','7A8590DB23A44159B4266F4E76C60912','Menu11Demo','menu1-1','/demo/system/account/index','','Menu1-1',NULL,'menu1-1','POST',NULL,NULL,NULL,NULL,NULL,'2023-07-10 15:27:52','2023-07-10 15:27:52',0),(19,'7A8590DB23A44159B4266F4E76C60912','7A8590DB23A44159B4266F4E76C60911','Menu1Demo','menu1','/demo/system/role/index','','menu1',NULL,'menu1','POST',NULL,NULL,NULL,NULL,NULL,'2023-07-10 15:27:52','2023-07-10 15:27:52',0),(20,'7A8590DB23A44159B4266F4E76C60911',NULL,'Level','/level','LAYOUT','','routes.demo.level.level','carbon:user-role','/level','POST',NULL,4,NULL,NULL,NULL,'2023-07-10 15:27:52','2023-07-10 15:27:52',0),(22,'7A8590DB23A44159B4266F4E76C60922',NULL,'Link','/link','LAYOUT',NULL,'routes.demo.iframe.frame','ion:tv-outline',NULL,NULL,NULL,5,NULL,NULL,NULL,'2023-07-14 10:54:49','2023-07-14 10:54:51',0),(23,'7A8590DB23A44159B4266F4E76C60923','7A8590DB23A44159B4266F4E76C60922','Doc','doc','',NULL,'routes.demo.iframe.doc','',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2023-07-14 10:54:49','2023-07-14 10:54:51',0),(24,'7A8590DB23A44159B4266F4E76C60924','7A8590DB23A44159B4266F4E76C60922','DocExternal','https://doc.vvbin.cn/','LAYOUT',NULL,'routes.demo.iframe.docExternal','',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2023-07-14 10:54:49','2023-07-14 10:54:51',0);
 /*!40000 ALTER TABLE `sys_menu` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -246,10 +280,10 @@ CREATE TABLE `sys_user` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
   `uuid` varchar(32) NOT NULL COMMENT 'uuid',
   `username` varchar(64) NOT NULL COMMENT '账号',
-  `password` varchar(64) DEFAULT NULL COMMENT '密码',
-  `name` varchar(64) DEFAULT NULL COMMENT '名字',
-  `email` varchar(128) DEFAULT NULL COMMENT '邮箱',
-  `status` int(1) DEFAULT '0' COMMENT '角色',
+  `password` varchar(64) NOT NULL COMMENT '密码',
+  `name` varchar(64) NOT NULL COMMENT '名字',
+  `email` varchar(128) NOT NULL COMMENT '邮箱',
+  `status` int(1) NOT NULL DEFAULT '0' COMMENT '角色',
   `creator` varchar(64) DEFAULT NULL COMMENT '创建人',
   `modifier` varchar(64) DEFAULT NULL COMMENT '修改人',
   `gmt_create` datetime NOT NULL COMMENT '创建时间',
@@ -270,6 +304,36 @@ LOCK TABLES `sys_user` WRITE;
 /*!40000 ALTER TABLE `sys_user` DISABLE KEYS */;
 INSERT INTO `sys_user` VALUES (1,'9df9de08354f456c97fae0cdb3df214f','admin','$2b$12$bRzARfFsrM1wAdNmJJP6ROpmCttzEH66AC9lapR9j4Hx//PMP9auW','admin','devcloudadmin@qq.com',0,NULL,'admin','2021-11-12 22:48:15','2021-11-12 22:48:15',0,NULL),(2,'26220d63bfd345dabb2f114287965313','mikey','$2a$10$ZnuPGCEusk5tiKxAB/1lreynJxuvh4mqu8So6vUok/PCBCYP34.gi','mikey','mikey',0,NULL,NULL,'2021-12-01 09:39:53','2021-12-01 09:39:53',0,NULL),(3,'b8c1e673060c437ba0925f119538bdb6','fasf','$2a$10$ILTzdnK9HtI4BiTXneTWOOgiLid.QHTuDK0iV42EvH142xhuSheqy','fasdf','asfd@qq.com',0,'mikey','admin','2021-12-01 09:46:07','2021-12-01 09:46:07',1,NULL),(6,'841bf88b99ac45c4ba6a1189abe6bea8','adsfasdf','xxxxxxx','hhhh','dasfa@qq.com',0,NULL,NULL,'1970-01-01 00:00:00','1970-01-01 00:00:00',0,NULL),(9,'e4ea0c9574e1477091577c29a4a149a2','adsfafsdf','xxxxxxx','hhfhh','dafsfa@qq.com',0,NULL,NULL,'1970-01-01 00:00:00','1970-01-01 00:00:00',0,NULL),(10,'9ae284e537494f1088a342d380624614','adminkk','$2b$12$bRzARfFsrM1wAdNmJJP6ROpmCttzEH66AC9lapR9j4Hx//PMP9auW','hhhadsffffddah','dasfffd@qq.com',0,NULL,NULL,'1970-01-01 00:00:00','1970-01-01 00:00:00',0,NULL);
 /*!40000 ALTER TABLE `sys_user` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `sys_user_of_dept`
+--
+
+DROP TABLE IF EXISTS `sys_user_of_dept`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `sys_user_of_dept` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `uuid` varchar(32) NOT NULL COMMENT 'uuid',
+  `user_uuid` varchar(32) NOT NULL COMMENT '用户UUID',
+  `dept_uuid` varchar(32) NOT NULL COMMENT '部门UUID',
+  `creator` varchar(64) DEFAULT NULL COMMENT '创建人',
+  `modifier` varchar(64) DEFAULT NULL COMMENT '修改人',
+  `gmt_create` datetime NOT NULL COMMENT '创建时间',
+  `gmt_modified` datetime NOT NULL COMMENT '修改时间',
+  `deleted` tinyint(1) NOT NULL DEFAULT '0' COMMENT '逻辑删除',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户关联部门表';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `sys_user_of_dept`
+--
+
+LOCK TABLES `sys_user_of_dept` WRITE;
+/*!40000 ALTER TABLE `sys_user_of_dept` DISABLE KEYS */;
+/*!40000 ALTER TABLE `sys_user_of_dept` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -312,4 +376,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-07-15 12:53:40
+-- Dump completed on 2023-07-16 16:28:07

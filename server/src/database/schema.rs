@@ -37,6 +37,30 @@ diesel::table! {
 }
 
 diesel::table! {
+    sys_dept (id) {
+        id -> Unsigned<Bigint>,
+        #[max_length = 32]
+        uuid -> Varchar,
+        #[max_length = 32]
+        parent_uuid -> Nullable<Varchar>,
+        #[max_length = 64]
+        name -> Varchar,
+        order -> Nullable<Integer>,
+        #[max_length = 64]
+        remark -> Nullable<Varchar>,
+        #[max_length = 64]
+        status -> Nullable<Varchar>,
+        #[max_length = 64]
+        creator -> Nullable<Varchar>,
+        #[max_length = 64]
+        modifier -> Nullable<Varchar>,
+        gmt_create -> Datetime,
+        gmt_modified -> Datetime,
+        deleted -> Bool,
+    }
+}
+
+diesel::table! {
     sys_dictionary (id) {
         id -> Bigint,
         #[max_length = 200]
@@ -75,14 +99,20 @@ diesel::table! {
         name -> Nullable<Varchar>,
         #[max_length = 200]
         path -> Nullable<Varchar>,
+        #[max_length = 255]
+        component -> Nullable<Varchar>,
+        #[max_length = 255]
+        redirect -> Nullable<Varchar>,
+        #[max_length = 255]
+        title -> Nullable<Varchar>,
+        #[max_length = 50]
+        icon -> Nullable<Varchar>,
         #[max_length = 200]
         api -> Nullable<Varchar>,
         #[max_length = 50]
         method -> Nullable<Varchar>,
         #[max_length = 1]
         menu_type -> Nullable<Varchar>,
-        #[max_length = 50]
-        icon -> Nullable<Varchar>,
         order -> Nullable<Integer>,
         #[max_length = 64]
         remark -> Nullable<Varchar>,
@@ -93,12 +123,6 @@ diesel::table! {
         gmt_create -> Datetime,
         gmt_modified -> Datetime,
         deleted -> Bool,
-        #[max_length = 255]
-        component -> Nullable<Varchar>,
-        #[max_length = 255]
-        redirect -> Nullable<Varchar>,
-        #[max_length = 255]
-        title -> Nullable<Varchar>,
     }
 }
 
@@ -167,6 +191,25 @@ diesel::table! {
 }
 
 diesel::table! {
+    sys_user_of_dept (id) {
+        id -> Unsigned<Bigint>,
+        #[max_length = 32]
+        uuid -> Varchar,
+        #[max_length = 32]
+        user_uuid -> Varchar,
+        #[max_length = 32]
+        dept_uuid -> Varchar,
+        #[max_length = 64]
+        creator -> Nullable<Varchar>,
+        #[max_length = 64]
+        modifier -> Nullable<Varchar>,
+        gmt_create -> Datetime,
+        gmt_modified -> Datetime,
+        deleted -> Bool,
+    }
+}
+
+diesel::table! {
     sys_user_of_role (id) {
         id -> Unsigned<Bigint>,
         #[max_length = 32]
@@ -188,11 +231,13 @@ diesel::table! {
 diesel::allow_tables_to_appear_in_same_query!(
     sys_captcha,
     sys_config,
+    sys_dept,
     sys_dictionary,
     sys_log,
     sys_menu,
     sys_role,
     sys_role_of_menu,
     sys_user,
+    sys_user_of_dept,
     sys_user_of_role,
 );

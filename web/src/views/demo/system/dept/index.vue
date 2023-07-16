@@ -48,6 +48,9 @@
       const [registerTable, { reload }] = useTable({
         title: '部门列表',
         api: getDeptList,
+        fetchSetting: {
+          listField: 'list',
+        },
         columns,
         formConfig: {
           labelWidth: 120,

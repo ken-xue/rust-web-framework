@@ -5,13 +5,13 @@ import { Tag } from 'ant-design-vue';
 export const columns: BasicColumn[] = [
   {
     title: '部门名称',
-    dataIndex: 'deptName',
+    dataIndex: 'name',
     width: 160,
     align: 'left',
   },
   {
     title: '排序',
-    dataIndex: 'orderNo',
+    dataIndex: 'order',
     width: 50,
   },
   {
@@ -28,7 +28,7 @@ export const columns: BasicColumn[] = [
   },
   {
     title: '创建时间',
-    dataIndex: 'createTime',
+    dataIndex: 'gmtCreate',
     width: 180,
   },
   {

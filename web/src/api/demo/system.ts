@@ -14,8 +14,9 @@ import { defHttp } from '/@/utils/http/axios';
 
 enum Api {
   AccountList = '/system/getAccountList',
+  UserPage = '/v1/system/user/page',
   IsAccountExist = '/system/accountExist',
-  DeptList = '/system/getDeptList',
+  DeptList = '/v1/system/dept/list',
   setRoleStatus = '/system/setRoleStatus',
   MenuList = '/v1/system/menu/list',
   RolePageList = '/v1/system/role/page',
@@ -25,8 +26,11 @@ enum Api {
 export const getAccountList = (params: AccountParams) =>
   defHttp.get<AccountListGetResultModel>({ url: Api.AccountList, params });
 
+export const getUserPage = (params: AccountParams) =>
+  defHttp.post<AccountListGetResultModel>({ url: Api.UserPage, params });
+
 export const getDeptList = (params?: DeptListItem) =>
-  defHttp.get<DeptListGetResultModel>({ url: Api.DeptList, params });
+  defHttp.post<DeptListGetResultModel>({ url: Api.DeptList, params });
 
 export const getMenuList = (params?: MenuParams) =>
   defHttp.post<MenuListGetResultModel>({ url: Api.MenuList, params });
