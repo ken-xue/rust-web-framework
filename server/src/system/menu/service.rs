@@ -1,21 +1,18 @@
-use std::borrow::Borrow;
-use std::cell::RefCell;
-use std::collections::{HashMap, HashSet};
-use std::ops::Deref;
-use std::process::id;
-use std::sync::Arc;
+use std::collections::{HashMap};
 use anyhow::bail;
 use diesel::{ExpressionMethods, JoinOnDsl, QueryDsl, SelectableHelper};
 use crate::common::{request, response};
 use crate::common::request::Page;
-use crate::database::schema::sys_menu::dsl::sys_menu;
-use crate::database::schema::sys_menu::uuid;
-use crate::database::schema::sys_role_of_menu::dsl::sys_role_of_menu;
-use crate::system::{auth, role, user};
 use crate::system::menu::response::MenuResponse;
 use crate::system::menu::model::SysMenu;
 use crate::system::menu::repo::MenuRepo;
 use crate::system::menu::request::{CreateMenu, UpdateMenu };
+
+pub enum MenuType {
+    DIR,
+    MENU,
+    BUTTON
+}
 
 pub struct MenuService {
     repo: MenuRepo,

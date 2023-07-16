@@ -19,6 +19,7 @@ enum Api {
   DeptList = '/v1/system/dept/list',
   setRoleStatus = '/system/setRoleStatus',
   MenuList = '/v1/system/menu/list',
+  MenuAdd = '/v1/system/menu/add',
   RolePageList = '/v1/system/role/page',
   GetAllRoleList = '/system/getAllRoleList',
 }
@@ -34,6 +35,9 @@ export const getDeptList = (params?: DeptListItem) =>
 
 export const getMenuList = (params?: MenuParams) =>
   defHttp.post<MenuListGetResultModel>({ url: Api.MenuList, params });
+
+export const addMenuList = (params?: MenuParams) =>
+  defHttp.post({ url: Api.MenuAdd, params });
 
 export const getRoleListByPage = (params?: RolePageParams) =>
   defHttp.post<RolePageListGetResultModel>({ url: Api.RolePageList, params });

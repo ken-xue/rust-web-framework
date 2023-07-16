@@ -47,9 +47,6 @@
       const [registerDrawer, { openDrawer }] = useDrawer();
       const [registerTable, { reload, expandAll }] = useTable({
         title: '菜单列表',
-        pagination: {
-          pageSize: 20,
-        },
         api: getMenuList,
         columns,
         formConfig: {
@@ -57,6 +54,7 @@
           schemas: searchFormSchema,
         },
         isTreeTable: true,
+        pagination: false,
         striped: false,
         useSearchForm: true,
         showTableSetting: true,
