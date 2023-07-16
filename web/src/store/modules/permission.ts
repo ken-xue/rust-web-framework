@@ -6,7 +6,11 @@ import { useI18n } from '/@/hooks/web/useI18n';
 import { useUserStore } from './user';
 import { useAppStoreWithOut } from './app';
 import { toRaw } from 'vue';
-import { transformObjToRoute, flatMultiLevelRoutes } from '/@/router/helper/routeHelper';
+import {
+  transformObjToRoute,
+  flatMultiLevelRoutes,
+  fillRouteMeta
+} from "/@/router/helper/routeHelper";
 import { transformRouteToMenu } from '/@/router/helper/menuHelper';
 
 import projectSetting from '/@/settings/projectSetting';
@@ -226,6 +230,8 @@ export const usePermissionStore = defineStore({
           } catch (error) {
             console.error(error);
           }
+
+          fillRouteMeta(routeList)
 
           // Dynamically introduce components
           // 动态引入组件

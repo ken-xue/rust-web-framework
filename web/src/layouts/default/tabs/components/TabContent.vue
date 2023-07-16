@@ -38,19 +38,14 @@
         default: null,
       },
       isExtra: Boolean,
-      title: string,
     },
     setup(props) {
       const { prefixCls } = useDesign('multiple-tabs-content');
       const { t } = useI18n();
 
       const getTitle = computed(() => {
-        // const { tabItem: { meta } = {} } = props;
-        // return meta && t(meta.title as string);
-        const { tabItem: { name } = {} } = props;
-        return name;
-        // const { title } = props;
-        // return title
+        const { tabItem: { meta } = {} } = props;
+        return meta && t(meta.title as string);
       });
 
       const getIsTabs = computed(() => !props.isExtra);

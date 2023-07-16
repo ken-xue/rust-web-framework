@@ -4,7 +4,7 @@ import type { Router, RouteRecordNormalized } from 'vue-router';
 import { getParentLayout, LAYOUT, EXCEPTION_COMPONENT } from '/@/router/constant';
 import { cloneDeep, omit } from 'lodash-es';
 import { warn } from '/@/utils/log';
-import { createRouter, createWebHashHistory } from 'vue-router';
+import { createRouter, createWebHashHistory, RouteMeta } from "vue-router";
 
 export type LayoutMapKey = 'LAYOUT';
 const IFRAME = () => import('/@/views/sys/iframe/FrameBlank.vue');
@@ -175,4 +175,18 @@ function isMultipleRoute(routeModule: AppRouteModule) {
     }
   }
   return flag;
+}
+
+/**
+ * 后端返回的数据没有那么多嵌套，是扁平化的，为了适配路由的meta嵌套这里改造一下
+ */
+export function fillRouteMeta(modules: AppRouteModule[]) {
+  for (let index = 0; index < modules.length; index++) {
+    const routeModule = modules[index];
+    const meta:RouteMeta = {
+      title: routeModule.title
+    };
+    routeModule.meta = meta;
+    if (routeModule.children) fillRouteMeta(routeModule.children)
+  }
 }

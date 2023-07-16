@@ -66,8 +66,8 @@ export function transformRouteToMenu(routeModList: AppRouteModule[], routerMappi
       // const { meta: { title, hideMenu = false } = {} } = node;
       const { title, hideMenu, icon } = node;
       return {
-        // ...(node.meta || {}),
-        // meta: node.meta,
+        ...(node.meta || {}),
+        meta: node.meta,
         name: title,
         icon: icon,
         hideMenu,
