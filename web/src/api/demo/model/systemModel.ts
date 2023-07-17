@@ -44,11 +44,14 @@ export interface DeptListItem {
 
 export interface MenuListItem {
   id: string;
+  uuid: string;
+  parentUuid: string;
   order: string;
-  createTime: string;
+  gmtCreate: string;
   status: number;
   icon: string;
   component: string;
+  api: string;
   permission: string;
 }
 

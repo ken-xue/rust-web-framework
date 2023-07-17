@@ -27,7 +27,7 @@ export const columns: BasicColumn[] = [
     dataIndex: 'api',
     width: 180,
     customRender: ({ record }) => {
-      return record.api +':'+ record.method;
+      return record.api + ':' + record.method;
     },
   },
   {
@@ -60,7 +60,7 @@ const isButton = (type: string) => type === '2';
 
 export const searchFormSchema: FormSchema[] = [
   {
-    field: 'menuName',
+    field: 'name',
     label: '菜单名称',
     component: 'Input',
     colProps: { span: 8 },
@@ -102,21 +102,21 @@ export const formSchema: FormSchema[] = [
   },
 
   {
-    field: 'parentMenu',
+    field: 'parentUuid',
     label: '上级菜单',
     component: 'TreeSelect',
     componentProps: {
       fieldNames: {
         label: 'name',
-        key: 'id',
-        value: 'id',
+        key: 'uuid',
+        value: 'uuid',
       },
       getPopupContainer: () => document.body,
     },
   },
 
   {
-    field: 'orderNo',
+    field: 'order',
     label: '排序',
     component: 'InputNumber',
     required: true,
@@ -130,7 +130,7 @@ export const formSchema: FormSchema[] = [
   },
 
   {
-    field: 'routePath',
+    field: 'path',
     label: '路由地址',
     component: 'Input',
     required: true,

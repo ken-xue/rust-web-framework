@@ -44,7 +44,7 @@
         }
         const treeData = await getMenuList();
         updateSchema({
-          field: 'parentMenu',
+          field: 'parentUuid',
           componentProps: { treeData },
         });
       });
@@ -57,7 +57,7 @@
           setDrawerProps({ confirmLoading: true });
           // TODO custom api
           console.log(values);
-          const ret = await addMenuList(values)
+          const ret = await addMenuList(values);
           console.log(ret);
           closeDrawer();
           emit('success');
