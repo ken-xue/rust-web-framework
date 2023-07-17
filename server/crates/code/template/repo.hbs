@@ -36,7 +36,7 @@ impl {{table.remove_prefix_entity_name}}Repo {
         Ok(ret)
     }
 
-    pub fn create(&mut self, d: {{table.entity_name}}) -> Result<{{table.entity_name}}, anyhow::Error> {
+    pub fn add(&mut self, d: {{table.entity_name}}) -> Result<{{table.entity_name}}, anyhow::Error> {
         diesel::insert_into({{table.table_info.table_name}}::table).values(&d).execute(self.conn.deref_mut())?;
         Ok(d)
     }

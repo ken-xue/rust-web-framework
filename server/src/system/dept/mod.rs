@@ -14,6 +14,6 @@ pub fn dept_router() -> Router {
     .route("/page",  post(handler::page))
     .route("/list",  post(handler::list))
     .route("/",  put(handler::update))
-    .route("/",  post(handler::create))
+    .route("/",  post(handler::add))
     .route("/",  delete(handler::delete))
 }

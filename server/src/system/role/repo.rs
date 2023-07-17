@@ -37,7 +37,7 @@ impl RoleRepo {
         Ok(ret)
     }
 
-    pub fn create(&mut self, d: SysRole) -> Result<SysRole, anyhow::Error> {
+    pub fn add(&mut self, d: SysRole) -> Result<SysRole, anyhow::Error> {
         diesel::insert_into(sys_role::table).values(&d).execute(self.conn.deref_mut())?;
         Ok(d)
     }

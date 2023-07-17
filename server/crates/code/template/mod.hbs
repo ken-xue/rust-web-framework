@@ -13,7 +13,7 @@ pub fn {{table.remove_prefix_table_name}}_router() -> Router {
     .route("/:id",  get(handler::info))
     .route("/page",  post(handler::page))
     .route("/list",  post(handler::list))
-    .route("/",  put(handler::update))
-    .route("/",  post(handler::create))
-    .route("/",  delete(handler::delete))
+    .route("/update",  put(handler::update))
+    .route("/add",  post(handler::add))
+    .route("/delete",  delete(handler::delete))
 }

@@ -38,7 +38,7 @@ impl MenuRepo {
         Ok(ret)
     }
 
-    pub fn create(&mut self, d: SysMenu) -> Result<SysMenu, anyhow::Error> {
+    pub fn add(&mut self, d: SysMenu) -> Result<SysMenu, anyhow::Error> {
         diesel::insert_into(sys_menu::table).values(&d).execute(self.conn.deref_mut())?;
         Ok(d)
     }

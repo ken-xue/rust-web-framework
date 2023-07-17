@@ -20,9 +20,9 @@ pub async fn page(Json(r): Json<request::Page>) -> Result<impl IntoResponse, App
     let response = service::DeptService::default().page(r)?;
     Ok(response::success(response))
 }
-// create
-pub async fn create(Validated(r): Validated<CreateDept>) -> Result<impl IntoResponse, AppError>  {
-    let response = service::DeptService::default().create(r)?;
+// add
+pub async fn add(Validated(r): Validated<CreateDept>) -> Result<impl IntoResponse, AppError>  {
+    let response = service::DeptService::default().add(r)?;
     Ok(response::success(response))
 }
 // update

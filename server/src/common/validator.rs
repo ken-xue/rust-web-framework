@@ -1,6 +1,7 @@
 use async_trait::async_trait;
 use axum::{extract::{rejection::FormRejection, FromRequest}, http::StatusCode, response::{IntoResponse, Response}, BoxError, Json};
 use axum::body::HttpBody;
+use axum::extract::rejection::JsonRejection;
 use axum::http::{Request};
 use serde::{de::DeserializeOwned};
 use thiserror::Error;
@@ -20,9 +21,8 @@ impl<T, S, B> FromRequest<S, B> for Validated<T>
         S: Send + Sync,
 {
     type Rejection = ServerError;
-
     async fn from_request(req: Request<B>, _state: &S) -> Result<Self, Self::Rejection> {
-        let Json(value) = Json::<T>::from_request(req, _state).await.unwrap();
+        let Json(value) = Json::<T>::from_request(req, _state).await?;
         value.validate()?;
         Ok(Validated(value))
     }
@@ -34,7 +34,7 @@ pub enum ServerError {
     ValidationError(#[from] validator::ValidationErrors),
 
     #[error(transparent)]
-    AxumFormRejection(#[from] FormRejection),
+    AxumJsonRejection(#[from] JsonRejection),
 }
 
 impl IntoResponse for ServerError {
@@ -46,7 +46,7 @@ impl IntoResponse for ServerError {
                 // (StatusCode::BAD_REQUEST, message)
             }
             // ServerError::AxumFormRejection(_) => (StatusCode::BAD_REQUEST, self.to_string()),
-            ServerError::AxumFormRejection(e) => error(Box::try_from(e).unwrap()),
+            ServerError::AxumJsonRejection(e) => error(Box::try_from(e).unwrap()),
         }.into_response()
     }
 }

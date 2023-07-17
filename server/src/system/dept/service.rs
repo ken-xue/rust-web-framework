@@ -44,11 +44,11 @@ impl DeptService {
         Ok(ret)
     }
 
-    pub fn create(&mut self, u: CreateDept) -> Result<DeptResponse,anyhow::Error> {
+    pub fn add(&mut self, u: CreateDept) -> Result<DeptResponse,anyhow::Error> {
         let d: SysDept = u.into();
-        match self.repo.create(d) {
+        match self.repo.add(d) {
             Ok(d) => Ok(d.into()),
-            Err(e) => bail!("Error create SysDept: {}", e),
+            Err(e) => bail!("Error add SysDept: {}", e),
         }
     }
 

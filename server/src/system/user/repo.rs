@@ -43,7 +43,7 @@ impl UserRepo {
         Ok(ret)
     }
 
-    pub fn create(&mut self, user: SysUser) -> Result<SysUser, anyhow::Error> {
+    pub fn add(&mut self, user: SysUser) -> Result<SysUser, anyhow::Error> {
         diesel::insert_into(sys_user::table).values(&user).execute(self.conn.deref_mut())?;
         Ok(user)
     }

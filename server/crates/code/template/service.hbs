@@ -42,11 +42,11 @@ impl {{table.remove_prefix_entity_name}}Service {
         Ok(ret)
     }
 
-    pub fn create(&mut self, u: Create{{table.remove_prefix_entity_name}}) -> Result<{{table.remove_prefix_entity_name}}Response,anyhow::Error> {
+    pub fn add(&mut self, u: Create{{table.remove_prefix_entity_name}}) -> Result<{{table.remove_prefix_entity_name}}Response,anyhow::Error> {
         let d: {{table.entity_name}} = u.into();
-        match self.repo.create(d) {
+        match self.repo.add(d) {
             Ok(d) => Ok(d.into()),
-            Err(e) => bail!("Error create {{table.entity_name}}: {}", e),
+            Err(e) => bail!("Error add {{table.entity_name}}: {}", e),
         }
     }
 

@@ -77,7 +77,7 @@ impl UserService {
         }
     }
 
-    pub fn create(&mut self, u: CreateUser) -> Result<UserResponse, anyhow::Error> {
+    pub fn add(&mut self, u: CreateUser) -> Result<UserResponse, anyhow::Error> {
         let mut user: SysUser = u.into();
         //密码加密
         let hashed_password = match hash(user.password.to_string(), DEFAULT_COST) {
@@ -85,9 +85,9 @@ impl UserService {
             Err(_) => bail!("Failed to hash password"),
         };
         user.password = hashed_password;
-        match self.repo.create(user) {
+        match self.repo.add(user) {
             Ok(user) => Ok(user.into()),
-            Err(e) => bail!("Error create user: {}", e),
+            Err(e) => bail!("Error add user: {}", e),
         }
     }
 

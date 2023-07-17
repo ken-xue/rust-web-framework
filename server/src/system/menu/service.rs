@@ -45,11 +45,11 @@ impl MenuService {
         }
     }
 
-    pub fn create(&mut self, u: CreateMenu) -> Result<MenuResponse,anyhow::Error> {
+    pub fn add(&mut self, u: CreateMenu) -> Result<MenuResponse,anyhow::Error> {
         let d: SysMenu = u.into();
-        match self.repo.create(d) {
+        match self.repo.add(d) {
             Ok(d) => Ok(d.into()),
-            Err(e) => bail!("Error create SysMenu: {}", e),
+            Err(e) => bail!("Error add SysMenu: {}", e),
         }
     }
 

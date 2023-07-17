@@ -14,6 +14,6 @@ pub fn user_router() -> Router {
         .route("/:id",  get(handler::get))
         .route("/page",  post(handler::page))
         .route("/",  put(handler::update))
-        .route("/",  post(handler::create))
+        .route("/",  post(handler::add))
         .route("/",  delete(handler::delete))
 }

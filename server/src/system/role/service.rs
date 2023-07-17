@@ -39,11 +39,11 @@ impl RoleService {
         }
     }
 
-    pub fn create(&mut self, u: CreateRole) -> Result<RoleResponse, anyhow::Error> {
+    pub fn add(&mut self, u: CreateRole) -> Result<RoleResponse, anyhow::Error> {
         let d: SysRole = u.into();
-        match self.repo.create(d) {
+        match self.repo.add(d) {
             Ok(d) => Ok(d.into()),
-            Err(e) => bail!("Error create SysRole: {}", e),
+            Err(e) => bail!("Error add SysRole: {}", e),
         }
     }
 

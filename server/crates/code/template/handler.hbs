@@ -20,9 +20,9 @@ pub async fn page(Json(r): Json<request::Page>) -> Result<impl IntoResponse, App
     let response = service::{{table.remove_prefix_entity_name}}Service::default().page(r)?;
     Ok(response::success(response))
 }
-// create
-pub async fn create(Validated(r): Validated<Create{{table.remove_prefix_entity_name}}>) -> Result<impl IntoResponse, AppError>  {
-    let response = service::{{table.remove_prefix_entity_name}}Service::default().create(r)?;
+// add
+pub async fn add(Validated(r): Validated<Create{{table.remove_prefix_entity_name}}>) -> Result<impl IntoResponse, AppError>  {
+    let response = service::{{table.remove_prefix_entity_name}}Service::default().add(r)?;
     Ok(response::success(response))
 }
 // update

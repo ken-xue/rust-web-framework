@@ -21,9 +21,9 @@ pub async fn page(Json(r): Json<request::Page>) -> Result<impl IntoResponse, App
     let response = service::MenuService::default().page(r)?;
     Ok(response::success(response))
 }
-// create
-pub async fn create(Validated(r): Validated<CreateMenu>) -> Result<impl IntoResponse, AppError>  {
-    let response = service::MenuService::default().create(r)?;
+// add
+pub async fn add(Validated(r): Validated<CreateMenu>) -> Result<impl IntoResponse, AppError>  {
+    let response = service::MenuService::default().add(r)?;
     Ok(response::success(response))
 }
 // update

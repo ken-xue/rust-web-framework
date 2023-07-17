@@ -36,7 +36,7 @@ impl DeptRepo {
         Ok(ret)
     }
 
-    pub fn create(&mut self, d: SysDept) -> Result<SysDept, anyhow::Error> {
+    pub fn add(&mut self, d: SysDept) -> Result<SysDept, anyhow::Error> {
         diesel::insert_into(sys_dept::table).values(&d).execute(self.conn.deref_mut())?;
         Ok(d)
     }
