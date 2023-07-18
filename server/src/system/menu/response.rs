@@ -1,4 +1,4 @@
-use serde::{Serialize,Deserialize};
+use serde::{Serialize};
 use crate::system::menu::model::SysMenu;
 
 #[derive(Debug,Serialize,Clone,Eq, Hash, PartialEq)]
@@ -25,6 +25,7 @@ pub struct MenuResponse {
     pub component: Option<String>,//修改人
     pub redirect: Option<String>,//修改人
     pub title: Option<String>,//修改人
+    pub status: String,//修改人
 }
 
 impl MenuResponse {
@@ -58,6 +59,7 @@ impl From<SysMenu> for MenuResponse {
             component: req.component,//修改人
             redirect: req.redirect,//修改人
             title: req.title,//修改人
+            status: req.status,//修改人
         }
     }
 }

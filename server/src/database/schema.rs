@@ -94,6 +94,8 @@ diesel::table! {
         #[max_length = 32]
         uuid -> Varchar,
         #[max_length = 32]
+        status -> Varchar,
+        #[max_length = 32]
         parent_uuid -> Nullable<Varchar>,
         #[max_length = 64]
         name -> Nullable<Varchar>,
