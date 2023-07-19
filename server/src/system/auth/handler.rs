@@ -23,7 +23,8 @@ pub async fn login(Validated(payload): Validated<AuthPayload>) -> Result<impl In
     let current_time = chrono::Utc::now().timestamp();
     let claims = Claims {
         sub: user.username.to_owned(),
-        exp: (current_time + 60 * 1000) as usize, // Mandatory expiry time as UTC timestamp
+        // exp: (current_time + 60 * 1000) as usize, // Mandatory expiry time as UTC timestamp
+        exp: (current_time + 10) as usize, // Mandatory expiry time as UTC timestamp
     };
     // Create the authorization token
     let token = encode(&Header::default(), &claims, &KEYS.encoding).map_err(|_| AuthError::TokenCreation)?;
@@ -37,8 +38,14 @@ pub async fn login(Validated(payload): Validated<AuthPayload>) -> Result<impl In
             if let Some(menus) = &role.menus {
                 for menu in menus {
                     if let Some(api) = &menu.api {
-                        let key = format!("{}:{}", api, menu.method.as_deref().unwrap_or_default());
-                        permissions_set.insert(key);
+                        // let key = format!("{}", api);
+                        // let key = format!("{}", api);
+                        // permissions_set.insert(key);
+
+                        let apis = api.split(",");
+                        for key in apis {
+                            permissions_set.insert(key.to_string());
+                        }
                     }
                 }
             }
@@ -46,7 +53,7 @@ pub async fn login(Validated(payload): Validated<AuthPayload>) -> Result<impl In
     }
     let permissions: Vec<&str> = permissions_set.iter().map(|s| s.as_str()).collect();
     // save permission to cached
-    database::redis::sadd(user.username, permissions.as_slice()).map_err(|_| AuthError::Unknown)?;
+    database::redis::sadd(user.username, permissions.as_slice()).map_err(|e| AuthError::Unknown(e.to_string()))?;
     // response
     Ok(response::success(body))
 }

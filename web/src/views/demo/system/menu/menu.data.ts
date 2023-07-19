@@ -146,6 +146,7 @@ export const formSchema: FormSchema[] = [
     field: 'permission',
     label: '权限标识',
     component: 'Input',
+    helpMessage: '在此输入权限标识，建议使用驼峰式命名，例如：myPermission',
     ifShow: ({ values }) => !isDir(values.type),
   },
   {

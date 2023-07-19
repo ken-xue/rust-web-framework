@@ -70,13 +70,11 @@ const transform: AxiosTransform = {
       //如果响应头包含refresh_token则进行更新
       const refresh_token = res.headers['x-refresh-token'];
       if (refresh_token) {
-        console.log('x-refresh-token');
         const userStore = useUserStore();
         userStore.setToken(refresh_token);
       }
       return data;
     }
-
     // 在此处根据自己项目的实际情况对不同的code执行不同的操作
     // 如果不希望中断当前请求，请return数据，否则直接抛出异常即可
     let timeoutMsg = '';
@@ -97,7 +95,9 @@ const transform: AxiosTransform = {
     // errorMessageMode='none' 一般是调用时明确表示不希望自动弹出错误提示
     if (options.errorMessageMode === 'modal') {
       createErrorModal({ title: t('sys.api.errorTip'), content: timeoutMsg });
-    } else if (options.errorMessageMode === 'message') {
+      // } else if (options.errorMessageMode === 'message') {
+      //   createMessage.error(timeoutMsg);
+    } else {
       createMessage.error(timeoutMsg);
     }
 

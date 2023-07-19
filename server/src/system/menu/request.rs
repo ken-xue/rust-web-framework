@@ -12,7 +12,6 @@ pub struct UpdateMenu {
     pub name: Option<String>,//菜单名
     pub path: Option<String>,//菜单url
     pub api: Option<String>,//授权标识
-    pub method: Option<String>,//授权标识
     pub menu_type: Option<String>,//0:目录 1:菜单 2:按钮
     pub icon: Option<String>,//图标
     pub order: Option<i32>,//排序
@@ -36,7 +35,6 @@ pub struct CreateMenu {
     pub name: Option<String>,//菜单名
     pub path: Option<String>,//菜单url
     pub api: Option<String>,//授权标识
-    pub method: Option<String>,//授权标识
     pub menu_type: Option<String>,//0:目录 1:菜单 2:按钮
     pub icon: Option<String>,//图标
     pub order: Option<i32>,//排序
@@ -56,7 +54,6 @@ impl From<CreateMenu> for SysMenu {
             name: req.name,//菜单名
             path: req.path,//菜单url
             api: req.api,//授权标识
-            method: req.method,//授权标识
             menu_type: req.menu_type,//0:目录 1:菜单 2:按钮
             icon: req.icon,//图标
             order: req.order,//排序
@@ -83,7 +80,6 @@ impl From<UpdateMenu> for SysMenu {
             name: req.name,//菜单名
             path: req.path,//菜单url
             api: req.api,//授权标识
-            method: req.method,//授权标识
             menu_type: req.menu_type,//0:目录 1:菜单 2:按钮
             icon: req.icon,//图标
             order: req.order,//排序

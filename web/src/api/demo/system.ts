@@ -36,8 +36,7 @@ export const getDeptList = (params?: DeptListItem) =>
 export const getMenuList = (params?: MenuParams) =>
   defHttp.post<MenuListGetResultModel>({ url: Api.MenuList, params });
 
-export const addMenuList = (params?: MenuParams) =>
-  defHttp.post({ url: Api.MenuAdd, params });
+export const addMenuList = (params?: MenuParams) => defHttp.post({ url: Api.MenuAdd, params });
 
 export const getRoleListByPage = (params?: RolePageParams) =>
   defHttp.post<RolePageListGetResultModel>({ url: Api.RolePageList, params });
