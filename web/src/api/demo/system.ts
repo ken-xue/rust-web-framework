@@ -9,6 +9,7 @@ import {
   AccountListGetResultModel,
   RolePageListGetResultModel,
   RoleListGetResultModel,
+  DeleteParam,
 } from './model/systemModel';
 import { defHttp } from '/@/utils/http/axios';
 
@@ -19,6 +20,7 @@ enum Api {
   DeptList = '/v1/system/dept/list',
   setRoleStatus = '/system/setRoleStatus',
   MenuList = '/v1/system/menu/list',
+  MenuDelete = '/v1/system/menu/delete',
   MenuAdd = '/v1/system/menu/add',
   RolePageList = '/v1/system/role/page',
   GetAllRoleList = '/system/getAllRoleList',
@@ -35,6 +37,7 @@ export const getDeptList = (params?: DeptListItem) =>
 
 export const getMenuList = (params?: MenuParams) =>
   defHttp.post<MenuListGetResultModel>({ url: Api.MenuList, params });
+export const deleteMenu = (params?: DeleteParam) => defHttp.delete({ url: Api.MenuDelete, params });
 
 export const addMenuList = (params?: MenuParams) => defHttp.post({ url: Api.MenuAdd, params });
 

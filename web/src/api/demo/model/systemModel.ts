@@ -22,6 +22,10 @@ export type MenuParams = {
   status?: string;
 };
 
+export type DeleteParam = {
+  ids?: int[];
+};
+
 export interface AccountListItem {
   id: string;
   account: string;

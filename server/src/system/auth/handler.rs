@@ -23,8 +23,8 @@ pub async fn login(Validated(payload): Validated<AuthPayload>) -> Result<impl In
     let current_time = chrono::Utc::now().timestamp();
     let claims = Claims {
         sub: user.username.to_owned(),
-        // exp: (current_time + 60 * 1000) as usize, // Mandatory expiry time as UTC timestamp
-        exp: (current_time + 10) as usize, // Mandatory expiry time as UTC timestamp
+        exp: (current_time + 60 * 1000) as usize, // Mandatory expiry time as UTC timestamp
+        // exp: (current_time + 10) as usize, // Mandatory expiry time as UTC timestamp
     };
     // Create the authorization token
     let token = encode(&Header::default(), &claims, &KEYS.encoding).map_err(|_| AuthError::TokenCreation)?;

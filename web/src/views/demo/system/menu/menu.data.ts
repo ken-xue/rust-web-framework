@@ -26,9 +26,6 @@ export const columns: BasicColumn[] = [
     title: '权限标识',
     dataIndex: 'api',
     width: 180,
-    customRender: ({ record }) => {
-      return record.api + ':' + record.method;
-    },
   },
   {
     title: '排序',
@@ -41,7 +38,7 @@ export const columns: BasicColumn[] = [
     width: 80,
     customRender: ({ record }) => {
       const status = record.status;
-      const enable = ~~status === 0;
+      const enable = status === 'enable';
       const color = enable ? 'green' : 'red';
       const text = enable ? '启用' : '停用';
       return h(Tag, { color: color }, () => text);
@@ -71,8 +68,8 @@ export const searchFormSchema: FormSchema[] = [
     component: 'Select',
     componentProps: {
       options: [
-        { label: '启用', value: '0' },
-        { label: '停用', value: '1' },
+        { label: '启用', value: 'enable' },
+        { label: '停用', value: 'disable' },
       ],
     },
     colProps: { span: 8 },
@@ -81,7 +78,7 @@ export const searchFormSchema: FormSchema[] = [
 
 export const formSchema: FormSchema[] = [
   {
-    field: 'type',
+    field: 'menuType',
     label: '菜单类型',
     component: 'RadioButtonGroup',
     defaultValue: '0',
@@ -147,7 +144,7 @@ export const formSchema: FormSchema[] = [
     label: '权限标识',
     component: 'Input',
     labelWidth: 100,
-    helpMessage: '接口权限，例如：/api/v1/system/user/info:get',
+    helpMessage: '接口权限,例如：/api/v1/system/user/info:get,多个使用英文逗号分割',
     ifShow: ({ values }) => !isDir(values.type),
   },
   {
