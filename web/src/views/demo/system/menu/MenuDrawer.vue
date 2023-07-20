@@ -17,6 +17,7 @@
   import { BasicDrawer, useDrawerInner } from '/@/components/Drawer';
 
   import { addMenu, getMenuList, updateMenu } from '/@/api/demo/system';
+  import {message} from "ant-design-vue";
 
   export default defineComponent({
     name: 'MenuDrawer',
@@ -65,6 +66,7 @@
             const ret = await addMenu(values);
             console.log(ret);
           }
+          message.success('操作成功');
           closeDrawer();
           emit('success');
         } finally {

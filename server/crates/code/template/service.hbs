@@ -3,7 +3,7 @@ use crate::common::{request, response};
 use crate::{{table.module_name}}::{{table.remove_prefix_table_name}}::response::{{table.remove_prefix_entity_name}}Response;
 use crate::{{table.module_name}}::{{table.remove_prefix_table_name}}::model::{{table.entity_name}};
 use crate::{{table.module_name}}::{{table.remove_prefix_table_name}}::repo::{{table.remove_prefix_entity_name}}Repo;
-use crate::{{table.module_name}}::{{table.remove_prefix_table_name}}::request::{Create{{table.remove_prefix_entity_name}}, Update{{table.remove_prefix_entity_name}} };
+use crate::{{table.module_name}}::{{table.remove_prefix_table_name}}::request::{Add{{table.remove_prefix_entity_name}}, Update{{table.remove_prefix_entity_name}} };
 
 pub struct {{table.remove_prefix_entity_name}}Service {
     repo: {{table.remove_prefix_entity_name}}Repo,
@@ -25,8 +25,8 @@ impl {{table.remove_prefix_entity_name}}Service {
         Ok(resp.into())
     }
 
-    pub fn page(&mut self, r: request::Page) -> Result<response::PageResponse<{{table.remove_prefix_entity_name}}Response>, anyhow::Error> {
-        match self.repo.page(r.page, r.page_size) {
+    pub fn page(&mut self, r: request::Page{{table.remove_prefix_entity_name}}) -> Result<response::PageResponse<{{table.remove_prefix_entity_name}}Response>, anyhow::Error> {
+        match self.repo.page(r) {
             Ok((records, total)) => {
                 let list = records.into_iter().map(|d| {{table.remove_prefix_entity_name}}Response::from(d)).collect();
                 let response = response::PageResponse::new(list, r.page, r.page_size, total);
@@ -42,7 +42,7 @@ impl {{table.remove_prefix_entity_name}}Service {
         Ok(ret)
     }
 
-    pub fn add(&mut self, u: Create{{table.remove_prefix_entity_name}}) -> Result<{{table.remove_prefix_entity_name}}Response,anyhow::Error> {
+    pub fn add(&mut self, u: Add{{table.remove_prefix_entity_name}}) -> Result<{{table.remove_prefix_entity_name}}Response,anyhow::Error> {
         let d: {{table.entity_name}} = u.into();
         match self.repo.add(d) {
             Ok(d) => Ok(d.into()),

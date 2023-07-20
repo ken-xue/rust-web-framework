@@ -9,6 +9,7 @@ use crate::database::schema::sys_menu::dsl::*;
 use crate::database::schema::sys_menu;
 use crate::database::schema::sys_role_of_menu::dsl::sys_role_of_menu;
 use crate::database::schema::sys_role_of_menu::menu_uuid;
+use crate::system::menu::request::PageMenu;
 
 pub struct MenuRepo {
     conn: database::PoolConnection,
@@ -49,9 +50,9 @@ impl MenuRepo {
         Ok(ret)
     }
 
-    pub fn page(&mut self, page: i64, size: i64) -> Result<(Vec<SysMenu>, i64), anyhow::Error> {
-        let offset = size * (page - 1);
-        let query_result = sys_menu.select(SysMenu::as_select()).limit(size).offset(offset).load::<SysMenu>(self.conn.deref_mut())?;
+    pub fn page(&mut self, page: PageMenu) -> Result<(Vec<SysMenu>, i64), anyhow::Error> {
+        let offset = page.page_size * (page.page - 1);
+        let query_result = sys_menu.select(SysMenu::as_select()).limit(page.page_size).offset(offset).load::<SysMenu>(self.conn.deref_mut())?;
         let total_count = sys_menu.count().first::<i64>(self.conn.deref_mut())?;
         let records: Vec<SysMenu> = query_result.into_iter().map(|u| u.into()).collect();
         Ok((records, total_count))

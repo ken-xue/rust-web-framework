@@ -9,7 +9,7 @@ use crate::common::{request, response};
 use crate::system::menu::{service, repo};
 use validator::{Validate};
 use crate::common::validator::Validated;
-use crate::system::menu::request::{CreateMenu, UpdateMenu};
+use crate::system::menu::request::{AddMenu, PageMenu, UpdateMenu};
 
 // info
 pub async fn info(Path(id): Path<u64>) -> Result<impl IntoResponse, AppError> {
@@ -17,12 +17,12 @@ pub async fn info(Path(id): Path<u64>) -> Result<impl IntoResponse, AppError> {
     Ok(response::success(response))
 }
 // page
-pub async fn page(Json(r): Json<request::Page>) -> Result<impl IntoResponse, AppError> {
+pub async fn page(Json(r): Json<PageMenu>) -> Result<impl IntoResponse, AppError> {
     let response = service::MenuService::default().page(r)?;
     Ok(response::success(response))
 }
 // add
-pub async fn add(Validated(r): Validated<CreateMenu>) -> Result<impl IntoResponse, AppError>  {
+pub async fn add(Validated(r): Validated<AddMenu>) -> Result<impl IntoResponse, AppError>  {
     let response = service::MenuService::default().add(r)?;
     Ok(response::success(response))
 }

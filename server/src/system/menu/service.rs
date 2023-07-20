@@ -6,7 +6,7 @@ use crate::common::request::Page;
 use crate::system::menu::response::MenuResponse;
 use crate::system::menu::model::SysMenu;
 use crate::system::menu::repo::MenuRepo;
-use crate::system::menu::request::{CreateMenu, UpdateMenu };
+use crate::system::menu::request::{AddMenu, PageMenu, UpdateMenu};
 
 pub enum MenuType {
     DIR,
@@ -34,18 +34,13 @@ impl MenuService {
         Ok(resp.into())
     }
 
-    pub fn page(&mut self, r: Page) -> Result<response::PageResponse<MenuResponse>, anyhow::Error> {
-        match self.repo.page(r.page, r.page_size) {
-            Ok((records, total)) => {
-                let list = records.into_iter().map(|d| MenuResponse::from(d)).collect();
-                let response = response::PageResponse::new(list, r.page, r.page_size, total);
-                Ok(response)
-            }
-            Err(e) => bail!(e),
-        }
+    pub fn page(&mut self, r: PageMenu) -> Result<response::PageResponse<MenuResponse>, anyhow::Error> {
+        self.repo.page(r.clone()).map(|(records, total)|
+            response::PageResponse::<MenuResponse>::new(
+                records.into_iter().map(MenuResponse::from).collect(), r.page, r.page_size, total))
     }
 
-    pub fn add(&mut self, u: CreateMenu) -> Result<MenuResponse,anyhow::Error> {
+    pub fn add(&mut self, u: AddMenu) -> Result<MenuResponse,anyhow::Error> {
         let d: SysMenu = u.into();
         match self.repo.add(d) {
             Ok(d) => Ok(d.into()),
