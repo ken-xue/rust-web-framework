@@ -35,7 +35,7 @@
 
         if (unref(isUpdate)) {
           rowId.value = data.record.id;
-          setFieldsValue({
+          await setFieldsValue({
             ...data.record,
           });
         }

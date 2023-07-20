@@ -24,7 +24,7 @@ export const columns: BasicColumn[] = [
   },
   {
     title: '权限标识',
-    dataIndex: 'api',
+    dataIndex: 'permission',
     width: 180,
   },
   {
@@ -78,6 +78,12 @@ export const searchFormSchema: FormSchema[] = [
 
 export const formSchema: FormSchema[] = [
   {
+    field: 'id',
+    label: 'id',
+    show: false,
+    component: 'InputNumber',
+  },
+  {
     field: 'menuType',
     label: '菜单类型',
     component: 'RadioButtonGroup',
@@ -97,7 +103,6 @@ export const formSchema: FormSchema[] = [
     component: 'Input',
     required: true,
   },
-
   {
     field: 'parentUuid',
     label: '上级菜单',
@@ -123,7 +128,7 @@ export const formSchema: FormSchema[] = [
     label: '图标',
     component: 'IconPicker',
     required: true,
-    ifShow: ({ values }) => !isButton(values.type),
+    ifShow: ({ values }) => !isButton(values.menuType),
   },
 
   {
@@ -131,13 +136,13 @@ export const formSchema: FormSchema[] = [
     label: '路由地址',
     component: 'Input',
     required: true,
-    ifShow: ({ values }) => !isButton(values.type),
+    ifShow: ({ values }) => !isButton(values.menuType),
   },
   {
     field: 'component',
     label: '组件路径',
     component: 'Input',
-    ifShow: ({ values }) => isMenu(values.type),
+    ifShow: ({ values }) => isMenu(values.menuType),
   },
   {
     field: 'permission',
@@ -145,17 +150,17 @@ export const formSchema: FormSchema[] = [
     component: 'Input',
     labelWidth: 100,
     helpMessage: '接口权限,例如：/api/v1/system/user/info:get,多个使用英文逗号分割',
-    ifShow: ({ values }) => !isDir(values.type),
+    ifShow: ({ values }) => !isDir(values.menuType),
   },
   {
     field: 'status',
     label: '状态',
     component: 'RadioButtonGroup',
-    defaultValue: '0',
+    defaultValue: 'enable',
     componentProps: {
       options: [
-        { label: '启用', value: '0' },
-        { label: '禁用', value: '1' },
+        { label: '启用', value: 'enable' },
+        { label: '禁用', value: 'disable' },
       ],
     },
   },
@@ -170,7 +175,7 @@ export const formSchema: FormSchema[] = [
         { label: '是', value: '1' },
       ],
     },
-    ifShow: ({ values }) => !isButton(values.type),
+    ifShow: ({ values }) => !isButton(values.menuType),
   },
 
   {
@@ -184,7 +189,7 @@ export const formSchema: FormSchema[] = [
         { label: '是', value: '1' },
       ],
     },
-    ifShow: ({ values }) => isMenu(values.type),
+    ifShow: ({ values }) => isMenu(values.menuType),
   },
 
   {
@@ -198,6 +203,6 @@ export const formSchema: FormSchema[] = [
         { label: '否', value: '1' },
       ],
     },
-    ifShow: ({ values }) => !isButton(values.type),
+    ifShow: ({ values }) => !isButton(values.menuType),
   },
 ];

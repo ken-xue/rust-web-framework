@@ -37,12 +37,8 @@ pub async fn login(Validated(payload): Validated<AuthPayload>) -> Result<impl In
         for role in roles.iter() {
             if let Some(menus) = &role.menus {
                 for menu in menus {
-                    if let Some(api) = &menu.api {
-                        // let key = format!("{}", api);
-                        // let key = format!("{}", api);
-                        // permissions_set.insert(key);
-
-                        let apis = api.split(",");
+                    if let Some(permission) = &menu.permission {
+                        let apis = permission.split(",");
                         for key in apis {
                             permissions_set.insert(key.to_string());
                         }

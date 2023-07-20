@@ -18,12 +18,18 @@ export type DeptParams = {
 };
 
 export type MenuParams = {
+  id?: number;
+  parentUuid?: string;
+  menuType?: string;
   name?: string;
   status?: string;
+  path?: string;
+  order?: number;
+  permission?: string;
 };
 
 export type DeleteParam = {
-  ids?: int[];
+  ids?: number[];
 };
 
 export interface AccountListItem {

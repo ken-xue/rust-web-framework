@@ -22,6 +22,7 @@ enum Api {
   MenuList = '/v1/system/menu/list',
   MenuDelete = '/v1/system/menu/delete',
   MenuAdd = '/v1/system/menu/add',
+  MenuUpdate = '/v1/system/menu/update',
   RolePageList = '/v1/system/role/page',
   GetAllRoleList = '/system/getAllRoleList',
 }
@@ -39,7 +40,8 @@ export const getMenuList = (params?: MenuParams) =>
   defHttp.post<MenuListGetResultModel>({ url: Api.MenuList, params });
 export const deleteMenu = (params?: DeleteParam) => defHttp.delete({ url: Api.MenuDelete, params });
 
-export const addMenuList = (params?: MenuParams) => defHttp.post({ url: Api.MenuAdd, params });
+export const addMenu = (params?: MenuParams) => defHttp.post({ url: Api.MenuAdd, params });
+export const updateMenu = (params?: MenuParams) => defHttp.put({ url: Api.MenuUpdate, params });
 
 export const getRoleListByPage = (params?: RolePageParams) =>
   defHttp.post<RolePageListGetResultModel>({ url: Api.RolePageList, params });

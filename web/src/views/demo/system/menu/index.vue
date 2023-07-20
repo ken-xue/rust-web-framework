@@ -33,12 +33,13 @@
   import { defineComponent, nextTick } from 'vue';
 
   import { BasicTable, useTable, TableAction } from '/@/components/Table';
-  import {deleteMenu, getMenuList} from '/@/api/demo/system';
+  import { deleteMenu, getMenuList } from '/@/api/demo/system';
 
   import { useDrawer } from '/@/components/Drawer';
   import MenuDrawer from './MenuDrawer.vue';
 
   import { columns, searchFormSchema } from './menu.data';
+  import { message } from 'ant-design-vue';
 
   export default defineComponent({
     name: 'MenuManagement',
@@ -85,11 +86,17 @@
           isUpdate: true,
         });
       }
+      const handleDelete = async (record) => {
+        await deleteMenu({ ids: [record.id] });
+        message.success('删除成功');
+        await reload();
+      };
 
-      function handleDelete(record: Recordable) {
-        console.log(record);
-        const ret = deleteMenu(record.id);
-      }
+      // function handleDelete(record: Recordable) {
+      //   console.log(record);
+      //   const ret = deleteMenu({ ids: [record.id] });
+      //   console.log(ret);
+      // }
 
       function handleSuccess() {
         reload();

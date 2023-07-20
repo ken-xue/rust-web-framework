@@ -7,6 +7,7 @@ use serde::{de::DeserializeOwned};
 use thiserror::Error;
 use validator::Validate;
 use crate::common::response::error;
+use crate::system::auth::Resp;
 
 #[derive(Debug, Clone, Copy, Default)]
 pub struct Validated<T>(pub T);
@@ -39,14 +40,24 @@ pub enum ServerError {
 
 impl IntoResponse for ServerError {
     fn into_response(self) -> Response {
-        match self {
-            ServerError::ValidationError(e) => {
-                // let message = format!("Input validation error: [{}]", self).replace('\n', ", ");
-                error(Box::try_from(e).unwrap())
-                // (StatusCode::BAD_REQUEST, message)
-            }
-            // ServerError::AxumFormRejection(_) => (StatusCode::BAD_REQUEST, self.to_string()),
-            ServerError::AxumJsonRejection(e) => error(Box::try_from(e).unwrap()),
-        }.into_response()
+        // match self {
+        //     ServerError::ValidationError(e) => {
+        //         // let message = format!("Input validation error: [{}]", self).replace('\n', ", ");
+        //         error(Box::try_from(e).unwrap())
+        //         // (StatusCode::BAD_REQUEST, message)
+        //     }
+        //     // ServerError::AxumFormRejection(_) => (StatusCode::BAD_REQUEST, self.to_string()),
+        //     ServerError::AxumJsonRejection(e) => error(Box::try_from(e).unwrap()),
+        // }.into_response()
+
+        let (status, error_message) = match self {
+            ServerError::ValidationError(e) => (1, format!("Input validation error: [{}]", e).replace('\n', ", ")),
+            ServerError::AxumJsonRejection(e) => (2, e.to_string()),
+        };
+        let bd: Resp = Resp {
+            code: status,
+            message: error_message.to_string(),
+        };
+        (StatusCode::OK, Json(bd)).into_response()
     }
 }

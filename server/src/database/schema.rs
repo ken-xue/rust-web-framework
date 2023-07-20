@@ -110,7 +110,7 @@ diesel::table! {
         #[max_length = 50]
         icon -> Nullable<Varchar>,
         #[max_length = 200]
-        api -> Nullable<Varchar>,
+        permission -> Nullable<Varchar>,
         #[max_length = 1]
         menu_type -> Nullable<Varchar>,
         order -> Nullable<Integer>,
