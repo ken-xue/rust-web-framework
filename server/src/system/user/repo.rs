@@ -5,6 +5,7 @@ use crate::database;
 use crate::system::user::model::SysUser;
 use crate::database::schema::sys_user::dsl::*;
 use crate::database::schema::sys_user;
+use crate::system::user::request::PageUser;
 
 pub struct UserRepo {
     conn: database::PoolConnection
@@ -54,9 +55,9 @@ impl UserRepo {
         Ok(ret)
     }
 
-    pub fn page(&mut self, page: i64, size: i64) -> Result<(Vec<SysUser>, i64), anyhow::Error> {
-        let offset = size * (page - 1);
-        let query_result = sys_user.select(SysUser::as_select()).limit(size).offset(offset).load::<SysUser>(self.conn.deref_mut())?;
+    pub fn page(&mut self, page: PageUser) -> Result<(Vec<SysUser>, i64), anyhow::Error> {
+        let offset = page.page_size * (page.page - 1);
+        let query_result = sys_user.select(SysUser::as_select()).limit(page.page_size).offset(offset).load::<SysUser>(self.conn.deref_mut())?;
         let total_count = sys_user.count().first::<i64>(self.conn.deref_mut())?;
         let records: Vec<SysUser> = query_result.into_iter().map(|u| u.into()).collect();
         Ok((records, total_count))

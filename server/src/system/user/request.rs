@@ -16,7 +16,7 @@ pub struct UpdateUser {
 
 #[derive(Debug, Validate, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct CreateUser {
+pub struct AddUser {
     #[validate(length(min = 1, message = "Can not be empty"))]
     pub name: String,
     #[validate(email)]
@@ -27,8 +27,19 @@ pub struct CreateUser {
     pub password: String,
 }
 
-impl From<CreateUser> for SysUser {
-    fn from(user: CreateUser) -> SysUser {
+#[derive(Debug, Validate, Deserialize, Clone)]
+#[serde(rename_all = "camelCase")]
+pub struct PageUser {
+    pub page: i64,
+    pub page_size: i64,
+    pub username: Option<String>,//账号
+    pub name: Option<String>,//名字
+    pub email:Option< String>,//邮箱
+    pub status: Option<i32>,
+}
+
+impl From<AddUser> for SysUser {
+    fn from(user: AddUser) -> SysUser {
         SysUser {
             id: 0,
             uuid: util::uuid(),

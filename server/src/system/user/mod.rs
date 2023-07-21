@@ -10,10 +10,10 @@ pub mod request;
 
 pub fn user_router() -> Router {
     Router::new()
-        .route("/info",  get(handler::info))
-        .route("/:id",  get(handler::get))
+        .route("/get",  get(handler::get))
+        .route("/:id",  get(handler::info))
         .route("/page",  post(handler::page))
-        .route("/",  put(handler::update))
-        .route("/",  post(handler::add))
-        .route("/",  delete(handler::delete))
+        .route("/update",  put(handler::update))
+        .route("/add",  post(handler::add))
+        .route("/delete",  delete(handler::delete))
 }

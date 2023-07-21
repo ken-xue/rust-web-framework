@@ -7,13 +7,14 @@ use crate::system::menu::response::MenuResponse;
 use crate::system::role::response::RoleResponse;
 use crate::system::role::model::SysRole;
 use crate::system::role::repo::RoleRepo;
-use crate::system::role::request::{CreateRole, UpdateRole};
+use crate::system::role::request::{AddRole,PageRole, UpdateRole };
 
 pub struct RoleService {
     repo: RoleRepo,
 }
 
 impl RoleService {
+
     pub fn default() -> Self {
         let repo = RoleRepo::default();
         RoleService { repo }
@@ -24,44 +25,29 @@ impl RoleService {
     }
 
     pub fn get_by_id(&mut self, i: u64) -> Result<RoleResponse, anyhow::Error> {
-        let resp = self.repo.get_by_id(i)?;
-        Ok(resp.into())
+        Ok(self.repo.get_by_id(i)?.into())
     }
 
-    pub fn page(&mut self, r: request::Page) -> Result<response::PageResponse<RoleResponse>, anyhow::Error> {
-        match self.repo.page(r.page, r.page_size) {
-            Ok((records, total)) => {
-                let list = records.into_iter().map(|d| RoleResponse::from(d)).collect();
-                let response = response::PageResponse::new(list, r.page, r.page_size, total);
-                Ok(response)
-            }
-            Err(e) => bail!(e),
-        }
+    pub fn page(&mut self, r: PageRole) -> Result<response::PageResponse<RoleResponse>, anyhow::Error> {
+        self.repo.page(r.clone()).map(|(records, total)|
+            response::PageResponse::<RoleResponse>::new(
+                records.into_iter().map(RoleResponse::from).collect(), r.page, r.page_size, total))
     }
 
-    pub fn add(&mut self, u: CreateRole) -> Result<RoleResponse, anyhow::Error> {
-        let d: SysRole = u.into();
-        match self.repo.add(d) {
-            Ok(d) => Ok(d.into()),
-            Err(e) => bail!("Error add SysRole: {}", e),
-        }
+    pub fn list(&mut self) -> Result<Vec<RoleResponse>, anyhow::Error> {
+        Ok(self.repo.list()?.into_iter().map(|d| RoleResponse::from(d)).collect())
     }
 
-    pub fn update(&mut self, u: UpdateRole) -> Result<(), anyhow::Error> {
-        let d: SysRole = u.into();
-        match self.repo.update(d) {
-            Ok(Some(update)) if update > 0 => Ok(()),
-            Ok(_) => bail!("No SysRole was update"),
-            Err(e) => bail!("Error update SysRole: {}", e),
-        }
+    pub fn add(&mut self, u: AddRole) -> Result<RoleResponse,anyhow::Error> {
+        Ok(self.repo.add(u.into())?.into())
     }
 
-    pub fn delete(&mut self, d: request::Delete) -> Result<(), anyhow::Error> {
-        match self.repo.delete_by_ids(d.ids) {
-            Ok(Some(deleted)) if deleted > 0 => Ok(()),
-            Ok(_) => bail!("No SysRole was deleted"),
-            Err(e) => bail!("Error delete SysRole by ids: {}", e),
-        }
+    pub fn update(&mut self, u: UpdateRole) -> Result<usize,anyhow::Error> {
+        Ok(self.repo.update(u.into())?.unwrap_or(0))
+    }
+
+    pub fn delete(&mut self, d: request::Delete) -> Result<usize,anyhow::Error> {
+        Ok(self.repo.delete_by_ids(d.ids)?.unwrap_or(0))
     }
 
     //给角色的menus字段查询对应的值，填充到roles中

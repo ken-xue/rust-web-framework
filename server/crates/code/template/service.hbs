@@ -3,7 +3,7 @@ use crate::common::{request, response};
 use crate::{{table.module_name}}::{{table.remove_prefix_table_name}}::response::{{table.remove_prefix_entity_name}}Response;
 use crate::{{table.module_name}}::{{table.remove_prefix_table_name}}::model::{{table.entity_name}};
 use crate::{{table.module_name}}::{{table.remove_prefix_table_name}}::repo::{{table.remove_prefix_entity_name}}Repo;
-use crate::{{table.module_name}}::{{table.remove_prefix_table_name}}::request::{Add{{table.remove_prefix_entity_name}}, Update{{table.remove_prefix_entity_name}} };
+use crate::{{table.module_name}}::{{table.remove_prefix_table_name}}::request::{Add{{table.remove_prefix_entity_name}},Page{{table.remove_prefix_entity_name}}, Update{{table.remove_prefix_entity_name}} };
 
 pub struct {{table.remove_prefix_entity_name}}Service {
     repo: {{table.remove_prefix_entity_name}}Repo,
@@ -21,49 +21,28 @@ impl {{table.remove_prefix_entity_name}}Service {
     }
 
     pub fn get_by_id(&mut self, i: u64) -> Result<{{table.remove_prefix_entity_name}}Response, anyhow::Error> {
-        let resp = self.repo.get_by_id(i)?;
-        Ok(resp.into())
+        Ok(self.repo.get_by_id(i)?.into())
     }
 
-    pub fn page(&mut self, r: request::Page{{table.remove_prefix_entity_name}}) -> Result<response::PageResponse<{{table.remove_prefix_entity_name}}Response>, anyhow::Error> {
-        match self.repo.page(r) {
-            Ok((records, total)) => {
-                let list = records.into_iter().map(|d| {{table.remove_prefix_entity_name}}Response::from(d)).collect();
-                let response = response::PageResponse::new(list, r.page, r.page_size, total);
-                Ok(response)
-            }
-            Err(e) => bail!(e),
-        }
+    pub fn page(&mut self, r: Page{{table.remove_prefix_entity_name}}) -> Result<response::PageResponse<{{table.remove_prefix_entity_name}}Response>, anyhow::Error> {
+        self.repo.page(r.clone()).map(|(records, total)|
+            response::PageResponse::<{{table.remove_prefix_entity_name}}Response>::new(
+                records.into_iter().map({{table.remove_prefix_entity_name}}Response::from).collect(), r.page, r.page_size, total))
     }
 
     pub fn list(&mut self) -> Result<Vec<{{table.remove_prefix_entity_name}}Response>, anyhow::Error> {
-        let list = self.repo.list()?;
-        let ret = list.into_iter().map(|d| {{table.remove_prefix_entity_name}}Response::from(d)).collect();
-        Ok(ret)
+        Ok(self.repo.list()?.into_iter().map(|d| {{table.remove_prefix_entity_name}}Response::from(d)).collect())
     }
 
     pub fn add(&mut self, u: Add{{table.remove_prefix_entity_name}}) -> Result<{{table.remove_prefix_entity_name}}Response,anyhow::Error> {
-        let d: {{table.entity_name}} = u.into();
-        match self.repo.add(d) {
-            Ok(d) => Ok(d.into()),
-            Err(e) => bail!("Error add {{table.entity_name}}: {}", e),
-        }
+        Ok(self.repo.add(u.into())?.into())
     }
 
-    pub fn update(&mut self, u: Update{{table.remove_prefix_entity_name}}) -> Result<(),anyhow::Error> {
-        let d: {{table.entity_name}} = u.into();
-        match self.repo.update(d) {
-            Ok(Some(update)) if update > 0 => Ok(()),
-            Ok(_) => bail!("No {{table.entity_name}} was update"),
-            Err(e) => bail!("Error update {{table.entity_name}}: {}", e),
-        }
+    pub fn update(&mut self, u: Update{{table.remove_prefix_entity_name}}) -> Result<usize,anyhow::Error> {
+        Ok(self.repo.update(u.into())?.unwrap_or(0))
     }
 
-    pub fn delete(&mut self, d: request::Delete) -> Result<(),anyhow::Error> {
-        match self.repo.delete_by_ids(d.ids) {
-            Ok(Some(deleted)) if deleted > 0 => Ok(()),
-            Ok(_) => bail!("No {{table.entity_name}} was deleted"),
-            Err(e) => bail!("Error delete {{table.entity_name}} by ids: {}", e),
-        }
+    pub fn delete(&mut self, d: request::Delete) -> Result<usize,anyhow::Error> {
+        Ok(self.repo.delete_by_ids(d.ids)?.unwrap_or(0))
     }
 }

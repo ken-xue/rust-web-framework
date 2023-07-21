@@ -4,7 +4,8 @@ use crate::system::dept::model::SysDept;
 
 #[derive(Debug, Validate, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct UpdateDept {
+pub struct AddDept {
+    //#[validate(length(min = 1, message = "Can not be empty"))]
     pub id: u64,//主键
     pub uuid: String,//uuid
     pub parent_uuid: Option<String>,//父uuid
@@ -21,8 +22,7 @@ pub struct UpdateDept {
 
 #[derive(Debug, Validate, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct CreateDept {
-    //#[validate(length(min = 1, message = "Can not be empty"))]
+pub struct UpdateDept {
     pub id: u64,//主键
     pub uuid: String,//uuid
     pub parent_uuid: Option<String>,//父uuid
@@ -37,8 +37,20 @@ pub struct CreateDept {
     pub deleted: bool,//逻辑删除
 }
 
-impl From<CreateDept> for SysDept {
-    fn from(req: CreateDept) -> SysDept {
+#[derive(Debug, Validate, Deserialize, Clone)]
+#[serde(rename_all = "camelCase")]
+pub struct PageDept {
+    pub page: i64,
+    pub page_size: i64,
+    pub parent_uuid: Option<String>,//父uuid
+    pub name: String,//名称
+    pub order: Option<i32>,//排序
+    pub remark: Option<String>,//备注
+    pub status: Option<String>,//状态
+}
+
+impl From<AddDept> for SysDept {
+    fn from(req: AddDept) -> SysDept {
         SysDept {
             id: req.id,//主键
             uuid: req.uuid,//uuid

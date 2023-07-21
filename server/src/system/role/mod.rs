@@ -12,7 +12,8 @@ pub fn role_router() -> Router {
     Router::new()
     .route("/:id",  get(handler::info))
     .route("/page",  post(handler::page))
-    .route("/",  put(handler::update))
-    .route("/",  post(handler::add))
-    .route("/",  delete(handler::delete))
+    .route("/list",  post(handler::list))
+    .route("/update",  put(handler::update))
+    .route("/add",  post(handler::add))
+    .route("/delete",  delete(handler::delete))
 }

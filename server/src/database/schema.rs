@@ -28,7 +28,7 @@ diesel::table! {
         gmt_create -> Datetime,
         gmt_modified -> Datetime,
         #[max_length = 1]
-        deleted -> Char,
+        deleted -> Bool,
         #[max_length = 1]
         deletable -> Char,
         #[max_length = 1]

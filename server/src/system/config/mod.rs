@@ -8,7 +8,7 @@ pub mod repo;
 pub mod response;
 pub mod request;
 
-pub fn dept_router() -> Router {
+pub fn config_router() -> Router {
     Router::new()
     .route("/:id",  get(handler::info))
     .route("/page",  post(handler::page))

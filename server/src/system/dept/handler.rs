@@ -8,7 +8,7 @@ use crate::common::{request, response};
 use crate::system::dept::{service, repo};
 use validator::{Validate};
 use crate::common::validator::Validated;
-use crate::system::dept::request::{CreateDept, UpdateDept};
+use crate::system::dept::request::{AddDept,PageDept, UpdateDept};
 
 // info
 pub async fn info(Path(id): Path<u64>) -> Result<impl IntoResponse, AppError> {
@@ -16,12 +16,12 @@ pub async fn info(Path(id): Path<u64>) -> Result<impl IntoResponse, AppError> {
     Ok(response::success(response))
 }
 // page
-pub async fn page(Json(r): Json<request::Page>) -> Result<impl IntoResponse, AppError> {
+pub async fn page(Json(r): Json<PageDept>) -> Result<impl IntoResponse, AppError> {
     let response = service::DeptService::default().page(r)?;
     Ok(response::success(response))
 }
 // add
-pub async fn add(Validated(r): Validated<CreateDept>) -> Result<impl IntoResponse, AppError>  {
+pub async fn add(Validated(r): Validated<AddDept>) -> Result<impl IntoResponse, AppError>  {
     let response = service::DeptService::default().add(r)?;
     Ok(response::success(response))
 }

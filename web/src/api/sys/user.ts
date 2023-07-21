@@ -6,7 +6,7 @@ import { ErrorMessageMode } from '/#/axios';
 enum Api {
   Login = '/auth/login',
   Logout = '/auth/logout',
-  GetUserInfo = '/v1/system/user/info',
+  GetUserInfo = '/v1/system/user/get',
   GetPermCode = '/getPermCode',
   TestRetry = '/testRetry',
 }

@@ -6,6 +6,7 @@ use crate::database;
 use crate::system::dept::model::SysDept;
 use crate::database::schema::sys_dept::dsl::*;
 use crate::database::schema::sys_dept;
+use crate::system::dept::request::PageDept;
 
 pub struct DeptRepo {
     conn: database::PoolConnection
@@ -47,9 +48,9 @@ impl DeptRepo {
         Ok(ret)
     }
 
-    pub fn page(&mut self, page: i64, size: i64) -> Result<(Vec<SysDept>, i64), anyhow::Error> {
-        let offset = size * (page - 1);
-        let query_result = sys_dept.select(SysDept::as_select()).limit(size).offset(offset).load::<SysDept>(self.conn.deref_mut())?;
+    pub fn page(&mut self, page: PageDept) -> Result<(Vec<SysDept>, i64), anyhow::Error> {
+        let offset = page.page_size * (page.page - 1);
+        let query_result = sys_dept.select(SysDept::as_select()).limit(page.page_size).offset(offset).load::<SysDept>(self.conn.deref_mut())?;
         let total_count = sys_dept.count().first::<i64>(self.conn.deref_mut())?;
         let records: Vec<SysDept> = query_result.into_iter().map(|u| u.into()).collect();
         Ok((records, total_count))

@@ -13,10 +13,10 @@ use crate::common::validator::Validated;
 use crate::system::auth;
 use crate::system::auth::Claims;
 use crate::system::user::model::SysUser;
-use crate::system::user::request::{CreateUser, UpdateUser};
+use crate::system::user::request::{AddUser, PageUser, UpdateUser};
 
 // info
-pub async fn info() -> Result<impl IntoResponse, AppError> {
+pub async fn get() -> Result<impl IntoResponse, AppError> {
     let username = auth::CURRENT_USER.with(|cell| {
         cell.borrow().clone()
     });
@@ -24,17 +24,17 @@ pub async fn info() -> Result<impl IntoResponse, AppError> {
     Ok(response::success(response))
 }
 // get
-pub async fn get(Path(id): Path<u64>) -> Result<impl IntoResponse, AppError> {
+pub async fn info(Path(id): Path<u64>) -> Result<impl IntoResponse, AppError> {
     let response = service::UserService::default().get_by_id(id)?;
     Ok(response::success(response))
 }
 // page
-pub async fn page(Json(r): Json<request::Page>) -> Result<impl IntoResponse, AppError> {
+pub async fn page(Json(r): Json<PageUser>) -> Result<impl IntoResponse, AppError> {
     let response = service::UserService::default().page(r)?;
     Ok(response::success(response))
 }
 // add
-pub async fn add(Validated(r): Validated<CreateUser>) -> Result<impl IntoResponse, AppError>  {
+pub async fn add(Validated(r): Validated<AddUser>) -> Result<impl IntoResponse, AppError>  {
     let response = service::UserService::default().add(r)?;
     Ok(response::success(response))
 }

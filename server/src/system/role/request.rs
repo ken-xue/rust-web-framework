@@ -4,7 +4,8 @@ use crate::system::role::model::SysRole;
 
 #[derive(Debug, Validate, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct UpdateRole {
+pub struct AddRole {
+    //#[validate(length(min = 1, message = "Can not be empty"))]
     pub id: u64,//主键
     pub uuid: String,//uuid
     pub name: Option<String>,//角色名
@@ -18,8 +19,7 @@ pub struct UpdateRole {
 
 #[derive(Debug, Validate, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct CreateRole {
-    //#[validate(length(min = 1, message = "Can not be empty"))]
+pub struct UpdateRole {
     pub id: u64,//主键
     pub uuid: String,//uuid
     pub name: Option<String>,//角色名
@@ -31,8 +31,17 @@ pub struct CreateRole {
     pub deleted: bool,//逻辑删除
 }
 
-impl From<CreateRole> for SysRole {
-    fn from(req: CreateRole) -> SysRole {
+#[derive(Debug, Validate, Deserialize, Clone)]
+#[serde(rename_all = "camelCase")]
+pub struct PageRole {
+    pub page: i64,
+    pub page_size: i64,
+    pub name: Option<String>,//角色名
+    pub remark: Option<String>,//备注
+}
+
+impl From<AddRole> for SysRole {
+    fn from(req: AddRole) -> SysRole {
         SysRole {
             id: req.id,//主键
             uuid: req.uuid,//uuid

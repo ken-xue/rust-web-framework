@@ -21,8 +21,8 @@
 // //
 // // async fn create_user(
 // //     // this argument tells axum to parse the request body
-// //     // as JSON into a `CreateUser` type
-// //     Json(payload): Json<CreateUser>,
+// //     // as JSON into a `AddUser` type
+// //     Json(payload): Json<AddUser>,
 // // ) -> impl IntoResponse {
 // //     // insert your application logic here
 // //     let user = User {
@@ -37,7 +37,7 @@
 // //
 // // // the input to our `create_user` handler
 // // #[derive(Deserialize)]
-// // struct CreateUser {
+// // struct AddUser {
 // //     username: String,
 // // }
 // //

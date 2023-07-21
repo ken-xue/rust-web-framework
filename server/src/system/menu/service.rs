@@ -1,5 +1,5 @@
 use std::collections::{HashMap};
-use anyhow::bail;
+use anyhow::{anyhow, bail};
 use diesel::{ExpressionMethods, JoinOnDsl, QueryDsl, SelectableHelper};
 use crate::common::{request, response};
 use crate::common::request::Page;
@@ -30,8 +30,7 @@ impl MenuService {
     }
 
     pub fn get_by_id(&mut self, i: u64) -> Result<MenuResponse, anyhow::Error> {
-        let resp = self.repo.get_by_id(i)?;
-        Ok(resp.into())
+        Ok(self.repo.get_by_id(i)?.into())
     }
 
     pub fn page(&mut self, r: PageMenu) -> Result<response::PageResponse<MenuResponse>, anyhow::Error> {
@@ -41,28 +40,15 @@ impl MenuService {
     }
 
     pub fn add(&mut self, u: AddMenu) -> Result<MenuResponse,anyhow::Error> {
-        let d: SysMenu = u.into();
-        match self.repo.add(d) {
-            Ok(d) => Ok(d.into()),
-            Err(e) => bail!("Error add SysMenu: {}", e),
-        }
+        Ok(self.repo.add(u.into())?.into())
     }
 
-    pub fn update(&mut self, u: UpdateMenu) -> Result<(),anyhow::Error> {
-        let d: SysMenu = u.into();
-        match self.repo.update(d) {
-            Ok(Some(update)) if update > 0 => Ok(()),
-            Ok(_) => bail!("No SysMenu was update"),
-            Err(e) => bail!("Error update SysMenu: {}", e),
-        }
+    pub fn update(&mut self, u: UpdateMenu) -> Result<usize,anyhow::Error> {
+        Ok(self.repo.update(u.into())?.unwrap_or(0))
     }
 
-    pub fn delete(&mut self, d: request::Delete) -> Result<(),anyhow::Error> {
-        match self.repo.delete_by_ids(d.ids) {
-            Ok(Some(deleted)) if deleted > 0 => Ok(()),
-            Ok(_) => bail!("No SysMenu was deleted"),
-            Err(e) => bail!("Error delete SysMenu by ids: {}", e),
-        }
+    pub fn delete(&mut self, d: request::Delete) -> Result<usize,anyhow::Error> {
+        Ok(self.repo.delete_by_ids(d.ids)?.unwrap_or(0))
     }
 
     pub fn get_by_role_uuids(&mut self, ids: Vec<String>) -> Result<Vec<MenuResponse>,anyhow::Error> {
@@ -72,9 +58,8 @@ impl MenuService {
     }
 
     pub fn list(&mut self) -> Result<Vec<MenuResponse>, anyhow::Error> {
-        let menus = self.repo.list()?;
-        let ret = menus.into_iter().map(|d| MenuResponse::from(d)).collect();
-        let ret = self.tree(ret)?;
+        let menus = self.repo.list()?.into_iter().map(|d| MenuResponse::from(d)).collect();
+        let ret = self.tree(menus)?;
         Ok(ret)
     }
 

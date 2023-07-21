@@ -8,12 +8,14 @@ use crate::database::schema::sys_role::dsl::*;
 use crate::database::schema::{sys_role};
 use crate::database::schema::sys_user_of_role::dsl::sys_user_of_role;
 use crate::database::schema::sys_user_of_role::user_uuid;
+use crate::system::role::request::PageRole;
 
 pub struct RoleRepo {
     conn: database::PoolConnection
 }
 
 impl RoleRepo {
+
     pub fn default() -> Self {
         let conn = database::pool();
         RoleRepo { conn }
@@ -48,12 +50,17 @@ impl RoleRepo {
         Ok(ret)
     }
 
-    pub fn page(&mut self, page: i64, size: i64) -> Result<(Vec<SysRole>, i64), anyhow::Error> {
-        let offset = size * (page - 1);
-        let query_result = sys_role.select(SysRole::as_select()).limit(size).offset(offset).load::<SysRole>(self.conn.deref_mut())?;
+    pub fn page(&mut self, page: PageRole) -> Result<(Vec<SysRole>, i64), anyhow::Error> {
+        let offset = page.page_size * (page.page - 1);
+        let query_result = sys_role.select(SysRole::as_select()).limit(page.page_size).offset(offset).load::<SysRole>(self.conn.deref_mut())?;
         let total_count = sys_role.count().first::<i64>(self.conn.deref_mut())?;
         let records: Vec<SysRole> = query_result.into_iter().map(|u| u.into()).collect();
         Ok((records, total_count))
+    }
+
+    pub fn list(&mut self) -> Result<Vec<SysRole>, anyhow::Error> {
+        let list = sys_role.select(SysRole::as_select()).load::<SysRole>(self.conn.deref_mut())?;
+        Ok(list)
     }
 
     pub fn get_by_user_uuid(&mut self,uid: String) -> Result<Vec<SysRole>, anyhow::Error> {
