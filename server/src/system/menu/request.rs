@@ -8,7 +8,7 @@ use crate::util;
 pub struct AddMenu {
     pub parent_uuid: Option<String>,//父菜单uuid
     #[validate(length(min = 1, message = "name can not be empty"))]
-    pub name: Option<String>,//菜单名
+    pub name: String,//菜单名
     pub path: Option<String>,//菜单url
     pub permission: Option<String>,//授权标识
     pub menu_type: Option<String>,//0:目录 1:菜单 2:按钮
@@ -27,7 +27,7 @@ pub struct UpdateMenu {
     // #[validate(required)]
     pub id: u64,//主键
     pub parent_uuid: Option<String>,//父菜单uuid
-    pub name: Option<String>,//菜单名
+    pub name: String,//菜单名
     pub path: Option<String>,//菜单url
     pub permission: Option<String>,//授权标识
     pub menu_type: Option<String>,//0:目录 1:菜单 2:按钮

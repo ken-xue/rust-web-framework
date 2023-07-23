@@ -1,6 +1,7 @@
 pub mod database;
 pub mod schema;
 pub mod redis;
+mod paginated;
 
 use diesel::mysql::MysqlConnection;
 use diesel::prelude::*;

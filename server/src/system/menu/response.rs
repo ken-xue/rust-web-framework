@@ -8,7 +8,7 @@ pub struct MenuResponse {
     pub uuid: String,//uuid
     pub role_uuid: Option<String>,//角色uuid
     pub parent_uuid: Option<String>,//父菜单uuid
-    pub name: Option<String>,//菜单名
+    pub name: String,//菜单名
     pub path: Option<String>,//菜单url
     pub permission: Option<String>,//授权标识
     pub menu_type: Option<String>,//0:目录 1:菜单 2:按钮

@@ -11,6 +11,6 @@ use serde::{Serialize};
 //{{table.table_info.table_comment}} //{{table.table_info.create_time}}
 pub struct {{table.entity_name}} {
 {{#each table.table_columns as |t| }}
-    pub {{t.column_name}}: {{{t.column_mapping_type}}},//{{column_comment}}
+    pub {{t.column_name}}: {{{t.option_column_mapping_type}}},//{{column_comment}}
 {{/each}}
 }

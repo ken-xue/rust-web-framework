@@ -1,8 +1,8 @@
 use std::ops::DerefMut;
-use diesel::{ExpressionMethods, JoinOnDsl, OptionalExtension, QueryDsl, RunQueryDsl, SelectableHelper};
+use diesel::{BoxableExpression, ExpressionMethods, IntoSql, JoinOnDsl, OptionalExtension, QueryDsl, RunQueryDsl, SelectableHelper};
+use diesel::mysql::Mysql;
 use diesel::result::Error;
-use diesel_logger::LoggingConnection;
-
+use diesel::sql_types::Bool;
 use crate::database;
 use crate::system::menu::model::SysMenu;
 use crate::database::schema::sys_menu::dsl::*;
@@ -52,7 +52,11 @@ impl MenuRepo {
 
     pub fn page(&mut self, page: PageMenu) -> Result<(Vec<SysMenu>, i64), anyhow::Error> {
         let offset = page.page_size * (page.page - 1);
-        let query_result = sys_menu.select(SysMenu::as_select()).limit(page.page_size).offset(offset).load::<SysMenu>(self.conn.deref_mut())?;
+        let query_result = sys_menu
+            .select(SysMenu::as_select())
+            .limit(page.page_size)
+            .offset(offset)
+            .load::<SysMenu>(self.conn.deref_mut())?;
         let total_count = sys_menu.count().first::<i64>(self.conn.deref_mut())?;
         let records: Vec<SysMenu> = query_result.into_iter().map(|u| u.into()).collect();
         Ok((records, total_count))
@@ -63,7 +67,7 @@ impl MenuRepo {
         Ok(list)
     }
 
-    pub fn get_by_role_uuids(&mut self, ids: Vec<String>) -> Result<Vec<(String,SysMenu)>, anyhow::Error> {
+    pub fn get_by_role_uuids(&mut self, ids: Vec<String>) -> Result<Vec<(String, SysMenu)>, anyhow::Error> {
         use crate::database::schema::sys_role_of_menu::role_uuid;
         let menus = sys_role_of_menu
             .filter(role_uuid.eq_any(ids))
@@ -71,17 +75,24 @@ impl MenuRepo {
             .select((role_uuid, SysMenu::as_select()))//需要将role_id也带出来
             .load::<(String, SysMenu)>(self.conn.deref_mut())?;
         Ok(menus)
+    }
+}
 
-        // use crate::database::schema::sys_role_of_menu::role_uuid;
-        // let connection = database::establish_connection();
-        // let mut conn = LoggingConnection::new(connection);
-        // let menus = sys_role_of_menu
-        //     .filter(role_uuid.eq_any(ids))
-        //     .inner_join(sys_menu.on(uuid.eq(menu_uuid)))
-        //     .select((role_uuid, SysMenu::as_select()))//需要将role_id也带出来
-        //     .load::<(String, SysMenu)>(&mut conn)?;
-        // // Ok(menus)
-        // let ret: Vec<(String,SysMenu)> = Vec::new();
-        // Ok(ret)
+// condition query
+
+//菜单名
+
+fn condition_eq_name(opt: Option<String>) -> Box<dyn BoxableExpression<sys_menu::table, Mysql, SqlType = Bool>> {
+    match opt {
+        Some(value) => Box::new(name.eq(value).is_not_null()),
+        None => Box::new(true.into_sql::<Bool>()) // 不加条件
+    }
+}
+
+//0:目录 1:菜单 2:按钮
+fn condition_eq_menu_type(opt: Option<String>) -> Box<dyn BoxableExpression<sys_menu::table, Mysql, SqlType = Bool>> {
+    match opt {
+        Some(value) => Box::new(menu_type.eq(value).is_not_null()),
+        None => Box::new(true.into_sql::<Bool>()) // 不加条件
     }
 }

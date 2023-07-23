@@ -1,5 +1,5 @@
 use std::ops::DerefMut;
-use diesel::{ExpressionMethods, OptionalExtension, QueryDsl, RunQueryDsl, SelectableHelper};
+use diesel::{BoxableExpression, ExpressionMethods, IntoSql, JoinOnDsl, OptionalExtension, QueryDsl, RunQueryDsl, SelectableHelper};
 use diesel::result::Error;
 
 use crate::database;
@@ -61,3 +61,19 @@ impl {{table.remove_prefix_entity_name}}Repo {
         Ok(list)
     }
 }
+
+// condition query
+
+{{#each table.remove_common_field_table_columns as |t|}}
+//{{column_comment}}
+fn condition_eq_{{t.column_name}}(opt: Option<{{{t.column_mapping_type}}}>) -> Box<dyn BoxableExpression<{{{../table.table_info.table_name}}}::table, Mysql, SqlType = Bool>> {
+    match opt {
+        {{#if ../table.table_info.is_nullable}}
+        Some(value) => Box::new({{t.column_name}}.eq(value).is_not_null()),
+        {{else}}
+        Some(value) => Box::new({{t.column_name}}.eq(value)),
+        {{/if}}
+        None => Box::new(true.into_sql::<Bool>()) // 不加条件
+    }
+}
+{{/each}}

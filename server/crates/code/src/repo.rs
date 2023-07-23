@@ -18,7 +18,7 @@ pub struct TableInfo {
     table_name: String,
     #[diesel(sql_type = Text)]
     engine: String,
-    #[diesel(sql_type = Nullable<Text>)]
+    #[diesel(sql_type = Nullable < Text >)]
     table_comment: Option<String>,
     #[diesel(sql_type = Timestamp)]
     create_time: NaiveDateTime,
@@ -35,7 +35,7 @@ pub fn query_table_info(connection: &mut MysqlConnection, table_name: &str) -> O
     result
 }
 
-#[derive(Debug, QueryableByName, Serialize)]
+#[derive(Debug, QueryableByName, Serialize, Clone)]
 pub struct ColumnInfo {
     #[diesel(sql_type = Text)]
     pub column_name: String,
@@ -44,6 +44,8 @@ pub struct ColumnInfo {
     //映射成rust的类型
     #[diesel(sql_type = Text)]
     pub column_mapping_type: String,
+    #[diesel(sql_type = Text)]
+    pub option_column_mapping_type: String,
     #[diesel(sql_type = Text)]
     pub column_comment: String,
     #[diesel(sql_type = Text)]
@@ -55,17 +57,21 @@ pub struct ColumnInfo {
 }
 
 pub fn query_table_colum(connection: &mut MysqlConnection, table_name: &str) -> Vec<ColumnInfo> {
-    let mut results = diesel::sql_query("select column_name column_name,column_name column_mapping_type, data_type column_type, column_comment column_comment, column_key column_key,IS_NULLABLE is_nullable, extra from information_schema.columns where table_name = ? and table_schema = (select database()) order by ordinal_position")
+    let mut results = diesel::sql_query("select column_name column_name,column_name column_mapping_type,column_name option_column_mapping_type, data_type column_type, column_comment column_comment, column_key column_key,IS_NULLABLE is_nullable, extra from information_schema.columns where table_name = ? and table_schema = (select database()) order by ordinal_position")
         .bind::<Text, _>(table_name.to_string())
         .load::<ColumnInfo>(connection)
         .unwrap();
     //通过result.column_type作为map的key去TYPE_MAP中查找对应的value，如果没找到则使用result.column_type赋值给column_mapping_type
     for mut result in results.iter_mut() {
         if let Some(column_mapping_type) = TYPE_MAP.get(result.column_type.as_str()) {
-            if result.is_nullable.eq("YES") {//适配diesel加上Option<>
-                result.column_mapping_type = "Option<".to_owned()+&column_mapping_type.to_string()+">";
+            //原始类型
+            result.column_mapping_type = column_mapping_type.to_string();
+            //适配diesel model加上Option<>
+            if result.is_nullable.eq("YES") {
+                result.is_nullable = "true".to_string();
+                result.option_column_mapping_type = "Option<".to_owned() + &column_mapping_type.to_string() + ">";
             } else {
-                result.column_mapping_type = column_mapping_type.to_string();
+                result.option_column_mapping_type = column_mapping_type.to_string();
             }
         }
     }
@@ -75,17 +81,20 @@ pub fn query_table_colum(connection: &mut MysqlConnection, table_name: &str) -> 
 #[derive(Debug, Serialize)]
 pub struct Table {
     pub table_info: TableInfo,
-    pub remove_prefix_table_name: String,//table_name移除前缀的
+    pub remove_prefix_table_name: String,
+    //table_name移除前缀的
     pub entity_name: String,
     pub module_name: String,
-    pub remove_prefix_entity_name: String,//entity_name移除前缀的
+    pub remove_prefix_entity_name: String,
+    //entity_name移除前缀的
     pub table_columns: Vec<ColumnInfo>,
+    pub remove_common_field_table_columns: Vec<ColumnInfo>,
 }
 
-pub fn get_table_info(conn: &mut MysqlConnection,module_name: String,table_name: &str, prefix: Option<Vec<String>>) -> Table {
+pub fn get_table_info(conn: &mut MysqlConnection, module_name: String, table_name: &str, prefix: Option<Vec<String>>) -> Table {
     //获取表数据
     let opt_table_info = query_table_info(conn, table_name);
-    let mut  table_columns = query_table_colum(conn, table_name);
+    let mut table_columns = query_table_colum(conn, table_name);
     let table_info = opt_table_info.unwrap();
     let mut remove_prefix_table_name = table_info.table_name.to_string();
     //对table_name取首字母大写且下划线去掉取首字母大写
@@ -103,6 +112,8 @@ pub fn get_table_info(conn: &mut MysqlConnection,module_name: String,table_name:
     }
     // 适配diesel的id和bool
     fix_diesel_table_columns(&mut table_columns);
+    // 将公共的字段移除
+    let remove_common_field_table_columns = build_remove_common_field_table_columns(&mut table_columns);
     // 返回构造好的数据
     return Table {
         table_info,
@@ -111,16 +122,31 @@ pub fn get_table_info(conn: &mut MysqlConnection,module_name: String,table_name:
         module_name,
         remove_prefix_entity_name,
         table_columns,
+        remove_common_field_table_columns,
     };
+}
+
+// 将公共的字段移除
+fn build_remove_common_field_table_columns(list: &[ColumnInfo]) -> Vec<ColumnInfo> {
+    let mut new_list = list.to_vec();
+
+    new_list.retain(|column| {
+        !matches!(
+      column.column_name.as_str(),
+      "id" | "uuid" | "remark" | "modifier" | "gmt_modified" | "gmt_create" | "deleted" | "creator"
+    )
+    });
+
+    new_list
 }
 
 fn fix_diesel_table_columns(table_columns: &mut Vec<ColumnInfo>) {
     for column in table_columns.iter_mut() {
         if column.column_name == "id" {
-            column.column_mapping_type = "u64".parse().unwrap();
+            column.option_column_mapping_type = "u64".parse().unwrap();
         }
         if column.column_name == "deleted" {
-            column.column_mapping_type = "bool".parse().unwrap();
+            column.option_column_mapping_type = "bool".parse().unwrap();
         }
     }
 }
