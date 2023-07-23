@@ -9,7 +9,7 @@ use crate::database::schema::sys_menu::dsl::*;
 use crate::database::schema::sys_menu;
 use crate::database::schema::sys_role_of_menu::dsl::sys_role_of_menu;
 use crate::database::schema::sys_role_of_menu::menu_uuid;
-use crate::system::menu::request::PageMenu;
+use crate::system::menu::request::{ListMenu, PageMenu};
 
 pub struct MenuRepo {
     conn: database::PoolConnection,
@@ -62,8 +62,11 @@ impl MenuRepo {
         Ok((records, total_count))
     }
 
-    pub fn list(&mut self) -> Result<Vec<SysMenu>, anyhow::Error> {
-        let list = sys_menu.select(SysMenu::as_select()).load::<SysMenu>(self.conn.deref_mut())?;
+    pub fn list(&mut self,r :ListMenu) -> Result<Vec<SysMenu>, anyhow::Error> {
+        let list = sys_menu.select(SysMenu::as_select())
+            .filter(condition_like_name(r.name))
+            .filter(condition_eq_status(r.status))
+            .load::<SysMenu>(self.conn.deref_mut())?;
         Ok(list)
     }
 
@@ -82,9 +85,16 @@ impl MenuRepo {
 
 //菜单名
 
-fn condition_eq_name(opt: Option<String>) -> Box<dyn BoxableExpression<sys_menu::table, Mysql, SqlType = Bool>> {
+fn condition_like_name(opt: Option<String>) -> Box<dyn BoxableExpression<sys_menu::table, Mysql, SqlType = Bool>> {
     match opt {
-        Some(value) => Box::new(name.eq(value).is_not_null()),
+        Some(value) => Box::new(name.eq(value)),
+        None => Box::new(true.into_sql::<Bool>()) // 不加条件
+    }
+}
+
+fn condition_eq_status(opt: Option<String>) -> Box<dyn BoxableExpression<sys_menu::table, Mysql, SqlType = Bool>> {
+    match opt {
+        Some(value) => Box::new(status.eq(value)),
         None => Box::new(true.into_sql::<Bool>()) // 不加条件
     }
 }

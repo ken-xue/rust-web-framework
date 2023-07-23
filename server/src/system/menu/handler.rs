@@ -9,7 +9,7 @@ use crate::common::{request, response};
 use crate::system::menu::{service, repo};
 use validator::{Validate};
 use crate::common::validator::Validated;
-use crate::system::menu::request::{AddMenu, PageMenu, UpdateMenu};
+use crate::system::menu::request::{AddMenu, ListMenu, PageMenu, UpdateMenu};
 
 // info
 pub async fn info(Path(id): Path<u64>) -> Result<impl IntoResponse, AppError> {
@@ -38,7 +38,7 @@ pub async fn delete(Json(r): Json<request::Delete>)  -> Result<impl IntoResponse
 }
 
 // list 获取当前用户的菜单权限
-pub async fn list() -> Result<impl IntoResponse, AppError> {
-    let menus = service::MenuService::default().list()?;
+pub async fn list(Json(r): Json<ListMenu>) -> Result<impl IntoResponse, AppError> {
+    let menus = service::MenuService::default().list(r)?;
     Ok(response::success(menus))
 }

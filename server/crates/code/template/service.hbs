@@ -3,7 +3,7 @@ use crate::common::{request, response};
 use crate::{{table.module_name}}::{{table.remove_prefix_table_name}}::response::{{table.remove_prefix_entity_name}}Response;
 use crate::{{table.module_name}}::{{table.remove_prefix_table_name}}::model::{{table.entity_name}};
 use crate::{{table.module_name}}::{{table.remove_prefix_table_name}}::repo::{{table.remove_prefix_entity_name}}Repo;
-use crate::{{table.module_name}}::{{table.remove_prefix_table_name}}::request::{Add{{table.remove_prefix_entity_name}},Page{{table.remove_prefix_entity_name}}, Update{{table.remove_prefix_entity_name}} };
+use crate::{{table.module_name}}::{{table.remove_prefix_table_name}}::request::{Add{{table.remove_prefix_entity_name}},Page{{table.remove_prefix_entity_name}},List{{table.remove_prefix_entity_name}}, Update{{table.remove_prefix_entity_name}} };
 
 pub struct {{table.remove_prefix_entity_name}}Service {
     repo: {{table.remove_prefix_entity_name}}Repo,
@@ -30,8 +30,8 @@ impl {{table.remove_prefix_entity_name}}Service {
                 records.into_iter().map({{table.remove_prefix_entity_name}}Response::from).collect(), r.page, r.page_size, total))
     }
 
-    pub fn list(&mut self) -> Result<Vec<{{table.remove_prefix_entity_name}}Response>, anyhow::Error> {
-        Ok(self.repo.list()?.into_iter().map(|d| {{table.remove_prefix_entity_name}}Response::from(d)).collect())
+    pub fn list(&mut self,r:List{{table.remove_prefix_entity_name}}) -> Result<Vec<{{table.remove_prefix_entity_name}}Response>, anyhow::Error> {
+        Ok(self.repo.list(r)?.into_iter().map(|d| {{table.remove_prefix_entity_name}}Response::from(d)).collect())
     }
 
     pub fn add(&mut self, u: Add{{table.remove_prefix_entity_name}}) -> Result<{{table.remove_prefix_entity_name}}Response,anyhow::Error> {

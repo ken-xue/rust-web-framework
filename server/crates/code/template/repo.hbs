@@ -1,12 +1,14 @@
 use std::ops::DerefMut;
 use diesel::{BoxableExpression, ExpressionMethods, IntoSql, JoinOnDsl, OptionalExtension, QueryDsl, RunQueryDsl, SelectableHelper};
 use diesel::result::Error;
+use diesel::mysql::Mysql;
+use diesel::sql_types::Bool;
 
 use crate::database;
 use crate::{{table.module_name}}::{{table.remove_prefix_table_name}}::model::{{table.entity_name}};
 use crate::database::schema::{{table.table_info.table_name}}::dsl::*;
 use crate::database::schema::{{table.table_info.table_name}};
-use crate::{{table.module_name}}::{{table.remove_prefix_table_name}}::request::Page{{table.remove_prefix_entity_name}};
+use crate::{{table.module_name}}::{{table.remove_prefix_table_name}}::request::Page{List{{table.remove_prefix_entity_name}},{{table.remove_prefix_entity_name}}};
 
 pub struct {{table.remove_prefix_entity_name}}Repo {
     conn: database::PoolConnection
@@ -56,7 +58,7 @@ impl {{table.remove_prefix_entity_name}}Repo {
         Ok((records, total_count))
     }
 
-    pub fn list(&mut self) -> Result<Vec<{{table.entity_name}}>, anyhow::Error> {
+    pub fn list(&mut self,r: List{{table.remove_prefix_entity_name}}) -> Result<Vec<{{table.entity_name}}>, anyhow::Error> {
         let list = {{table.table_info.table_name}}.select({{table.entity_name}}::as_select()).load::<{{table.entity_name}}>(self.conn.deref_mut())?;
         Ok(list)
     }

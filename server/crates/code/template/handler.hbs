@@ -8,7 +8,7 @@ use crate::common::{request, response};
 use crate::{{table.module_name}}::{{table.remove_prefix_table_name}}::{service, repo};
 use validator::{Validate};
 use crate::common::validator::Validated;
-use crate::{{table.module_name}}::{{table.remove_prefix_table_name}}::request::{Add{{table.remove_prefix_entity_name}},Page{{table.remove_prefix_entity_name}}, Update{{table.remove_prefix_entity_name}}};
+use crate::{{table.module_name}}::{{table.remove_prefix_table_name}}::request::{Add{{table.remove_prefix_entity_name}},Page{{table.remove_prefix_entity_name}},List{{table.remove_prefix_entity_name}}, Update{{table.remove_prefix_entity_name}}};
 
 // info
 pub async fn info(Path(id): Path<u64>) -> Result<impl IntoResponse, AppError> {
@@ -36,7 +36,7 @@ pub async fn delete(Json(r): Json<request::Delete>)  -> Result<impl IntoResponse
     Ok(response::success(response))
 }
 // list
-pub async fn list() -> Result<impl IntoResponse, AppError> {
-    let response = service::{{table.remove_prefix_entity_name}}Service::default().list()?;
+pub async fn list(Json(r): Json<List{{table.remove_prefix_entity_name}}>) -> Result<impl IntoResponse, AppError> {
+    let response = service::{{table.remove_prefix_entity_name}}Service::default().list(r)?;
     Ok(response::success(response))
 }

@@ -29,6 +29,16 @@ pub struct Page{{table.remove_prefix_entity_name}} {
 {{/each}}
 }
 
+#[derive(Debug, Validate, Deserialize, Clone)]
+#[serde(rename_all = "camelCase")]
+pub struct List{{table.remove_prefix_entity_name}} {
+    pub page: i64,
+    pub page_size: i64,
+{{#each table.table_columns as |t| }}
+    pub {{t.column_name}}: {{{t.option_column_mapping_type}}},//{{column_comment}}
+{{/each}}
+}
+
 impl From<Add{{table.remove_prefix_entity_name}}> for {{table.entity_name}} {
     fn from(req: Add{{table.remove_prefix_entity_name}}) -> {{table.entity_name}} {
         {{table.entity_name}} {

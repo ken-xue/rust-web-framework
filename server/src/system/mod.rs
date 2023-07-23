@@ -6,6 +6,7 @@ pub mod menu;
 pub mod auth;
 pub mod dept;
 pub mod config;
+mod user_of_dept;
 
 pub fn system_router() -> Router {
     Router::new()

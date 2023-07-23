@@ -52,6 +52,17 @@ pub struct PageMenu {
     pub status: Option<String>,//修改人
 }
 
+#[derive(Debug, Validate, Deserialize, Clone)]
+#[serde(rename_all = "camelCase")]
+pub struct ListMenu {
+    pub page: i64,
+    pub page_size: i64,
+    pub name: Option<String>,//菜单名
+    pub menu_type: Option<String>,//0:目录 1:菜单 2:按钮
+    pub title: Option<String>,//修改人
+    pub status: Option<String>,//修改人
+}
+
 impl From<AddMenu> for SysMenu {
     fn from(req: AddMenu) -> SysMenu {
         SysMenu {

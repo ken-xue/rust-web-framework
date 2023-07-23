@@ -6,7 +6,7 @@ use crate::common::request::Page;
 use crate::system::menu::response::MenuResponse;
 use crate::system::menu::model::SysMenu;
 use crate::system::menu::repo::MenuRepo;
-use crate::system::menu::request::{AddMenu, PageMenu, UpdateMenu};
+use crate::system::menu::request::{AddMenu, ListMenu, PageMenu, UpdateMenu};
 
 pub enum MenuType {
     DIR,
@@ -57,8 +57,8 @@ impl MenuService {
         Ok(ret)
     }
 
-    pub fn list(&mut self) -> Result<Vec<MenuResponse>, anyhow::Error> {
-        let menus = self.repo.list()?.into_iter().map(|d| MenuResponse::from(d)).collect();
+    pub fn list(&mut self,r :ListMenu) -> Result<Vec<MenuResponse>, anyhow::Error> {
+        let menus = self.repo.list(r)?.into_iter().map(|d| MenuResponse::from(d)).collect();
         let ret = self.tree(menus)?;
         Ok(ret)
     }
