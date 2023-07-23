@@ -1,5 +1,5 @@
 use std::ops::DerefMut;
-use diesel::{BoxableExpression, ExpressionMethods, IntoSql, JoinOnDsl, OptionalExtension, QueryDsl, RunQueryDsl, SelectableHelper};
+use diesel::{BoxableExpression, ExpressionMethods, IntoSql, JoinOnDsl, OptionalExtension, QueryDsl, RunQueryDsl, SelectableHelper, TextExpressionMethods};
 use diesel::mysql::Mysql;
 use diesel::result::Error;
 use diesel::sql_types::Bool;
@@ -87,7 +87,7 @@ impl MenuRepo {
 
 fn condition_like_name(opt: Option<String>) -> Box<dyn BoxableExpression<sys_menu::table, Mysql, SqlType = Bool>> {
     match opt {
-        Some(value) => Box::new(name.eq(value)),
+        Some(value) => Box::new(name.like(format!("%{}%", value))),
         None => Box::new(true.into_sql::<Bool>()) // 不加条件
     }
 }

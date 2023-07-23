@@ -8,7 +8,7 @@ use crate::common::{request, response};
 use crate::system::dept::{service, repo};
 use validator::{Validate};
 use crate::common::validator::Validated;
-use crate::system::dept::request::{AddDept,PageDept, UpdateDept};
+use crate::system::dept::request::{AddDept, ListDept, PageDept, UpdateDept};
 
 // info
 pub async fn info(Path(id): Path<u64>) -> Result<impl IntoResponse, AppError> {
@@ -36,7 +36,7 @@ pub async fn delete(Json(r): Json<request::Delete>)  -> Result<impl IntoResponse
     Ok(response::success(response))
 }
 // list
-pub async fn list() -> Result<impl IntoResponse, AppError> {
-    let response = service::DeptService::default().list()?;
+pub async fn list(Json(r): Json<ListDept>) -> Result<impl IntoResponse, AppError> {
+    let response = service::DeptService::default().list(r)?;
     Ok(response::success(response))
 }

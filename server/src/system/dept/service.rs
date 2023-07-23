@@ -4,7 +4,7 @@ use crate::common::{request, response};
 use crate::system::dept::response::DeptResponse;
 use crate::system::dept::model::SysDept;
 use crate::system::dept::repo::DeptRepo;
-use crate::system::dept::request::{AddDept,PageDept, UpdateDept };
+use crate::system::dept::request::{AddDept, ListDept, PageDept, UpdateDept};
 
 pub struct DeptService {
     repo: DeptRepo,
@@ -31,8 +31,8 @@ impl DeptService {
                 records.into_iter().map(DeptResponse::from).collect(), r.page, r.page_size, total))
     }
 
-    pub fn list(&mut self) -> Result<Vec<DeptResponse>, anyhow::Error> {
-        let list = self.repo.list()?.into_iter().map(|d| DeptResponse::from(d)).collect();
+    pub fn list(&mut self,r:ListDept) -> Result<Vec<DeptResponse>, anyhow::Error> {
+        let list = self.repo.list(r)?.into_iter().map(|d| DeptResponse::from(d)).collect();
         Ok(self.tree(list)?)
     }
 

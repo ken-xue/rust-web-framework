@@ -1,12 +1,14 @@
 use std::ops::DerefMut;
-use diesel::{ExpressionMethods, OptionalExtension, QueryDsl, RunQueryDsl, SelectableHelper};
+use diesel::{BoxableExpression, ExpressionMethods, IntoSql, OptionalExtension, QueryDsl, RunQueryDsl, SelectableHelper, TextExpressionMethods};
+use diesel::mysql::Mysql;
 use diesel::result::Error;
+use diesel::sql_types::Bool;
 
 use crate::database;
 use crate::system::dept::model::SysDept;
 use crate::database::schema::sys_dept::dsl::*;
 use crate::database::schema::sys_dept;
-use crate::system::dept::request::PageDept;
+use crate::system::dept::request::{ListDept, PageDept};
 
 pub struct DeptRepo {
     conn: database::PoolConnection
@@ -56,8 +58,15 @@ impl DeptRepo {
         Ok((records, total_count))
     }
 
-    pub fn list(&mut self) -> Result<Vec<SysDept>, anyhow::Error> {
-        let list = sys_dept.select(SysDept::as_select()).load::<SysDept>(self.conn.deref_mut())?;
+    pub fn list(&mut self,r: ListDept) -> Result<Vec<SysDept>, anyhow::Error> {
+        let list = sys_dept.select(SysDept::as_select()).filter(condition_like_name(r.name)).load::<SysDept>(self.conn.deref_mut())?;
         Ok(list)
+    }
+}
+
+fn condition_like_name(opt: Option<String>) -> Box<dyn BoxableExpression<sys_dept::table, Mysql, SqlType = Bool>> {
+    match opt {
+        Some(value) => Box::new(name.like(format!("%{}%", value))),
+        None => Box::new(true.into_sql::<Bool>()) // 不加条件
     }
 }

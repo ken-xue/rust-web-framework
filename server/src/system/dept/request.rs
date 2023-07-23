@@ -49,6 +49,15 @@ pub struct PageDept {
     pub status: Option<String>,//状态
 }
 
+#[derive(Debug, Validate, Deserialize, Clone)]
+#[serde(rename_all = "camelCase")]
+pub struct ListDept {
+    pub name: Option<String>,//名称
+    pub order: Option<i32>,//排序
+    pub remark: Option<String>,//备注
+    pub status: Option<String>,//状态
+}
+
 impl From<AddDept> for SysDept {
     fn from(req: AddDept) -> SysDept {
         SysDept {
