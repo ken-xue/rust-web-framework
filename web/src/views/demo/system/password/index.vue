@@ -15,6 +15,9 @@
   import { BasicForm, useForm } from '/@/components/Form';
 
   import { formSchema } from './pwd.data';
+  import {updatePassword} from "@/api/demo/system";
+  import {message} from "ant-design-vue";
+  import {encrypt} from "@/utils/encrypt";
 
   export default defineComponent({
     name: 'ChangePassword',
@@ -31,13 +34,21 @@
       async function handleSubmit() {
         try {
           const values = await validate();
-          const { passwordOld, passwordNew } = values;
-
-          // TODO custom api
-          console.log(passwordOld, passwordNew);
+          const { oldPassword, newPassword } = values;
+          console.log(oldPassword, newPassword);
+          //加密
+          const eop = encrypt(oldPassword);
+          const enp = encrypt(newPassword);
+          await updatePassword({
+            oldPassword: eop,
+            newPassword: enp,
+          });
+          message.success('修改成功');
           // const { router } = useRouter();
           // router.push(pageEnum.BASE_LOGIN);
-        } catch (error) {}
+        } catch (error) {
+          message.error(error);
+        }
       }
 
       return { register, resetFields, handleSubmit };

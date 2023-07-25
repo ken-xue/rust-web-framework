@@ -3,10 +3,10 @@ use anyhow::bail;
 use base64::decode;
 use bcrypt::{DEFAULT_COST, hash, verify};
 use crate::common::{request, response};
-use crate::system::role;
+use crate::system::{auth, role};
 use crate::system::user::model::SysUser;
 use crate::system::user::repo::{UserRepo};
-use crate::system::user::request::{AddUser, PageUser, UpdateUser};
+use crate::system::user::request::{AddUser, PageUser, UpdatePassword, UpdateUser};
 use crate::system::user::response::UserResponse;
 use crate::util;
 
@@ -84,6 +84,25 @@ impl UserService {
 
     pub fn delete(&mut self, d: request::Delete) -> Result<usize, anyhow::Error> {
         Ok(self.repo.delete_by_ids(d.ids)?.unwrap_or(0))
+    }
+
+    //修改密码
+    pub fn password(&mut self, d: UpdatePassword,username: String) -> Result<(), anyhow::Error> {
+        let mut user = self.repo.get_by_username(username.as_str())?;
+        // Decrypt the password first
+        let decode_base64_old_password = decode(d.old_password)?;
+        let decode_base64_new_password = decode(d.new_password)?;
+        // 解密密码
+        let decoded_old_password = util::encrypt::default_decrypt(&decode_base64_old_password)?;
+        let decoded_new_password = util::encrypt::default_decrypt(&decode_base64_new_password)?;
+        // 验证密码
+        if verify(&decoded_old_password, &user.password)? {
+            let hashed_password = hash(decoded_new_password.to_string(), DEFAULT_COST)?;
+            user.password = hashed_password;
+            self.repo.update(user)?;
+            return Ok(());
+        }
+        bail!("Incorrect password.")
     }
 }
 

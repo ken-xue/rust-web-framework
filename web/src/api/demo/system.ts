@@ -16,6 +16,7 @@ import { defHttp } from '/@/utils/http/axios';
 enum Api {
   AccountList = '/system/getAccountList',
   UserPage = '/v1/system/user/page',
+  UpdatePassword = '/v1/system/user/password',
   IsAccountExist = '/system/accountExist',
   DeptList = '/v1/system/dept/list',
   setRoleStatus = '/system/setRoleStatus',
@@ -54,3 +55,5 @@ export const setRoleStatus = (id: number, status: string) =>
 
 export const isAccountExist = (account: string) =>
   defHttp.post({ url: Api.IsAccountExist, params: { account } }, { errorMessageMode: 'none' });
+
+export const updatePassword = (params) => defHttp.post({ url: Api.UpdatePassword, params });

@@ -13,13 +13,11 @@ use crate::common::validator::Validated;
 use crate::system::auth;
 use crate::system::auth::Claims;
 use crate::system::user::model::SysUser;
-use crate::system::user::request::{AddUser, PageUser, UpdateUser};
+use crate::system::user::request::{AddUser, PageUser, UpdatePassword, UpdateUser};
 
 // info
 pub async fn get() -> Result<impl IntoResponse, AppError> {
-    let username = auth::CURRENT_USER.with(|cell| {
-        cell.borrow().clone()
-    });
+    let username = auth::CURRENT_USER.with(|cell| cell.borrow().clone()).map(|x| x);
     let response = service::UserService::default().get_by_username(username.unwrap())?;
     Ok(response::success(response))
 }
@@ -46,5 +44,12 @@ pub async fn update(Json(r): Json<UpdateUser>) -> Result<impl IntoResponse, AppE
 // delete
 pub async fn delete(Json(r): Json<request::Delete>)  -> Result<impl IntoResponse, AppError>  {
     let response = service::UserService::default().delete(r)?;
+    Ok(response::success(response))
+}
+
+// update password
+pub async fn password(Json(r): Json<UpdatePassword>) -> Result<impl IntoResponse, AppError>  {
+    let username = auth::CURRENT_USER.with(|cell| cell.borrow().clone()).map(|x| x);
+    let response = service::UserService::default().password(r,username.unwrap())?;
     Ok(response::success(response))
 }
