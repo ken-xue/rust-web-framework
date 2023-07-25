@@ -18,6 +18,9 @@
   import {updatePassword} from "@/api/demo/system";
   import {message} from "ant-design-vue";
   import {encrypt} from "@/utils/encrypt";
+  import {useRouter} from "vue-router";
+  import {PageEnum} from "@/enums/pageEnum";
+  import {useUserStoreWithOut} from "@/store/modules/user";
 
   export default defineComponent({
     name: 'ChangePassword',
@@ -35,19 +38,22 @@
         try {
           const values = await validate();
           const { oldPassword, newPassword } = values;
-          console.log(oldPassword, newPassword);
           //加密
           const eop = encrypt(oldPassword);
           const enp = encrypt(newPassword);
+          //请求
           await updatePassword({
             oldPassword: eop,
             newPassword: enp,
           });
           message.success('修改成功');
           // const { router } = useRouter();
-          // router.push(pageEnum.BASE_LOGIN);
+          // router.push(PageEnum.BASE_LOGIN);
+
+          const userStore = useUserStoreWithOut();
+          await userStore.logout(true);
         } catch (error) {
-          message.error(error);
+          console.log(error)
         }
       }
 

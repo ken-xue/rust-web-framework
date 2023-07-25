@@ -8,7 +8,7 @@ use crate::system::user::model::SysUser;
 use crate::system::user::repo::{UserRepo};
 use crate::system::user::request::{AddUser, PageUser, UpdatePassword, UpdateUser};
 use crate::system::user::response::UserResponse;
-use crate::util;
+use crate::{common, util};
 
 pub struct UserService {
     repo: UserRepo,
@@ -87,8 +87,8 @@ impl UserService {
     }
 
     //修改密码
-    pub fn password(&mut self, d: UpdatePassword,username: String) -> Result<(), anyhow::Error> {
-        let mut user = self.repo.get_by_username(username.as_str())?;
+    pub fn password(&mut self, d: UpdatePassword) -> Result<(), anyhow::Error> {
+        let mut user = self.repo.get_by_username(common::current_username().as_str())?;
         // Decrypt the password first
         let decode_base64_old_password = decode(d.old_password)?;
         let decode_base64_new_password = decode(d.new_password)?;

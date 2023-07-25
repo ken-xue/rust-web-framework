@@ -5,7 +5,7 @@ use axum::response::IntoResponse;
 use hyper::StatusCode;
 use serde::{Deserialize, Serialize};
 use validator::{Validate};
-use crate::{database};
+use crate::{common, database};
 use crate::common::{request, response};
 use crate::system::user::{service, repo};
 use crate::common::error::AppError;
@@ -17,8 +17,7 @@ use crate::system::user::request::{AddUser, PageUser, UpdatePassword, UpdateUser
 
 // info
 pub async fn get() -> Result<impl IntoResponse, AppError> {
-    let username = auth::CURRENT_USER.with(|cell| cell.borrow().clone()).map(|x| x);
-    let response = service::UserService::default().get_by_username(username.unwrap())?;
+    let response = service::UserService::default().get_by_username(common::current_username())?;
     Ok(response::success(response))
 }
 // get
@@ -49,7 +48,6 @@ pub async fn delete(Json(r): Json<request::Delete>)  -> Result<impl IntoResponse
 
 // update password
 pub async fn password(Json(r): Json<UpdatePassword>) -> Result<impl IntoResponse, AppError>  {
-    let username = auth::CURRENT_USER.with(|cell| cell.borrow().clone()).map(|x| x);
-    let response = service::UserService::default().password(r,username.unwrap())?;
+    let response = service::UserService::default().password(r)?;
     Ok(response::success(response))
 }

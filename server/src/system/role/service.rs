@@ -39,6 +39,14 @@ impl RoleService {
     }
 
     pub fn add(&mut self, u: AddRole) -> Result<RoleResponse,anyhow::Error> {
+        //添加菜单关系
+        if let Some(menus) = &u.menus {
+            let vec =
+            for menu in menus {
+
+            };
+            //添加
+        }
         Ok(self.repo.add(u.into())?.into())
     }
 

@@ -50,11 +50,11 @@ pub struct AppError(anyhow::Error);
 impl IntoResponse for AppError {
     fn into_response(self) -> Response {
         let err_response = response::ErrorResponse{
-            code: 500,
+            code: 5000,
             message: format!("{}", self.0)
         };
         (
-            StatusCode::INTERNAL_SERVER_ERROR,
+            StatusCode::OK,
             Json(err_response),
         )
             .into_response()
