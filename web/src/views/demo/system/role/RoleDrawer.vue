@@ -12,7 +12,7 @@
         <BasicTree
           v-model:value="model[field]"
           :treeData="treeData"
-          :fieldNames="{ title: 'name', key: 'id' }"
+          :fieldNames="{ title: 'name', key: 'uuid' }"
           checkable
           toolbar
           title="菜单分配"
@@ -28,8 +28,9 @@
   import { BasicDrawer, useDrawerInner } from '/@/components/Drawer';
   import { BasicTree, TreeItem } from '/@/components/Tree';
 
-  import {getMenuList, getRoleMenuList} from '/@/api/demo/system';
+  import { addMenu, getMenuList, getRoleMenuList, updateMenu } from "/@/api/demo/system";
   import {dateUtil} from "@/utils/dateUtil";
+  import { message } from "ant-design-vue";
 
   export default defineComponent({
     name: 'RoleDrawer',
@@ -51,14 +52,15 @@
         setDrawerProps({ confirmLoading: false });
         // 需要在setFieldsValue之前先填充treeData，否则Tree组件可能会报key not exist警告
         if (unref(treeData).length === 0) {
-          treeData.value = (await getMenuList()) as any as TreeItem[];
+          treeData.value = (await getMenuList({
+              tree : true,
+          })) as any as TreeItem[];
         }
         isUpdate.value = !!data?.isUpdate;
-
         if (unref(isUpdate)) {
           //查询角色包含的权限
           const list = await getRoleMenuList({
-            roleUuid: data.uuid,
+            roleUuids: [data.record.uuid]
           });
           const uuids: any[] = [];
           list.forEach((item) => {
@@ -77,8 +79,13 @@
         try {
           const values = await validate();
           setDrawerProps({ confirmLoading: true });
-          // TODO custom api
           console.log(values);
+          if (unref(isUpdate)) {
+            await updateRole(values);
+          } else {
+            await addRole(values);
+          }
+          message.success('操作成功');
           closeDrawer();
           emit('success');
         } finally {

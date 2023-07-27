@@ -11,7 +11,7 @@ pub mod request;
 pub fn menu_router() -> Router {
     Router::new()
     .route("/:id",  get(handler::info))
-    .route("/role/:uuid",  get(handler::role_menu))
+    .route("/role",  post(handler::get_by_role_uuids))
     .route("/list",  post(handler::list))
     .route("/update",  put(handler::update))
     .route("/add",  post(handler::add))

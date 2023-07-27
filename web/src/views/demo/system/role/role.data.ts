@@ -94,12 +94,12 @@ export const formSchema: FormSchema[] = [
     required: true,
     component: 'Input',
   },
-  {
-    field: 'roleValue',
-    label: '角色值',
-    required: true,
-    component: 'Input',
-  },
+  // {
+  //   field: 'roleValue',
+  //   label: '角色值',
+  //   required: true,
+  //   component: 'Input',
+  // },
   {
     field: 'status',
     label: '状态',
@@ -119,7 +119,7 @@ export const formSchema: FormSchema[] = [
   },
   {
     label: ' ',
-    field: 'menu',
+    field: 'menus',
     slot: 'menu',
     component: 'Input',
   },

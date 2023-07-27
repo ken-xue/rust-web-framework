@@ -26,6 +26,8 @@ export type MenuParams = {
   path?: string;
   order?: number;
   permission?: string;
+  tree?: boolean;
+  roleUuids?: string[];
 };
 
 export type DeleteParam = {

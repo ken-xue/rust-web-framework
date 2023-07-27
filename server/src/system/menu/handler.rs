@@ -44,7 +44,7 @@ pub async fn list(Json(r): Json<ListMenu>) -> Result<impl IntoResponse, AppError
 }
 
 // info
-pub async fn role_menu(Path(id): Path<String>) -> Result<impl IntoResponse, AppError> {
-    let response = service::MenuService::default().get_role_menu(id)?;
+pub async fn get_by_role_uuids(Json(r): Json<ListMenu>) -> Result<impl IntoResponse, AppError> {
+    let response = service::MenuService::default().get_by_role_uuids(r.role_uuids.unwrap())?;
     Ok(response::success(response))
 }

@@ -94,10 +94,4 @@ impl MenuService {
         result.sort_by(|a, b| a.order.unwrap_or(1000).cmp(&b.order.unwrap_or(1000)));
         Ok(result)
     }
-
-    //根据角色id查询菜单列表
-    pub fn get_role_menu(&mut self,role_uuid :String) -> Result<Vec<MenuResponse>, anyhow::Error> {
-        let ret = Vec::new();
-        Ok(ret)
-    }
 }

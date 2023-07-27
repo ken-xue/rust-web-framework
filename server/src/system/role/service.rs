@@ -2,6 +2,7 @@ use std::collections::HashMap;
 use anyhow::bail;
 use crate::common::{request, response};
 use crate::{common, system};
+use crate::database::schema::sys_role_of_menu::dsl::sys_role_of_menu;
 use crate::system::menu;
 use crate::system::menu::model::SysRoleOfMenu;
 use crate::system::menu::response::MenuResponse;
@@ -42,7 +43,7 @@ impl RoleService {
 
     pub fn add(&mut self, u: AddRole) -> Result<RoleResponse,anyhow::Error> {
         let u_clone = u.clone();
-        let mut role: SysRole = u.into();
+        let role: SysRole = u.into();
         //添加菜单关系
         let mut role_of_menus:Vec<SysRoleOfMenu> = Vec::new();
         if let Some(menus) = u_clone.menus {
@@ -68,6 +69,9 @@ impl RoleService {
     }
 
     pub fn update(&mut self, u: UpdateRole) -> Result<usize,anyhow::Error> {
+        //更新菜单
+        // sys_role_of_menu::up
+        //更新关系
         Ok(self.repo.update(u.into())?.unwrap_or(0))
     }
 

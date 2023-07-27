@@ -56,6 +56,10 @@
           labelWidth: 120,
           schemas: searchFormSchema,
         },
+        beforeFetch: (params) => {
+          params.tree = true;
+          return params;
+        },
         fetchSetting: {
           listField: 'list',
         },
