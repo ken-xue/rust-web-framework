@@ -28,8 +28,7 @@
   import { BasicDrawer, useDrawerInner } from '/@/components/Drawer';
   import { BasicTree, TreeItem } from '/@/components/Tree';
 
-  import { addMenu, getMenuList, getRoleMenuList, updateMenu } from "/@/api/demo/system";
-  import {dateUtil} from "@/utils/dateUtil";
+  import {addRole, getMenuList, getRoleMenuList, updateRole} from "/@/api/demo/system";
   import { message } from "ant-design-vue";
 
   export default defineComponent({
@@ -79,7 +78,7 @@
         try {
           const values = await validate();
           setDrawerProps({ confirmLoading: true });
-          console.log(values);
+          // console.log(values);
           if (unref(isUpdate)) {
             await updateRole(values);
           } else {

@@ -17,7 +17,7 @@ pub struct UpdateRole {
     pub id: u64,//主键
     pub name: Option<String>,//角色名
     pub remark: Option<String>,//备注
-    pub menus: Option<Vec<u64>>,//创建人
+    pub menus: Option<Vec<String>>,//创建人
     pub deleted: Option<bool>,//创建人
 }
 
