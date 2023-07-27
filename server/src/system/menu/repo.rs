@@ -7,8 +7,8 @@ use crate::database;
 use crate::system::menu::model::{SysMenu, SysRoleOfMenu};
 use crate::database::schema::sys_menu::dsl::*;
 use crate::database::schema::{sys_menu, sys_role_of_menu};
-use crate::database::schema::sys_role_of_menu::dsl::sys_role_of_menu as dslsrom;
-use crate::database::schema::sys_role_of_menu::menu_uuid;
+use crate::database::schema::sys_role_of_menu::dsl::{sys_role_of_menu as dslsrom};
+use crate::database::schema::sys_role_of_menu::{menu_uuid, role_uuid};
 use crate::system::menu::request::{ListMenu, PageMenu};
 
 pub struct MenuRepo {
@@ -82,6 +82,13 @@ impl MenuRepo {
 
     pub fn add_role_of_menus(&mut self, of: Vec<SysRoleOfMenu>) -> Result<usize, anyhow::Error> {
         let ret = diesel::insert_into(sys_role_of_menu::table).values(&of).execute(self.conn.deref_mut())?;
+        Ok(ret)
+    }
+
+    pub fn delete_role_of_menus_by_role_uuids(&mut self, ids: Vec<String>) -> Result<Option<usize>, anyhow::Error> {
+        use crate::database::schema::sys_role_of_menu::dsl::sys_role_of_menu;
+        let ret = diesel::delete(sys_role_of_menu.filter(role_uuid.eq_any(ids)))
+            .execute(self.conn.deref_mut()).optional().map_err(Error::from)?;
         Ok(ret)
     }
 }
