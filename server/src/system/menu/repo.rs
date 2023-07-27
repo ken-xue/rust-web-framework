@@ -4,10 +4,10 @@ use diesel::mysql::Mysql;
 use diesel::result::Error;
 use diesel::sql_types::Bool;
 use crate::database;
-use crate::system::menu::model::SysMenu;
+use crate::system::menu::model::{SysMenu, SysRoleOfMenu};
 use crate::database::schema::sys_menu::dsl::*;
-use crate::database::schema::sys_menu;
-use crate::database::schema::sys_role_of_menu::dsl::sys_role_of_menu;
+use crate::database::schema::{sys_menu, sys_role_of_menu};
+use crate::database::schema::sys_role_of_menu::dsl::sys_role_of_menu as dslsrom;
 use crate::database::schema::sys_role_of_menu::menu_uuid;
 use crate::system::menu::request::{ListMenu, PageMenu};
 
@@ -72,12 +72,17 @@ impl MenuRepo {
 
     pub fn get_by_role_uuids(&mut self, ids: Vec<String>) -> Result<Vec<(String, SysMenu)>, anyhow::Error> {
         use crate::database::schema::sys_role_of_menu::role_uuid;
-        let menus = sys_role_of_menu
+        let menus = dslsrom
             .filter(role_uuid.eq_any(ids))
             .inner_join(sys_menu.on(uuid.eq(menu_uuid)))
             .select((role_uuid, SysMenu::as_select()))//需要将role_id也带出来
             .load::<(String, SysMenu)>(self.conn.deref_mut())?;
         Ok(menus)
+    }
+
+    pub fn add_role_of_menus(&mut self, of: Vec<SysRoleOfMenu>) -> Result<usize, anyhow::Error> {
+        let ret = diesel::insert_into(sys_role_of_menu::table).values(&of).execute(self.conn.deref_mut())?;
+        Ok(ret)
     }
 }
 

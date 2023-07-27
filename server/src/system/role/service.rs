@@ -1,13 +1,15 @@
 use std::collections::HashMap;
 use anyhow::bail;
 use crate::common::{request, response};
-use crate::system;
+use crate::{common, system};
 use crate::system::menu;
+use crate::system::menu::model::SysRoleOfMenu;
 use crate::system::menu::response::MenuResponse;
 use crate::system::role::response::RoleResponse;
 use crate::system::role::model::SysRole;
 use crate::system::role::repo::RoleRepo;
 use crate::system::role::request::{AddRole,PageRole, UpdateRole };
+use crate::util::uuid;
 
 pub struct RoleService {
     repo: RoleRepo,
@@ -39,15 +41,30 @@ impl RoleService {
     }
 
     pub fn add(&mut self, u: AddRole) -> Result<RoleResponse,anyhow::Error> {
+        let u_clone = u.clone();
+        let mut role: SysRole = u.into();
         //添加菜单关系
-        if let Some(menus) = &u.menus {
-            let vec =
+        let mut role_of_menus:Vec<SysRoleOfMenu> = Vec::new();
+        if let Some(menus) = u_clone.menus {
             for menu in menus {
-
+                let of = SysRoleOfMenu{
+                    id: 0,
+                    uuid: uuid(),
+                    role_uuid: role.uuid.to_string(),
+                    menu_uuid: menu.to_string(),
+                    creator: Some(common::current_username()),
+                    modifier: Some(common::current_username()),
+                    gmt_create: Default::default(),
+                    gmt_modified: Default::default(),
+                    deleted: false,
+                };
+                role_of_menus.push(of);
             };
-            //添加
         }
-        Ok(self.repo.add(u.into())?.into())
+        //添加绑定关系
+        menu::repo::MenuRepo::default().add_role_of_menus(role_of_menus)?;
+        //添加角色
+        Ok(self.repo.add(role)?.into())
     }
 
     pub fn update(&mut self, u: UpdateRole) -> Result<usize,anyhow::Error> {

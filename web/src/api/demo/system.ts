@@ -21,6 +21,7 @@ enum Api {
   DeptList = '/v1/system/dept/list',
   setRoleStatus = '/system/setRoleStatus',
   MenuList = '/v1/system/menu/list',
+  RoleMenuList = '/v1/system/menu/list',
   MenuDelete = '/v1/system/menu/delete',
   MenuAdd = '/v1/system/menu/add',
   MenuUpdate = '/v1/system/menu/update',
@@ -39,6 +40,9 @@ export const getDeptList = (params?: DeptListItem) =>
 
 export const getMenuList = (params?: MenuParams) =>
   defHttp.post<MenuListGetResultModel>({ url: Api.MenuList, params });
+// 获取角色所包含的菜单
+export const getRoleMenuList = (params) =>
+  defHttp.post<MenuListGetResultModel>({ url: Api.RoleMenuList, params });
 export const deleteMenu = (params?: DeleteParam) => defHttp.delete({ url: Api.MenuDelete, params });
 
 export const addMenu = (params?: MenuParams) => defHttp.post({ url: Api.MenuAdd, params });

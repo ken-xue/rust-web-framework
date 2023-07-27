@@ -3,12 +3,12 @@ use validator::{Validate};
 use crate::system::role::model::SysRole;
 use crate::{common, util};
 
-#[derive(Debug, Validate, Deserialize)]
+#[derive(Debug, Validate, Deserialize, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct AddRole {
     pub name: Option<String>,//角色名
     pub remark: Option<String>,//备注
-    pub menus: Option<Vec<u64>>,//创建人
+    pub menus: Option<Vec<String>>,//创建人
 }
 
 #[derive(Debug, Validate, Deserialize)]

@@ -58,9 +58,11 @@ impl MenuService {
     }
 
     pub fn list(&mut self,r :ListMenu) -> Result<Vec<MenuResponse>, anyhow::Error> {
-        let menus = self.repo.list(r)?.into_iter().map(|d| MenuResponse::from(d)).collect();
-        let ret = self.tree(menus)?;
-        Ok(ret)
+        let mut menus = self.repo.list(r.clone())?.into_iter().map(|d| MenuResponse::from(d)).collect();
+        if r.tree.as_ref().map_or(false, |&tree| tree) {
+            menus = self.tree(menus)?;
+        }
+        Ok(menus)
     }
 
     // 构建菜单树
@@ -91,5 +93,11 @@ impl MenuService {
         }
         result.sort_by(|a, b| a.order.unwrap_or(1000).cmp(&b.order.unwrap_or(1000)));
         Ok(result)
+    }
+
+    //根据角色id查询菜单列表
+    pub fn get_role_menu(&mut self,role_uuid :String) -> Result<Vec<MenuResponse>, anyhow::Error> {
+        let ret = Vec::new();
+        Ok(ret)
     }
 }

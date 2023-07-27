@@ -54,6 +54,10 @@
           labelWidth: 120,
           schemas: searchFormSchema,
         },
+        beforeFetch: (params) => {
+          params.tree = true;
+          return params;
+        },
         isTreeTable: true,
         pagination: false,
         striped: false,

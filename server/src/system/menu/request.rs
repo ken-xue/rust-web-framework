@@ -56,9 +56,10 @@ pub struct PageMenu {
 #[serde(rename_all = "camelCase")]
 pub struct ListMenu {
     pub name: Option<String>,//菜单名
+    pub role_uuid: Option<Vec<String>>,//菜单名
     pub menu_type: Option<String>,//0:目录 1:菜单 2:按钮
-    pub title: Option<String>,//修改人
     pub status: Option<String>,//修改人
+    pub tree: Option<bool>,//是否需要构造成树形结构
 }
 
 impl From<AddMenu> for SysMenu {

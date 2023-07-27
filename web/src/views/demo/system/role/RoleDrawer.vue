@@ -28,7 +28,8 @@
   import { BasicDrawer, useDrawerInner } from '/@/components/Drawer';
   import { BasicTree, TreeItem } from '/@/components/Tree';
 
-  import { getMenuList } from '/@/api/demo/system';
+  import {getMenuList, getRoleMenuList} from '/@/api/demo/system';
+  import {dateUtil} from "@/utils/dateUtil";
 
   export default defineComponent({
     name: 'RoleDrawer',
@@ -55,8 +56,17 @@
         isUpdate.value = !!data?.isUpdate;
 
         if (unref(isUpdate)) {
+          //查询角色包含的权限
+          const list = await getRoleMenuList({
+            roleUuid: data.uuid,
+          });
+          const uuids: any[] = [];
+          list.forEach((item) => {
+            uuids.push(item.uuid);
+          });
           setFieldsValue({
             ...data.record,
+            menus: uuids,
           });
         }
       });

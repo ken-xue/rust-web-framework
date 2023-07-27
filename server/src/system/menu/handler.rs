@@ -37,8 +37,14 @@ pub async fn delete(Json(r): Json<request::Delete>)  -> Result<impl IntoResponse
     Ok(response::success(response))
 }
 
-// list 获取当前用户的菜单权限
+// list
 pub async fn list(Json(r): Json<ListMenu>) -> Result<impl IntoResponse, AppError> {
     let menus = service::MenuService::default().list(r)?;
     Ok(response::success(menus))
+}
+
+// info
+pub async fn role_menu(Path(id): Path<String>) -> Result<impl IntoResponse, AppError> {
+    let response = service::MenuService::default().get_role_menu(id)?;
+    Ok(response::success(response))
 }
