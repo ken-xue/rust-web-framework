@@ -69,19 +69,21 @@ impl RoleService {
     }
 
     pub fn update(&mut self, u: UpdateRole) -> Result<usize,anyhow::Error> {
-        //更新菜单:如果联合主键存在则忽略否则进行插入
+        let into:SysRole = u.clone().into();
+        let mut role = self.repo.get_by_id(u.id.clone())?;
         // sys_role_of_menu::up
         let mut srv = menu::repo::MenuRepo::default();
-        srv.delete_role_of_menus_by_role_uuids()?;
-        //of
-        let vec:Vec<SysRoleOfMenu> = Vec::new();
-        if let mut menus = Some(u.menus) {
-            for menu in menus.iter_mut() {
+        // delete old
+        srv.delete_role_of_menus_by_role_uuids(vec![role.uuid.clone()])?;
+        // of
+        let mut vec:Vec<SysRoleOfMenu> = Vec::new();
+        if let Some(menus) = u.menus {
+            for menu in menus.iter() {
                 vec.push(SysRoleOfMenu{
                     id: Default::default(),
                     uuid: uuid(),
-                    role_uuid: "".to_string(),
-                    menu_uuid: "".to_string(),
+                    role_uuid: role.uuid.clone(),
+                    menu_uuid: menu.to_string(),
                     creator: Some(common::current_username()),
                     modifier: Some(common::current_username()),
                     gmt_create: Default::default(),
@@ -90,9 +92,9 @@ impl RoleService {
                 })
             }
         }
-        srv.add_role_of_menus()?;
+        srv.add_role_of_menus(vec)?;
         //更新关系
-        Ok(self.repo.update(u.into())?.unwrap_or(0))
+        Ok(self.repo.update(into)?.unwrap_or(0))
     }
 
     pub fn delete(&mut self, d: request::Delete) -> Result<usize,anyhow::Error> {

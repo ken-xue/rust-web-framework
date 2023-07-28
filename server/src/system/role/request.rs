@@ -11,7 +11,7 @@ pub struct AddRole {
     pub menus: Option<Vec<String>>,//创建人
 }
 
-#[derive(Debug, Validate, Deserialize)]
+#[derive(Debug, Validate, Deserialize,Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct UpdateRole {
     pub id: u64,//主键
