@@ -13,7 +13,7 @@ use crate::common::validator::Validated;
 use crate::system::auth;
 use crate::system::auth::Claims;
 use crate::system::user::model::SysUser;
-use crate::system::user::request::{AddUser, PageUser, UpdatePassword, UpdateUser};
+use crate::system::user::request::{AddUser, ExistUsername, PageUser, UpdatePassword, UpdateUser};
 
 // info
 pub async fn get() -> Result<impl IntoResponse, AppError> {
@@ -49,5 +49,10 @@ pub async fn delete(Json(r): Json<request::Delete>)  -> Result<impl IntoResponse
 // update password
 pub async fn password(Json(r): Json<UpdatePassword>) -> Result<impl IntoResponse, AppError>  {
     let response = service::UserService::default().password(r)?;
+    Ok(response::success(response))
+}
+
+pub async fn exist(Json(r): Json<ExistUsername>) -> Result<impl IntoResponse, AppError>  {
+    let response = service::UserService::default().exist(r)?;
     Ok(response::success(response))
 }

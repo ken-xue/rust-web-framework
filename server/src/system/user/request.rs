@@ -23,6 +23,12 @@ pub struct UpdatePassword {
 
 #[derive(Debug, Validate, Deserialize)]
 #[serde(rename_all = "camelCase")]
+pub struct ExistUsername {
+    pub username: String,
+}
+
+#[derive(Debug, Validate, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct AddUser {
     #[validate(length(min = 1, message = "Can not be empty"))]
     pub name: String,

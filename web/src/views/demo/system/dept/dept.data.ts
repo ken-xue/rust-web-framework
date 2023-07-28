@@ -60,28 +60,28 @@ export const searchFormSchema: FormSchema[] = [
 
 export const formSchema: FormSchema[] = [
   {
-    field: 'deptName',
+    field: 'name',
     label: '部门名称',
     component: 'Input',
     required: true,
   },
   {
-    field: 'parentDept',
+    field: 'parentUuid',
     label: '上级部门',
     component: 'TreeSelect',
 
     componentProps: {
       fieldNames: {
-        label: 'deptName',
-        key: 'id',
-        value: 'id',
+        label: 'name',
+        key: 'uuid',
+        value: 'uuid',
       },
       getPopupContainer: () => document.body,
     },
     required: true,
   },
   {
-    field: 'orderNo',
+    field: 'order',
     label: '排序',
     component: 'InputNumber',
     required: true,

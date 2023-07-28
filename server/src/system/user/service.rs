@@ -6,7 +6,7 @@ use crate::common::{request, response};
 use crate::system::{auth, role};
 use crate::system::user::model::SysUser;
 use crate::system::user::repo::{UserRepo};
-use crate::system::user::request::{AddUser, PageUser, UpdatePassword, UpdateUser};
+use crate::system::user::request::{AddUser, ExistUsername, PageUser, UpdatePassword, UpdateUser};
 use crate::system::user::response::UserResponse;
 use crate::{common, util};
 
@@ -103,6 +103,10 @@ impl UserService {
             return Ok(());
         }
         bail!("Incorrect password.")
+    }
+
+    pub fn exit(&mut self, d: ExistUsername) -> Result<bool, anyhow::Error> {
+        Ok(false)
     }
 }
 

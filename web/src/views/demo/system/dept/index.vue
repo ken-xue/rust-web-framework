@@ -1,6 +1,6 @@
 <template>
   <div>
-    <BasicTable @register="registerTable">
+    <BasicTable @register="registerTable" @fetch-success="onFetchSuccess">
       <template #toolbar>
         <a-button type="primary" @click="handleCreate"> 新增部门 </a-button>
       </template>
@@ -26,26 +26,27 @@
         </template>
       </template>
     </BasicTable>
-    <DeptModal @register="registerModal" @success="handleSuccess" />
+    <DeptDrawer @register="registerDrawer" @success="handleSuccess" />
   </div>
 </template>
 <script lang="ts">
-  import { defineComponent } from 'vue';
+  import { defineComponent, nextTick } from 'vue';
 
   import { BasicTable, useTable, TableAction } from '/@/components/Table';
-  import { getDeptList } from '/@/api/demo/system';
+  import { deleteDept, getDeptList } from '/@/api/demo/system';
 
-  import { useModal } from '/@/components/Modal';
-  import DeptModal from './DeptModal.vue';
+  import { useDrawer } from '@/components/Drawer';
+  import DeptDrawer from './DeptDrawer.vue';
 
   import { columns, searchFormSchema } from './dept.data';
+  import { message } from 'ant-design-vue';
 
   export default defineComponent({
     name: 'DeptManagement',
-    components: { BasicTable, DeptModal, TableAction },
+    components: { DeptDrawer, BasicTable, TableAction },
     setup() {
-      const [registerModal, { openModal }] = useModal();
-      const [registerTable, { reload }] = useTable({
+      const [registerDrawer, { openDrawer }] = useDrawer();
+      const [registerTable, { reload, expandAll }] = useTable({
         title: '部门列表',
         api: getDeptList,
         fetchSetting: {
@@ -73,33 +74,43 @@
       });
 
       function handleCreate() {
-        openModal(true, {
+        openDrawer(true, {
           isUpdate: false,
         });
+        // openModal(true, {
+        //   isUpdate: false,
+        // });
       }
 
       function handleEdit(record: Recordable) {
-        openModal(true, {
+        openDrawer(true, {
           record,
           isUpdate: true,
         });
       }
 
-      function handleDelete(record: Recordable) {
+      async function handleDelete(record: Recordable) {
         console.log(record);
+        await deleteDept({ ids: [record.id] });
+        message.success('删除成功');
+        await reload();
       }
 
       function handleSuccess() {
         reload();
       }
-
+      function onFetchSuccess() {
+        // 演示默认展开所有表项
+        nextTick(expandAll);
+      }
       return {
         registerTable,
-        registerModal,
+        registerDrawer,
         handleCreate,
         handleEdit,
         handleDelete,
         handleSuccess,
+        onFetchSuccess,
       };
     },
   });

@@ -1,4 +1,4 @@
-import { getAllRoleList, isAccountExist } from '/@/api/demo/system';
+import { getRoleList, isAccountExist } from '/@/api/demo/system';
 import { BasicColumn, FormSchema } from '/@/components/Table';
 
 export const columns: BasicColumn[] = [
@@ -84,9 +84,9 @@ export const accountFormSchema: FormSchema[] = [
     field: 'role',
     component: 'ApiSelect',
     componentProps: {
-      api: getAllRoleList,
-      labelField: 'roleName',
-      valueField: 'roleValue',
+      api: getRoleList,
+      labelField: 'name',
+      valueField: 'uuid',
     },
     required: true,
   },
@@ -96,9 +96,9 @@ export const accountFormSchema: FormSchema[] = [
     component: 'TreeSelect',
     componentProps: {
       fieldNames: {
-        label: 'deptName',
-        key: 'id',
-        value: 'id',
+        label: 'name',
+        key: 'uuid',
+        value: 'uuid',
       },
       getPopupContainer: () => document.body,
     },
