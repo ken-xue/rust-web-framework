@@ -17,4 +17,5 @@ pub fn user_router() -> Router {
         .route("/add",  post(handler::add))
         .route("/delete",  delete(handler::delete))
         .route("/password",  post(handler::password))
+        .route("/exist",  post(handler::exist))
 }

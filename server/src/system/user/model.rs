@@ -1,10 +1,12 @@
 use crate::database::schema::*;
 use diesel::prelude::*;
 use serde::{Serialize};
+use crate::system::dept::model::{SysDept, SysUserOfDept};
+use crate::system::role::model::{SysRole, SysUserOfRole};
 
 // power by rwf : https://github.com/ken-xue/rust-web-framework/tree/main/server/crates/code
 
-#[derive(Debug,Serialize,Queryable,Identifiable,Selectable,Insertable,AsChangeset)]
+#[derive(Debug,Serialize,Queryable,Identifiable,Selectable,Insertable,AsChangeset,PartialEq)]
 #[table_name = "sys_user"]
 //用户表 //2023-06-30T08:44:10
 pub struct SysUser {
@@ -21,4 +23,18 @@ pub struct SysUser {
     pub gmt_modified: chrono::NaiveDateTime,//修改时间
     pub deleted: bool,//逻辑删除
     pub avatar: Option<String>,//头像
+}
+
+#[derive(Queryable,Selectable)]
+pub struct UserWithRoleDept {
+    #[diesel(embed)]
+    user: SysUser,
+    #[diesel(embed)]
+    role: SysRole,
+    #[diesel(embed)]
+    dept: SysDept,
+    #[diesel(embed)]
+    of1: SysUserOfDept,
+    #[diesel(embed)]
+    of2: SysUserOfRole,
 }

@@ -68,6 +68,7 @@ impl UserService {
         self.repo.page(r.clone()).map(|(records, total)|
             response::PageResponse::<UserResponse>::new(
                 records.into_iter().map(UserResponse::from).collect(), r.page, r.page_size, total))
+        //设置
     }
 
     pub fn add(&mut self, u: AddUser) -> Result<UserResponse, anyhow::Error> {
@@ -105,8 +106,14 @@ impl UserService {
         bail!("Incorrect password.")
     }
 
-    pub fn exit(&mut self, d: ExistUsername) -> Result<bool, anyhow::Error> {
-        Ok(false)
+    pub fn exist(&mut self, d: ExistUsername) -> Result<(), anyhow::Error> {
+        let ret = self.get_by_username(d.username);
+        if let Ok(user) = ret {
+            // 如果找到用户,返回错误
+            bail!("username {} already exists", user.username);
+        }
+        // 如果未找到用户,返回 Ok
+        Ok(())
     }
 }
 

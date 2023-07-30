@@ -40,16 +40,6 @@ pub enum ServerError {
 
 impl IntoResponse for ServerError {
     fn into_response(self) -> Response {
-        // match self {
-        //     ServerError::ValidationError(e) => {
-        //         // let message = format!("Input validation error: [{}]", self).replace('\n', ", ");
-        //         error(Box::try_from(e).unwrap())
-        //         // (StatusCode::BAD_REQUEST, message)
-        //     }
-        //     // ServerError::AxumFormRejection(_) => (StatusCode::BAD_REQUEST, self.to_string()),
-        //     ServerError::AxumJsonRejection(e) => error(Box::try_from(e).unwrap()),
-        // }.into_response()
-
         let (status, error_message) = match self {
             ServerError::ValidationError(e) => (1, format!("Input validation error: [{}]", e).replace('\n', ", ")),
             ServerError::AxumJsonRejection(e) => (2, e.to_string()),

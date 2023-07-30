@@ -1,10 +1,15 @@
 use std::ops::{DerefMut};
-use diesel::{ExpressionMethods, OptionalExtension, QueryDsl, RunQueryDsl, SelectableHelper};
+use diesel::{debug_query, ExpressionMethods, JoinOnDsl, OptionalExtension, QueryDsl, RunQueryDsl, SelectableHelper};
+use diesel::expression::AsExpression;
+use diesel::mysql::Mysql;
 use diesel::result::Error;
+use diesel::sql_types::Text;
 use crate::database;
-use crate::system::user::model::SysUser;
+use crate::system::user::model::{SysUser, UserWithRoleDept};
 use crate::database::schema::sys_user::dsl::*;
 use crate::database::schema::sys_user;
+use crate::system::dept::model::{SysDept, SysUserOfDept};
+use crate::system::role::model::{SysRole, SysUserOfRole};
 use crate::system::user::request::PageUser;
 
 pub struct UserRepo {
@@ -56,10 +61,31 @@ impl UserRepo {
     }
 
     pub fn page(&mut self, page: PageUser) -> Result<(Vec<SysUser>, i64), anyhow::Error> {
-        let offset = page.page_size * (page.page - 1);
-        let query_result = sys_user.select(SysUser::as_select()).limit(page.page_size).offset(offset).load::<SysUser>(self.conn.deref_mut())?;
-        let total_count = sys_user.count().first::<i64>(self.conn.deref_mut())?;
-        let records: Vec<SysUser> = query_result.into_iter().map(|u| u.into()).collect();
+        //dsl
+        use crate::database::schema::sys_user_of_role::dsl::sys_user_of_role;
+        use crate::database::schema::sys_role::dsl::sys_role;
+        use crate::database::schema::sys_user_of_dept::dsl::sys_user_of_dept;
+        use crate::database::schema::sys_dept::dsl::sys_dept;
+        //field
+        use crate::database::schema::sys_user_of_role::{role_uuid};
+        use crate::database::schema::sys_role::{uuid as ruid};
+        use crate::database::schema::sys_user_of_dept::{dept_uuid};
+        //query user->role->dept
+        let query = sys_user
+            //role
+            .left_join(sys_user_of_role.on(uuid.eq(database::schema::sys_user_of_role::user_uuid)))
+            .left_join(sys_role.on(role_uuid.eq(ruid)))
+            //dept
+            .left_join(sys_user_of_dept.on(uuid.eq(database::schema::sys_user_of_dept::user_uuid)))
+            .left_join(sys_dept.on(dept_uuid.eq(database::schema::sys_dept::uuid)));
+        //page query
+        let records = query
+            .limit(page.page_size).offset(page.page_size * (page.page - 1))
+            .select(SysUser::as_select())// actual i want full row data, but when i use `.select(<(SysUser,SysRole,SysDept)>::as_select())` occur error
+            .load::<SysUser>(self.conn.deref_mut())?;
+        //total
+        let total_count = query.count().first::<i64>(self.conn.deref_mut())?;
+        let records: Vec<SysUser> = records.into_iter().map(|u| u.into()).collect();
         Ok((records, total_count))
     }
 }

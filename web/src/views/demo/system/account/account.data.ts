@@ -50,7 +50,7 @@ export const searchFormSchema: FormSchema[] = [
 
 export const accountFormSchema: FormSchema[] = [
   {
-    field: 'account',
+    field: 'username',
     label: '用户名',
     component: 'Input',
     helpMessage: ['本字段演示异步验证', '不能输入带有admin的用户名'],
@@ -73,7 +73,7 @@ export const accountFormSchema: FormSchema[] = [
     ],
   },
   {
-    field: 'pwd',
+    field: 'password',
     label: '密码',
     component: 'InputPassword',
     required: true,
@@ -105,7 +105,7 @@ export const accountFormSchema: FormSchema[] = [
     required: true,
   },
   {
-    field: 'nickname',
+    field: 'name',
     label: '昵称',
     component: 'Input',
     required: true,

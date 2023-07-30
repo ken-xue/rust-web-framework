@@ -38,6 +38,10 @@ pub struct AddUser {
     pub username: String,
     #[validate(length(min = 1, message = "Can not be empty"))]
     pub password: String,
+    #[validate(length(min = 1, message = "Role not be empty"))]
+    pub role: String,
+    #[validate(length(min = 1, message = "Dept not be empty"))]
+    pub dept: String,
 }
 
 #[derive(Debug, Validate, Deserialize, Clone)]

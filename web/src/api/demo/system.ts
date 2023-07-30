@@ -79,8 +79,8 @@ export const getRoleList = (params?: RoleParams) =>
 export const setRoleStatus = (id: number, status: string) =>
   defHttp.post({ url: Api.setRoleStatus, params: { id, status } });
 
-export const isAccountExist = (account: string) =>
-  defHttp.post({ url: Api.IsAccountExist, params: { account } }, { errorMessageMode: 'none' });
+export const isAccountExist = (username: string) =>
+  defHttp.post({ url: Api.IsAccountExist, params: { username } }, { errorMessageMode: 'none' });
 
 export const updatePassword = (params) => defHttp.post({ url: Api.UpdatePassword, params });
 

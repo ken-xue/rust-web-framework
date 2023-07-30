@@ -1,18 +1,12 @@
-use std::thread;
 use axum::extract::{Path};
 use axum::{Json};
 use axum::response::IntoResponse;
-use hyper::StatusCode;
-use serde::{Deserialize, Serialize};
-use validator::{Validate};
-use crate::{common, database};
+use crate::{common};
 use crate::common::{request, response};
-use crate::system::user::{service, repo};
+use crate::system::user::{service};
 use crate::common::error::AppError;
 use crate::common::validator::Validated;
-use crate::system::auth;
-use crate::system::auth::Claims;
-use crate::system::user::model::SysUser;
+
 use crate::system::user::request::{AddUser, ExistUsername, PageUser, UpdatePassword, UpdateUser};
 
 // info
@@ -52,6 +46,7 @@ pub async fn password(Json(r): Json<UpdatePassword>) -> Result<impl IntoResponse
     Ok(response::success(response))
 }
 
+// 判断用户是否已经存在
 pub async fn exist(Json(r): Json<ExistUsername>) -> Result<impl IntoResponse, AppError>  {
     let response = service::UserService::default().exist(r)?;
     Ok(response::success(response))
